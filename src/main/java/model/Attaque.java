@@ -42,14 +42,7 @@ public class Attaque implements Serializable{
 	
 	
 
-	public Attaque(int id, int puissance, int precision, Type type) {
-		this.id = id;
-		this.puissance = puissance;
-		this.precision = precision;
-		this.type = type;
-	}
-
-	
+	public Attaque() {}
 	
 	public Attaque(int id, int puissance, int precision, String nom, String etat, String description, Type type) {
 		this.id = id;
