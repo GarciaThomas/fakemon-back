@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import model.Attaque;
-import model.ContextJpa;
 import model.Type;
 
 
-public class DAOAttaqueJPA extends ContextJpa implements DAOAttaque {
+public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 
 	@Override
 	public void insert(Attaque a) {
