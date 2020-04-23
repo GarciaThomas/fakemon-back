@@ -7,21 +7,32 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import application.Application;
 
 //	Déclaration Attribut
+@Entity
+@Table(name = "fakemon_stats")
 public abstract class Monster {
 	//Stats de l'État actuel du fakemon
 	@Transient
 	protected int level; 
+	@Transient
 	protected int PV;
+	@Transient
 	protected int PVmax;
+	@Transient
 	protected int Atk;	
+	@Transient
 	protected int Def;
+	@Transient
 	protected int ASp;	
+	@Transient
 	protected int DSp;
+	@Transient
 	protected int Vit;
 
 	//Pour le calcul des stats : base commune de l'espèce
@@ -33,29 +44,46 @@ public abstract class Monster {
 	protected double baseVit;
 
 	//Pour le calcul des stats : stats aléatoire de ce fakemon précis
+	@Transient
 	protected double ivPV;
+	@Transient
 	protected double ivAtk;	
+	@Transient
 	protected double ivDef;
+	@Transient
 	protected double ivASp;
+	@Transient
 	protected double ivDSp;	
+	@Transient
 	protected double ivVit;
 
 	//Pour le calcul des stats : effet de la nature
+	@Transient
 	protected double[] tabNature={1,1,1,1,1,1};
 
 	//Pour le combat : modificateurs. Pour le moment pas de moyen de les modifier MAIS important à avoir pour futures améliorations du système de combat
-	protected double modifAtk=1;	
+	@Transient
+	protected double modifAtk=1;
+	@Transient	
 	protected double modifDef=1;
+	@Transient
 	protected double modifASp=1;
+	@Transient
 	protected double modifDSp=1;
+	@Transient
 	protected double modifVit=1;
 
 	//Autres attributs importants
+	@Transient
 	protected ArrayList<Attaque> listAttaque = new ArrayList<Attaque>();
 	protected Type type; 
+	@Transient
 	protected Situation equipeJoueur=Situation.valueOf("Sauvage");
+	
 	protected String nom= this.getClass().getSimpleName();
+	@Transient
 	protected int exp = 0;
+	@Transient
 	protected int expNextLevel =5;
 
 	/* 	Stats non-utiles pour le moment : futures implementation ?
