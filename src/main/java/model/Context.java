@@ -15,7 +15,7 @@ import dao.DAOAttaqueJDBC;
 public class Context {
 	private static Context _instance = null;
 	private Connection connect = null;
-	private DAOAttaqueJDBC daoAtk = new DAOAttaqueJDBC();
+	private DAOAttaque daoAttaque = new DAOAttaqueJDBC();
 	private ArrayList<Monster> monstresProposition = null;
 
 	private Context() {
@@ -27,42 +27,57 @@ public class Context {
 		}
 		return _instance;
 	}
-	
-	public DAOAttaque getDAOAtk() {
-		return daoAtk;
-	}
 
-	public Connection getConnection() throws SQLException, ClassNotFoundException {
-		
-		Class.forName("com.mysql.jdbc.Driver");
-		connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/fakemon","root","");
-	
+	public DAOAttaque getDAOAttaque() {
+		return daoAttaque;
+	}
+	public static Context get_instance() {
+		return _instance;
+	}
+	public static void set_instance(Context _instance) {
+		Context._instance = _instance;
+	}
+	public Connection getConnect() {
 		return connect;
 	}
-	
-	
+	public void setConnect(Connection connect) {
+		this.connect = connect;
+	}
+	public DAOAttaque getDaoAttaque() {
+		return daoAttaque;
+	}
+	public void setDaoAttaque(DAOAttaque daoAttaque) {
+		this.daoAttaque = daoAttaque;
+	}
+	public void setMonstresProposition(ArrayList<Monster> monstresProposition) {
+		this.monstresProposition = monstresProposition;
+	}
+	public Connection getConnection() throws SQLException, ClassNotFoundException {
+
+		Class.forName("com.mysql.jdbc.Driver");
+		connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/fakemon","root","");
+
+		return connect;
+	}
+
+
 	public List<Monster> getMonstresProposition(){
-        if(monstresProposition == null) {
-            monstresProposition = new ArrayList<Monster>();
-            monstresProposition.addAll(Player.getInstance().tableRencontre(10, 1).stream()
-            																	.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
-            
-        }
+		if(monstresProposition == null) {
+			monstresProposition = new ArrayList<Monster>();
+			monstresProposition.addAll(Player.getInstance().tableRencontre(10, 1).stream()
+					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
 
-        return monstresProposition;
-    }
+		}
 
-    public void rebuildPropositions() {
-        this.monstresProposition = null;
-    }
-	
-	
-	
-	
-	
-	
-/*	public DAOAttaque getDAOAttaque() {
-		return DAOAttaque;	
-	}*/
+		return monstresProposition;
+	}
+
+	public void rebuildPropositions() {
+		this.monstresProposition = null;
+	}
+
+
+
+
 
 }

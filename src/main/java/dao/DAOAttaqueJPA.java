@@ -71,14 +71,16 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 		return (ArrayList<Attaque>) em.createQuery("select a from Attaque where id in (:ids)",Attaque.class).setParameter("ids", chaine).getResultList();
 	}
 
-
-	
-	
+	@Override
 	public double ratioEfficacite(Type attaque, Type defense) {
-
+		// TODO Auto-generated method stub
 		return 0;
-
 	}
+
+
+	
+	
+
 
 }	
 
