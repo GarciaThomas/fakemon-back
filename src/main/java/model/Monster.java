@@ -22,8 +22,6 @@ import application.Application;
 //	Déclaration Attribut
 @Entity
 @Table(name = "fakemon_stats")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="espece")
 public abstract class Monster {
 	//Stats de l'État actuel du fakemon
 	@Transient
