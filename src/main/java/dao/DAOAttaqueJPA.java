@@ -60,7 +60,7 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	}
 
 
-	/** Obtient les id random des attaques initiales du fakemon et doit renvoyer la liste d'attaques adapt�e
+	/** Obtient les id random des attaques initiales du fakemon et doit renvoyer la liste d'attaques adaptee
 	 * **/
 	public ArrayList<Attaque> selectPoolId(ArrayList<Integer> ids) {
 		
@@ -72,6 +72,8 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	}
 
 
+	
+	
 	public double ratioEfficacite(Type attaque, Type defense) {
 
 		return 0;

@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.persistence.Transient;
+
 import application.Application;
-import model.creature.Bebesalt;
-import model.creature.Crameleon;
-import model.creature.Foufoudre;
-import model.creature.Pipeau;
-import model.creature.Renargile;
-import model.creature.Thymtamarre;
 
 //	Déclaration Attribut
 public abstract class Monster {
 	//Stats de l'État actuel du fakemon
+	@Transient
 	protected int level; 
 	protected int PV;
 	protected int PVmax;
