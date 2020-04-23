@@ -1,4 +1,3 @@
-
 package dao;
 
 import java.util.ArrayList;
@@ -7,7 +6,6 @@ import java.util.stream.Collectors;
 
 import model.Attaque;
 import model.Type;
-
 
 public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 
@@ -63,7 +61,7 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	/** Obtient les id random des attaques initiales du fakemon et doit renvoyer la liste d'attaques adaptee
 	 * **/
 	public ArrayList<Attaque> selectPoolId(ArrayList<Integer> ids) {
-		
+
 		ArrayList<Attaque> listAttaques = new ArrayList<Attaque>();
 
 		String chaine = ids.stream().map(i -> i.toString()).collect(Collectors.joining(","));
@@ -75,15 +73,15 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	public double ratioEfficacite(Type attaque, Type defense) {
 		// TODO Auto-generated method stub
 		return Double.valueOf(em.createQuery("select e from Efficacite e where typeAttaque = :attaque and typeDefense = :defense")
-			.setParameter("typeAttaque", attaque.toString())
-			.setParameter("typeDefense", defense.toString())
-			.getFirstResult());
-			
+				.setParameter("typeAttaque", attaque.toString())
+				.setParameter("typeDefense", defense.toString())
+				.getFirstResult());
+
 	}
 
 
-	
-	
+
+
 
 
 }	

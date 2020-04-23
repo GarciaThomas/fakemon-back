@@ -7,7 +7,13 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -16,6 +22,8 @@ import application.Application;
 //	Déclaration Attribut
 @Entity
 @Table(name = "fakemon_stats")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="espece")
 public abstract class Monster {
 	//Stats de l'État actuel du fakemon
 	@Transient
@@ -36,11 +44,22 @@ public abstract class Monster {
 	protected int Vit;
 
 	//Pour le calcul des stats : base commune de l'espèce
+	@Column (name = "pv", nullable = false)
 	protected double basePV;
+
+	@Column (name = "attaque", nullable = false)
 	protected double baseAtk;	
+
+	@Column (name = "defense", nullable = false)
 	protected double baseDef;
+
+	@Column (name = "atk_speciale", nullable = false)
 	protected double baseASp;
+
+	@Column (name = "defk_speciale", nullable = false)
 	protected double baseDSp;
+
+	@Column (name = "vitesse", nullable = false)
 	protected double baseVit;
 
 	//Pour le calcul des stats : stats aléatoire de ce fakemon précis
@@ -76,16 +95,21 @@ public abstract class Monster {
 	//Autres attributs importants
 	@Transient
 	protected ArrayList<Attaque> listAttaque = new ArrayList<Attaque>();
-	protected Type type; 
 	@Transient
 	protected Situation equipeJoueur=Situation.valueOf("Sauvage");
-	
-	protected String nom= this.getClass().getSimpleName();
 	@Transient
 	protected int exp = 0;
 	@Transient
 	protected int expNextLevel =5;
 
+	@Column(name = "type", length = 15, nullable = false)
+	@Enumerated(EnumType.STRING)
+	protected Type type; 
+	
+	@Column (name ="espece", length = 15, nullable = false)
+	protected String nom= this.getClass().getSimpleName();
+	
+	
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
