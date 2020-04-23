@@ -1,26 +1,15 @@
 package model;
 
-import dao.DAOAttaque;
-import dao.DAOAttaqueJPA;
-import dao.DAOMonster;
-import dao.DAOMonsterJPA;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public abstract class ContextJpa {
-	private static DAOAttaque daoAttaque = new DAOAttaqueJPA();
-	private static DAOMonster daoMonster = new DAOMonsterJPA();
-
+	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("FakemonUnit");
+	protected static EntityManager em = emf.createEntityManager();
 	
-	public static DAOAttaque GetDaoAttaque() {
-		if (daoAttaque == null) {
-			daoAttaque = new DAOAttaqueJPA();
-		}
-		return daoAttaque;
-	}
-	public static DAOMonster GetDaoMonster() {
-		if (daoMonster == null) {
-			daoMonster = new DAOMonsterJPA();
-		}
-		return daoMonster;
+	public void close() {
+		emf.close();
 	}
 
 

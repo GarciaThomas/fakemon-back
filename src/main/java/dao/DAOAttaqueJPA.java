@@ -1,19 +1,16 @@
 
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import model.Attaque;
-import model.Context;
+import model.ContextJpa;
 import model.Type;
 
 
-public class DAOAttaqueJPA implements DAOAttaque {
+public class DAOAttaqueJPA extends ContextJpa implements DAOAttaque {
 
 	@Override
 	public void insert(Attaque t) {
@@ -47,8 +44,12 @@ public class DAOAttaqueJPA implements DAOAttaque {
 
 
 	public ArrayList<Attaque> selectPoolId(ArrayList<Integer> ids) {
+		
+		ArrayList<Attaque> listAttaques = new ArrayList<Attaque>();
 
-		return null;
+		String chaine = ids.stream().map(i -> i.toString()).collect(Collectors.joining(","));
+
+		return (ArrayList<Attaque>) em.createQuery("select a from Attaque where id in (:ids)",Attaque.class).setParameter("ids", chaine).getResultList();
 	}
 
 
