@@ -2,9 +2,42 @@ package model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.query.criteria.internal.expression.function.LengthFunction;
+
+@Entity
+@Table(name = "attaque")
 public class Attaque implements Serializable{
-	int id, puissance, precision;
-	String nom,description,etat;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
+	int id;
+	
+	@Column(name = "puissance", nullable = false)
+	int puissance;
+	
+	@Column(name = "precision", nullable = false)
+	int precision;
+	
+	@Column(name = "nom", length = 20, nullable = false)
+	String nom;
+	
+	@Column(name = "description", length = 100, nullable = true)
+	String description;
+	
+	@Column(name = "etat", length = 10, nullable = false)
+	String etat;
+	
+	@Column(name = "type", length = 15, nullable = false)
+	@Enumerated(EnumType.STRING)
 	Type type;
 	
 	
