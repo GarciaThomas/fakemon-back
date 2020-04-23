@@ -55,7 +55,11 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 	}
 
 	public Monster selectByNom(String nom) {
-		return this.em.createQuery("SELECT m FROM Monster m WHERE m.nom = ?1",Monster.class).setParameter(1,nom).getSingleResult();
+		Monster m = this.em.createQuery("SELECT m FROM Monster m WHERE m.nom = ?1",Monster.class).setParameter(1,nom).getSingleResult();
+		m.init();
+		return m;
 	}
+
+	
 	
 }

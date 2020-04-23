@@ -5,13 +5,6 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import application.Application;
-import model.Monster;
-import model.creature.Bebesalt;
-import model.creature.Crameleon;
-import model.creature.Foufoudre;
-import model.creature.Pipeau;
-import model.creature.Renargile;
-import model.creature.Thymtamarre;
 
 public class Player { //Singleton.
 	//	Attributs
@@ -50,13 +43,25 @@ public class Player { //Singleton.
 
 		for (int i=0;i<nbRencontre;i++) {
 
-			Monster test = new Crameleon(niveau);
-			tableCreation.add(test);
-			tableCreation.add(new Foufoudre(niveau));
-			tableCreation.add(new Pipeau(niveau));
-			tableCreation.add(new Renargile(niveau));
-			tableCreation.add(new Thymtamarre(niveau));
-			tableCreation.add(new Bebesalt(niveau));		
+			Monster pipeau = Context.getInstance().getDaoMonster().selectByNom("Pipeau");
+			pipeau.init();
+			Monster crameleon = Context.getInstance().getDaoMonster().selectByNom("Crameleon");
+			crameleon.init();
+			Monster foufoudre = Context.getInstance().getDaoMonster().selectByNom("Foufoudre");
+			foufoudre.init();
+			Monster renargile = Context.getInstance().getDaoMonster().selectByNom("Renargile");
+			renargile.init();
+			Monster bebesalt = Context.getInstance().getDaoMonster().selectByNom("Bebesalt");
+			bebesalt.init();
+			Monster thymtamarre = Context.getInstance().getDaoMonster().selectByNom("Thymtamarre");
+			thymtamarre.init();
+			
+			tableCreation.add(pipeau);
+			tableCreation.add(crameleon);
+			tableCreation.add(foufoudre);
+			tableCreation.add(renargile);
+			tableCreation.add(bebesalt);
+			tableCreation.add(thymtamarre);		
 
 			Random r = new Random();
 			Monster m = tableCreation.get(r.nextInt(tableCreation.size()));

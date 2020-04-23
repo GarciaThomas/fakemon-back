@@ -7,22 +7,26 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.query.criteria.internal.expression.function.LengthFunction;
 
 import application.Application;
 
 //	Déclaration Attribut
 @Entity
 @Table(name = "fakemon_stats")
-public abstract class Monster {
+public class Monster {
 	//Stats de l'État actuel du fakemon
 	@Transient
 	protected int level; 
@@ -54,7 +58,7 @@ public abstract class Monster {
 	@Column (name = "atk_speciale", nullable = false)
 	protected double baseASp;
 
-	@Column (name = "defk_speciale", nullable = false)
+	@Column (name = "def_speciale", nullable = false)
 	protected double baseDSp;
 
 	@Column (name = "vitesse", nullable = false)
@@ -103,11 +107,18 @@ public abstract class Monster {
 	@Column(name = "type", length = 15, nullable = false)
 	@Enumerated(EnumType.STRING)
 	protected Type type; 
-	
-	@Column (name ="espece", length = 15, nullable = false)
-	protected String nom= this.getClass().getSimpleName();
-	
-	
+
+	@Column (name ="espece", length = 15, nullable = false, insertable = false, updatable = false)
+	protected String nom;
+
+	@Column(name = "movepool", nullable = false)
+	private String poolAtkString;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+
+
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
@@ -133,10 +144,31 @@ public abstract class Monster {
 		calcStat();
 		this.listAttaque = listAttaque;
 	}
-
+	
+	
+	public void init() {
+		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
+	}
+	
+	
+	public Monster() {
+		this.level = 1;
+		generationIV();	
+		nature();
+		calcStat();
+	}
 
 	//___________________________________________
 	//	Getters/Setters
+	public String getPoolAtkString() {
+		return poolAtkString;
+	}
+	public void setPoolAtkString(String poolAtkString) {
+		this.poolAtkString = poolAtkString;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
 	public int getLevel() {
 		return level;
 	}
@@ -200,38 +232,10 @@ public abstract class Monster {
 		ivDSp=r.nextInt(6);
 		r=new Random();
 		ivVit=r.nextInt(6);
-		/*Je ne sais pas ce qui est le plus efficace...
-		 int[] tabRand=new int[6];
-		for (int i=1;i<tabRand.length;i++) {
-			Random r=new Random();
-			tabRand[i]=r.nextInt(6);
-		}
-		ivPV=r.tabRand(0);
-		ivAtk=r.tabRand(1);
-		ivDef=r.tabRand(2);
-		ivASp=r.tabRand(3);
-		ivDSp=r.tabRand(4);
-		ivVit=r.tabRand(5);
-		System.out.println(Arrays.toString(tabRand));*/
 	}
-
 
 	//	Génère une nature qui module 2 statistiques du monstre : ne doit être utilisé que dans le constructeur 
 	private void nature() {
-		//Nature sur 4 stats
-		/*		int stUp=4; int stDown=4;
-		while (stUp==3 || stUp==4) {
-			Random r1=new Random();
-			stUp=r1.nextInt(4);
-		}
-		while (stDown==3 || stDown==4) {
-			Random r1=new Random();
-			stDown=r1.nextInt(4);
-		}
-		if (stUp!=stDown) {
-			tabNature[stUp]=1.1;
-			tabNature[stDown]=0.9;
-		}*/
 		//Nature sur 6 stats
 		Random r=new Random();
 		int stUp=r.nextInt(6);
@@ -243,6 +247,33 @@ public abstract class Monster {
 		}	
 	}
 
+	//	Génère à partir du movepool (=la totalité des attaques que peut apprendre le fakemon) les 3 attaques que le fakemon aura à sa disposition
+	protected static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
+
+		LinkedList<Integer> mesIds = new LinkedList<Integer>();
+		mesIds.addAll(Arrays.asList(poolEntier));
+		Collections.shuffle(mesIds);
+
+		ArrayList<Integer> idsForQuery = new ArrayList<Integer>();
+
+		for(int i=0; i < 3; i++) {
+			idsForQuery.add(mesIds.poll());
+		}
+		return Context.getInstance().getDaoAttaque().selectPoolId(idsForQuery);
+
+	}
+
+	//	Génère à partir du movepool en string de la base de donnée la liste d'Integer
+	private Integer[] poolAtkStringToInt(String movepool) {
+
+		String[] ids = movepool.split(",");
+		Integer[] poolEntier = new Integer[ids.length];
+
+		for(int i = 0; i < ids.length; i++){
+			poolEntier[i]=Integer.valueOf(ids[i]);
+		}	
+		return poolEntier;
+	}
 
 	//	Calcul les nouvelles stats au niveau actuel + soigne le monstre
 	public void calcStat() {
@@ -264,7 +295,7 @@ public abstract class Monster {
 		calcStat();
 		/*if (level==5) --> ouvre un slot d'attaque!
 		 * if(level==3 || 5 || 8 || 10) -> propose nouvelle attaque*/
-		
+
 	}
 
 
@@ -359,21 +390,6 @@ public abstract class Monster {
 		return a;
 	}
 
-
-	public static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
-
-		LinkedList<Integer> mesIds = new LinkedList<Integer>();
-		mesIds.addAll(Arrays.asList(poolEntier));
-		Collections.shuffle(mesIds);
-
-		ArrayList<Integer> idsForQuery = new ArrayList<Integer>();
-
-		for(int i=0; i < 3; i++) {
-			idsForQuery.add(mesIds.poll());
-		}
-		return Context.getInstance().getDaoAttaque().selectPoolId(idsForQuery);
-
-	}
 
 
 	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
@@ -509,17 +525,17 @@ public abstract class Monster {
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
 			m.PV-=degat;
 
-			
+
 			if (m.getPV()<=0) {
 				m.setPV(0);
 				action.setM(m);
 				throw new PVException();
-				
+
 			}
 			else {
 				action.setM(m);
 				System.out.println("Il reste "+m.getPV()+" PV a "+m.getClass().getSimpleName()+".\n");
-				
+
 			}
 		}
 		return action;

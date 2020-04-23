@@ -36,4 +36,12 @@ public class DAOMonsterJDBC implements DAOMonster {
 		
 	}
 
+	@Override
+	public Monster selectByNom(String nom) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
 }
