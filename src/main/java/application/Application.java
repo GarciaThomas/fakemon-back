@@ -6,12 +6,14 @@ import java.util.Scanner;
 
 import model.PVException;
 import model.Player;
+import model.Type;
 import model.creature.Bebesalt;
 import model.creature.Crameleon;
 import model.creature.Foufoudre;
 import model.creature.Pipeau;
 import model.creature.Renargile;
 import model.creature.Thymtamarre;
+import model.Context;
 import model.Monster;
 
 public class Application {
@@ -76,10 +78,11 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		Player sacha = null;
+		/*Player sacha = null;
 		sacha.getInstance().selectionStarter();
 		rencontreSauvage(10);
-
+		*/
+		System.out.println(Context.getInstance().getDaoAttaque().ratioEfficacite(Type.Eau, Type.Eau));
 
 
 		/*	Renargile c2 = new Renargile(1);

@@ -74,7 +74,11 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	@Override
 	public double ratioEfficacite(Type attaque, Type defense) {
 		// TODO Auto-generated method stub
-		return 0;
+		return Double.valueOf(em.createQuery("select e from Efficacite e where typeAttaque = :attaque and typeDefense = :defense")
+			.setParameter("typeAttaque", attaque.toString())
+			.setParameter("typeDefense", defense.toString())
+			.getFirstResult());
+			
 	}
 
 

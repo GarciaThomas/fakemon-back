@@ -299,7 +299,7 @@ public abstract class Monster {
 		}
 
 		for (Attaque i : listAttaque) {
-			if (Context.getInstance().getDAOAttaque().ratioEfficacite(i.getType(),m.getType())==2) {
+			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType(),m.getType())==2) {
 				r = new Random();
 				if(r.nextInt(4)==4) {
 					a=i;
@@ -321,14 +321,14 @@ public abstract class Monster {
 		for(int i=0; i < 3; i++) {
 			idsForQuery.add(mesIds.poll());
 		}
-		return Context.getInstance().getDAOAttaque().selectPoolId(idsForQuery);
+		return Context.getInstance().getDaoAttaque().selectPoolId(idsForQuery);
 
 	}
 
 
 	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
 
-		this.listAttaque = Context.getInstance().getDAOAttaque().selectPoolId(ids);
+		this.listAttaque = Context.getInstance().getDaoAttaque().selectPoolId(ids);
 		return listAttaque;
 	}
 
@@ -379,7 +379,7 @@ public abstract class Monster {
 			}
 
 			//set si l'attaque utilisée est efficace ou non
-			double type = Context.getInstance().getDAOAttaque().ratioEfficacite(a.getType(),m.getType());
+			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 			}
@@ -436,7 +436,7 @@ public abstract class Monster {
 			}
 
 			//set si l'attaque utilisée est efficace ou non
-			double type = Context.getInstance().getDAOAttaque().ratioEfficacite(a.getType(),m.getType());
+			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 				action.setMessage("L'attaque est super efficace !");

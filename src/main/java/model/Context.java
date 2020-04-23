@@ -28,27 +28,22 @@ public class Context {
 		return _instance;
 	}
 
-	public DAOAttaque getDAOAttaque() {
-		return daoAttaque;
-	}
-	public static Context get_instance() {
-		return _instance;
-	}
-	public static void set_instance(Context _instance) {
-		Context._instance = _instance;
-	}
 	public Connection getConnect() {
 		return connect;
 	}
+	
 	public void setConnect(Connection connect) {
 		this.connect = connect;
 	}
+	
 	public DAOAttaque getDaoAttaque() {
 		return daoAttaque;
 	}
+	
 	public void setDaoAttaque(DAOAttaque daoAttaque) {
 		this.daoAttaque = daoAttaque;
 	}
+	
 	public void setMonstresProposition(ArrayList<Monster> monstresProposition) {
 		this.monstresProposition = monstresProposition;
 	}
