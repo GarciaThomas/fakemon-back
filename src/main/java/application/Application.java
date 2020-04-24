@@ -14,7 +14,7 @@ public class Application {
 	 * Pas de vérification que l'entrée est correcte
 	 * @param msg : String ; message qui sera affiché dans la console
 	 * @return
-	 */
+	 **/
 	public static int saisieInt(String msg) {
 		Scanner sc = new Scanner(System.in);
 		System.out.println(msg);
@@ -26,7 +26,7 @@ public class Application {
  * La sortie d'une PVexception dans la fonction combat apppelée signifie que l'un des deux monstre au combat est KO
  * @param m1 : Monster ; le monstre du joueur, càd le premier de sa liste au début du combat puis celui actif lors des tours suivants (si KO ou switch)
  * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
- */
+ **/
 	public static void combat(Monster m1, Monster m2){
 			
 		try {
@@ -53,7 +53,7 @@ public class Application {
  * les monstres rencontrés sont 5 x niveau 1, 3 x niveau 2 (le 6ème+) et 2 x niveau 3(le 9ème+)
  * il y a de l'affichage dans la console
  * @param nbSauvage : int ; nombre de creatures sauvages recontrée d'affillées
- */
+ **/
 	public static void rencontreSauvage(int nbSauvage) {
 
 		System.out.println("Vous allez rencontrer "+nbSauvage+" Fakemon sauvages.");
@@ -63,7 +63,7 @@ public class Application {
 		fakemonSauvage = Player.getInstance().tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
-			System.out.println("Rencontre n°"+(i+1)+" :");
+			System.out.println("\n---------\nRencontre n°"+(i+1)+" :");
 			m = fakemonSauvage.get(i);
 
 			if (i>=8) {

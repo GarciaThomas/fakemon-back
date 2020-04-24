@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "attaque")
-public class Attaque implements Serializable{
+public class Attaque implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
@@ -38,11 +38,24 @@ public class Attaque implements Serializable{
 	@Enumerated(EnumType.STRING)
 	Type type;
 	
+	@Column(name = "effet_cumule", length = 25, nullable = true)
+	String effetCumule;
 	
-
+	
+/** Constructeur vide JPA
+ **/
 	public Attaque() {}
 	
-	public Attaque(int id, int puissance, int precision, String nom, String etat, String description, Type type) {
+	/** Constructeur complet d'une attaque pour JDBC
+	 * @param id : int ; C'est la clef primaire dans la BDD, sert à identifier quelles attaques peuvent êtres connues par chaque monstre
+	 * @param puissance : int ; valeur indiquant la puissance intrinseque de l'attaque, c'est à dire les dégâts qu'elle engendre
+	 * @param precision : int ; précision sur 100 de l'attaque, une précision >=100 indique qu'elle n'echoue jamais. Plus la valeur est faible, plus la probabilité de rater l'attaque est élevé
+	 * @param nom : String ; l'intitulé de l'attaque
+	 * @param etat : String ; donne de quelle façon doit être gérer l'attaque : une attaque Physique utilisera les statistiques d'Attaque et de Défense pour le calcul des dégâts, une attaque Spéciale utilisera les statistiques d'Attaque spéciale et de Défense spéciale pour le calcul des dégats et une attaque Statut n'infligera pas de dégâts mais impactera les statistique ou autre du fakemon 
+	 * @param description
+	 * @param type
+	 */
+	public Attaque(int id, int puissance, int precision, String nom, String etat, String description, Type type, String effetCumule) {
 		this.id = id;
 		this.puissance = puissance;
 		this.precision = precision;
@@ -50,6 +63,7 @@ public class Attaque implements Serializable{
 		this.etat = etat;
 		this.description = description;
 		this.type = type;
+		this.effetCumule = effetCumule;
 	}
 
 
@@ -96,7 +110,12 @@ public class Attaque implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	public String getEffetCumule() {
+		return effetCumule;
+	}
+	public void setEffetCumule(String effetCumule) {
+		this.effetCumule = effetCumule;
+	}
 
 
 	@Override
@@ -105,7 +124,9 @@ public class Attaque implements Serializable{
 				+ description + ", type=" + type + "]";
 	}
 
-
+	public String toStringDescription() {
+		return nom + " : " + description;
+	}
 
 
 	

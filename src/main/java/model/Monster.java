@@ -140,7 +140,7 @@ public class Monster {
 		calcStat();
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
-	
+
 	/** constructeur pour JPA avec initialisation à partir de la BDD
 	 * l'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
 	 */
@@ -150,14 +150,14 @@ public class Monster {
 		nature();
 		calcStat();
 	}
-	
+
 	/** initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
 	 * cette fonction est appellée dans le DAO
 	 */
 	public void init() {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
-	
+
 
 	//___________________________________________
 	//	Getters/Setters
@@ -405,10 +405,10 @@ public class Monster {
 
 		Monster m = null;
 
-		if (this.getVit()>m2.getVit()) {
+		if (this.getVit()*this.modifVit > m2.getVit()*m2.modifVit) {
 			m = this;
 		}
-		else if (this.getVit()<m2.getVit()) {
+		else if (this.getVit()*this.modifVit < m2.getVit()*m2.modifVit) {
 			m = m2;
 		}
 		else {
@@ -423,29 +423,34 @@ public class Monster {
 	}
 
 
-	//	Calcul des dégâts et renvoie erreur si PV tombe à 0
+	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dégâts et update les PV des monstres
+	 *  
+	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre présent.
+	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
+	 */
 	public void combat(Monster m) throws PVException {
 
+		//	Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
 		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
 
 		Random r = new Random();
 
-		if (r.nextInt(100)>a.getPrecision()) {
+		if (r.nextInt(100)+1>a.getPrecision()) {
 			System.out.println("L'attaque de "+this.getNom()+" a raté !");
 		}
 		else {
 
-			//set les paramettres de calcul des dégâts
+			//	set les paramettres de calcul des dégâts
 			final double k1 = (double) 2/5;
 			final double k2 = 50;
 
-			//set le bonus de stab
+			//	set le bonus de stab
 			double stab = 1.0;
 			if (a.getType().equals(this.getType())) {
 				stab = 1.5;
 			}
 
-			//set si l'attaque utilisée est efficace ou non
+			//	set si l'attaque utilisée est efficace ou non
 			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
@@ -454,28 +459,111 @@ public class Monster {
 				System.out.println("L'attaque est peu efficace ...");
 			}
 
-			//dedermine si l'attaque est physique ou spéciale
-			int statDegat = 0;
-			int statProtection = 0;
+			//	détermine si l'attaque est physique ou spéciale
+			double statDegat = 0;
+			double statProtection = 0;
 			switch (a.getEtat()) {
-			case "Physique": statDegat=this.Atk ; statProtection=m.getDef(); break;
-			case "Special" : statDegat=this.ASp ; statProtection=m.getDSp(); break;
+			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.modifDef; break;
+			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.modifDSp; break;
 			default : System.out.println("erreur de degat");break;
 			}
 
-			//calcul des dégats
+			//	calcul des dégats
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
 			m.PV-=degat;
+			System.out.println(degat);
 
+			// Prise en compte des effets cumulé de l'attaque
+			integrationEffetCumule(a, m);
 
 			if (m.getPV()<=0) {
 				throw new PVException();
 			}
 			else {
-				System.out.println("Il reste "+m.getPV()+" PV a "+m.getNom()+".\n");
+				System.out.println("Il reste "+m.getPV()+" PV (/"+m.getPVmax()+") a "+m.getNom()+".\n");
 			}
 		}
 	}
+
+
+
+	public void integrationEffetCumule(Attaque a, Monster m) {
+		if (a.getEffetCumule() != null) {
+
+			//	Transforme le string de la BDD en liste, les infos sont organisé en Proba,cible,stat,sens,valeur
+			String[] listeEffetCumule = a.getEffetCumule().split(",");
+			Random r = new Random();
+			Monster cible = null;
+
+			if (r.nextInt(100)+1 < Integer.parseInt(listeEffetCumule[0])) {
+
+				switch (listeEffetCumule[1]) {
+				case "self" : cible = this; break;
+				case "other" : cible = m; break;
+				default : System.out.println("erreur de cible"); break;
+				}
+
+				switch (listeEffetCumule[2]) {
+				case "pv" : cible.PV=0 ; break;
+				case "atk" : cible.modifAtk=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifAtk); 
+				System.out.println("L'attaque de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				case "def" : cible.modifDef=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDef); 
+				System.out.println("La défense de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				case "asp" : cible.modifASp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifASp); 
+				System.out.println("L'attaque spéciale de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				case "dsp" : cible.modifDSp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDSp); 
+				System.out.println("La defense spéciale de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				case "vit" : cible.modifVit=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifVit); 
+				System.out.println("La vitesse de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				case "all" : cible.modifAtk=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifAtk); 
+				cible.modifDef=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDef);
+				cible.modifASp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifASp);
+				cible.modifDSp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDSp);
+				cible.modifVit=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifVit);  
+				System.out.println("Toutes les statistiques de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran");break;
+				default : System.out.println("erreur de stat"); break;
+				}
+			}
+		}
+	}
+
+
+	/** Methode qui met a jour la modif de stat du monstre actuel
+	 * 
+	 * @param sens : "up" ou "down" selon si la stat doit augmentée ou diminuée
+	 * @param valeur : nombre de rang d'évolution, donné en string car converti en int à l'intérieur
+	 * @param valeurModifActuelle : valeur de la modifStat à modifiée
+	 * @return nouvelle valeur de la modif.
+	 */
+	private double modifStatCombat(String sens, String valeur, double valeurModifActuelle) {
+
+		// Array de 13 valeurs avec valeur de base en position 6 
+		double[] modifStats = {0.25, (double) 2/7, (double) 2/6, 0.4, 0.5, (double) 2/3, 1, 1.5, 2, 2.5, 3, 3.5, 4};
+
+		int position = 0;
+		int i = 0;
+
+		for (double v : modifStats) {
+			if (v == valeurModifActuelle) {
+				position = i;
+			}
+			i++;
+		}
+
+		double newModif = 6;
+
+		try  {
+			switch (sens) {
+			case "up" : newModif=modifStats[position+Integer.parseInt(valeur)]; break;
+			case "down" : newModif=modifStats[position-Integer.parseInt(valeur)];break;
+			default : System.out.println("Problem de sens"); break;
+			}
+		}catch (Exception e) {e.printStackTrace();}
+
+		return newModif;
+	}
+
+
 
 
 	//	Doublon action combat pour le front
@@ -562,7 +650,7 @@ public class Monster {
 	}
 
 	public String toStringDetailAttaque() {
-		return "\n* "+listAttaque.stream().map( a -> a.getNom()+" ["+a.getType().toString()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()).collect(Collectors.joining("\n* "));
+		return "\n* "+listAttaque.stream().map( a -> a.getNom()+" ["+a.getType().toString()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()+" ("+a.getDescription()+")").collect(Collectors.joining("\n* "));
 	}
 
 	public String toStringDetailStat() {
