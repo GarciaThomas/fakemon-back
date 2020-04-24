@@ -10,6 +10,11 @@ import model.Player;
 
 public class Application {
 
+	/**	Fonction qui permet la saisie console d'un int. 
+	 * Pas de vérification que l'entrée est correcte
+	 * @param msg : String ; message qui sera affiché dans la console
+	 * @return
+	 */
 	public static int saisieInt(String msg) {
 		Scanner sc = new Scanner(System.in);
 		System.out.println(msg);
