@@ -428,7 +428,7 @@ public class Monster {
 		Random r = new Random();
 
 		if (r.nextInt(100)>a.getPrecision()) {
-			System.out.println("L'attaque de "+this.getClass().getSimpleName()+" a raté !");
+			System.out.println("L'attaque de "+this.getNom()+" a raté !");
 		}
 		else {
 
@@ -469,7 +469,7 @@ public class Monster {
 				throw new PVException();
 			}
 			else {
-				System.out.println("Il reste "+m.getPV()+" PV a "+m.getClass().getSimpleName()+".\n");
+				System.out.println("Il reste "+m.getPV()+" PV a "+m.getNom()+".\n");
 			}
 		}
 	}
@@ -483,9 +483,9 @@ public class Monster {
 		Action action = new Action();
 
 		if (r.nextInt(100)>a.getPrecision()) {
-			System.out.println("L'attaque de "+this.getClass().getSimpleName()+" a raté !");
+			System.out.println("L'attaque de "+this.getNom()+" a raté !");
 			action.setM(m);
-			action.setMessage("L'attaque de "+this.getClass().getSimpleName()+" a raté !");
+			action.setMessage("L'attaque de "+this.getNom()+" a raté !");
 		}
 		else {
 
@@ -532,7 +532,7 @@ public class Monster {
 			}
 			else {
 				action.setM(m);
-				System.out.println("Il reste "+m.getPV()+" PV a "+m.getClass().getSimpleName()+".\n");
+				System.out.println("Il reste "+m.getPV()+" PV a "+m.getNom()+".\n");
 
 			}
 		}
@@ -554,13 +554,17 @@ public class Monster {
 
 
 
-	public String toString2() {
+	public String toStringGeneral() {
 		return "- "+nom+" ["+type+"] : Attaques = "+listAttaque.stream().map( a -> a.getNom()).collect(Collectors.joining(", "));
 	}
 
+	public String toStringDetailAttaque() {
+		return "\n* "+listAttaque.stream().map( a -> a.getNom()+" ["+a.getType().toString()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()).collect(Collectors.joining("\n* "));
+	}
 
-
-
+	public String toStringDetailStat() {
+		return "Niveau =" + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
+	}
 
 
 }

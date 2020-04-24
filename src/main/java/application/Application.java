@@ -24,15 +24,15 @@ public class Application {
 		try {
 			while (m1.getPV()>0 && m2.getPV()>0) {
 				if (m1.initiative(m2).equals(m1)) {
-					System.out.println(m1.getClass().getSimpleName()+" attaque "+m2.getClass().getSimpleName()+" en premier");
+					System.out.println(m1.getNom()+" attaque "+m2.getNom()+" en premier");
 					m1.combat(m2);
-					System.out.println(m2.getClass().getSimpleName()+" attaque "+m1.getClass().getSimpleName());
+					System.out.println(m2.getNom()+" attaque "+m1.getNom());
 					m2.combat(m1);
 				}
 				else {
-					System.out.println(m2.getClass().getSimpleName()+" attaque "+m1.getClass().getSimpleName()+" en premier");
+					System.out.println(m2.getNom()+" attaque "+m1.getNom()+" en premier");
 					m2.combat(m1);
-					System.out.println(m1.getClass().getSimpleName()+" attaque "+m2.getClass().getSimpleName());
+					System.out.println(m1.getNom()+" attaque "+m2.getNom());
 					m1.combat(m2);
 				}
 			}
@@ -72,7 +72,6 @@ public class Application {
 		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
 		
-
 	}
 
 }

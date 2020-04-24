@@ -73,13 +73,15 @@ public class Player { //Singleton.
 	public void selectionStarter () {
 
 		ArrayList<Monster> table2Chen = tableRencontre(6);
-		table2Chen.forEach(mi -> System.out.println(mi.toString2()));
+		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
 			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
 		}
 		addEquipePlayer(table2Chen.get(i-1));
-		System.out.println("Vous avez choisi"+table2Chen.get(i-1).getNom()+" !");
+		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
+		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
+		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat());
 	}
 
 	
@@ -117,7 +119,7 @@ public class Player { //Singleton.
 
 	//	Change de place deux monstres du joueur dans sa liste de monstre
 	public void changeMonster() {
-		equipePlayer.forEach(m -> System.out.println(m.toString2()));
+		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
 		int ip = Application.saisieInt("À quelle position voulez-vous le mettre ?");
 		Monster m = equipePlayer.get(im-1);
