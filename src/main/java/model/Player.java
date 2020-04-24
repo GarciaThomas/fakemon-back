@@ -18,6 +18,7 @@ public class Player { //Singleton.
 	private static Player _instance = null;
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
+	protected int[] position = new int[] {0,0};
 
 	//	Constructeur Singleton
 	private Player() {
@@ -39,6 +40,14 @@ public class Player { //Singleton.
 	public void addEquipePlayer(Monster m) {
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
+	}
+	
+	public int[] getPosition() {
+		return position;
+	}
+	
+	public void setPosition(int[] position) {
+		this.position = position; 
 	}
 
 
