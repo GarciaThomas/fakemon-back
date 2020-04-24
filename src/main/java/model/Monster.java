@@ -130,7 +130,7 @@ public class Monster {
 	//___________________________________________
 	//	Constructeur
 
-	public Monster(int level, double basePV, double baseAtk, double baseDef,double baseASp,double baseDSp, double baseVit, ArrayList<Attaque> listAttaque,Type type){
+	public Monster(int level, double basePV, double baseAtk, double baseDef,double baseASp,double baseDSp, double baseVit, String poolAtkString,Type type){
 		this.level=level;
 		this.basePV=basePV;
 		this.baseAtk=baseAtk;
@@ -142,14 +142,8 @@ public class Monster {
 		generationIV();	
 		nature();
 		calcStat();
-		this.listAttaque = listAttaque;
-	}
-	
-	
-	public void init() {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
-	
 	
 	public Monster() {
 		this.level = 1;
@@ -157,6 +151,10 @@ public class Monster {
 		nature();
 		calcStat();
 	}
+	public void init() {
+		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
+	}
+	
 
 	//___________________________________________
 	//	Getters/Setters

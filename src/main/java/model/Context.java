@@ -70,7 +70,7 @@ public class Context {
 	public List<Monster> getMonstresProposition(){
 		if(monstresProposition == null) {
 			monstresProposition = new ArrayList<Monster>();
-			monstresProposition.addAll(Player.getInstance().tableRencontre(10, 1).stream()
+			monstresProposition.addAll(Player.getInstance().tableRencontre(10).stream()
 					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
 
 		}

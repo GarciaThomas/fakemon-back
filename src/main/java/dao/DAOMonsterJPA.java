@@ -39,6 +39,7 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 		}
 	}
 
+	//	Cette fonctionalité est bloquée car il ne doit pas être possible de supprimer les bases stats des créatures mise dans la BDD
 	@Override
 	public void delete(Integer id) {
 	/*	try {

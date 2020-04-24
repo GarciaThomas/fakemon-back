@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import application.Application;
+import dao.DAOJPA;
 
 public class Player { //Singleton.
 	//	Attributs
@@ -35,26 +36,21 @@ public class Player { //Singleton.
 	}
 
 
-	//	Revoie une liste de nbRencontre monstres crée aléatoirement et de niveau donné.
-	public ArrayList<Monster> tableRencontre(int nbRencontre, int niveau) {
+	//	Revoie une liste de nbRencontre monstres crée aléatoirement et de niveau 1.
+	public ArrayList<Monster> tableRencontre(int nbRencontre) {
 
 		ArrayList<Monster> tableRencontre = new ArrayList<Monster>();
 		ArrayList<Monster> tableCreation = new ArrayList<Monster>();
+		Monster m = null;
 
 		for (int i=0;i<nbRencontre;i++) {
 
 			Monster pipeau = Context.getInstance().getDaoMonster().selectByNom("Pipeau");
-			pipeau.init();
 			Monster crameleon = Context.getInstance().getDaoMonster().selectByNom("Crameleon");
-			crameleon.init();
 			Monster foufoudre = Context.getInstance().getDaoMonster().selectByNom("Foufoudre");
-			foufoudre.init();
 			Monster renargile = Context.getInstance().getDaoMonster().selectByNom("Renargile");
-			renargile.init();
 			Monster bebesalt = Context.getInstance().getDaoMonster().selectByNom("Bebesalt");
-			bebesalt.init();
 			Monster thymtamarre = Context.getInstance().getDaoMonster().selectByNom("Thymtamarre");
-			thymtamarre.init();
 			
 			tableCreation.add(pipeau);
 			tableCreation.add(crameleon);
@@ -62,9 +58,10 @@ public class Player { //Singleton.
 			tableCreation.add(renargile);
 			tableCreation.add(bebesalt);
 			tableCreation.add(thymtamarre);		
-
+			
+			
 			Random r = new Random();
-			Monster m = tableCreation.get(r.nextInt(tableCreation.size()));
+			m = tableCreation.get(r.nextInt(tableCreation.size()));
 			tableRencontre.add(m);
 			tableCreation.clear();
 		}
@@ -75,7 +72,7 @@ public class Player { //Singleton.
 	//	Crée une sélection aléatoire de 6 Fakemon puis le joueur en choisis 1 
 	public void selectionStarter () {
 
-		ArrayList<Monster> table2Chen = tableRencontre(6, 1);
+		ArrayList<Monster> table2Chen = tableRencontre(6);
 		table2Chen.forEach(mi -> System.out.println(mi.toString2()));
 		int i=0;
 		while (i<1 || i>6) {
@@ -95,7 +92,7 @@ public class Player { //Singleton.
 	
 	public ArrayList<Monster> getStarters() {
 		if(starters.isEmpty()) {
-			starters = tableRencontre(6, 1);
+			starters = tableRencontre(6);
 		}
 		return starters;
 	}
