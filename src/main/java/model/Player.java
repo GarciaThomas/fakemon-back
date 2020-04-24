@@ -19,6 +19,9 @@ public class Player { //Singleton.
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
 	protected int[] position = new int[] {0,0};
+	private int maxRencontre = 10;
+	private int cptRencontre = 0;
+
 
 	//	Constructeur Singleton
 	private Player() {
@@ -38,6 +41,7 @@ public class Player { //Singleton.
 		return equipePlayer;
 	}
 	public void addEquipePlayer(Monster m) {
+		System.out.println("Call");
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}
@@ -144,7 +148,18 @@ public class Player { //Singleton.
 				}
 		return reponse;
 	}
-
-
+	
+	public boolean peutRencontrer() {
+		return this.cptRencontre <= this.maxRencontre;
+	}
+	
+	public Monster rencontreSauvage() {
+		this.cptRencontre++;
+		Monster  m = null;
+		if(this.cptRencontre <= this.maxRencontre) {
+			m = this.tableRencontre(1,(int)Math.floor(this.cptRencontre*0.55)).get(0);	
+		}
+		return m;
+	}
 
 }
