@@ -7,9 +7,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,8 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import org.hibernate.query.criteria.internal.expression.function.LengthFunction;
 
 import application.Application;
 
@@ -145,12 +141,19 @@ public class Monster {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
 	
+	/** constructeur pour JPA avec initialisation à partir de la BDD
+	 * l'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
+	 */
 	public Monster() {
 		this.level = 1;
 		generationIV();	
 		nature();
 		calcStat();
 	}
+	
+	/** initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
+	 * cette fonction est appellée dans le DAO
+	 */
 	public void init() {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}

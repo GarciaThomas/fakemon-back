@@ -22,8 +22,11 @@ public class Application {
 		return i;
 	}
 
-
-
+/** Fonction qui va lancer le combat : calcul quel monstre à l'initiative (fonction appelée) puis passe à la phase de combat (fonction appelée) dans le bon ordre.
+ * La sortie d'une PVexception dans la fonction combat apppelée signifie que l'un des deux monstre au combat est KO
+ * @param m1 : Monster ; le monstre du joueur, càd le premier de sa liste au début du combat puis celui actif lors des tours suivants (si KO ou switch)
+ * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
+ */
 	public static void combat(Monster m1, Monster m2){
 			
 		try {
@@ -45,7 +48,12 @@ public class Application {
 		catch (PVException e) {System.err.println(e);}
 	}
 
-
+/** permet de lancer plusieurs combat contre des monstres sauvages
+ * pour le moment le nombre de rencontre est parametré de base à 10 en entrée
+ * les monstres rencontrés sont 5 x niveau 1, 3 x niveau 2 (le 6ème+) et 2 x niveau 3(le 9ème+)
+ * il y a de l'affichage dans la console
+ * @param nbSauvage : int ; nombre de creatures sauvages recontrée d'affillées
+ */
 	public static void rencontreSauvage(int nbSauvage) {
 
 		System.out.println("Vous allez rencontrer "+nbSauvage+" Fakemon sauvages.");
@@ -58,8 +66,9 @@ public class Application {
 			System.out.println("Rencontre n°"+(i+1)+" :");
 			m = fakemonSauvage.get(i);
 
-			if (i>=9) {
-				m.levelUp();				
+			if (i>=8) {
+				m.levelUp();
+				m.levelUp();
 			}
 			else if (i>=5) {
 				m.levelUp();
