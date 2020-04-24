@@ -12,6 +12,9 @@ public class Player { //Singleton.
 	private static Player _instance = null;
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
+	private int maxRencontre = 10;
+	private int cptRencontre = 0;
+	private int[] position = {0,0};
 
 	//	Constructeur Singleton
 	private Player() {
@@ -34,7 +37,17 @@ public class Player { //Singleton.
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}
+	
+	
+	
 
+	public int[] getPosition() {
+		return position;
+	}
+
+	public void setPosition(int[] position) {
+		this.position = position;
+	}
 
 	//	Revoie une liste de nbRencontre monstres crée aléatoirement et de niveau 1.
 	public ArrayList<Monster> tableRencontre(int nbRencontre) {
@@ -139,7 +152,15 @@ public class Player { //Singleton.
 				}
 		return reponse;
 	}
-
+	
+	public Monster rencontreSauvage() {
+		this.cptRencontre++;
+		Monster  m = null;
+		if(this.cptRencontre <= this.maxRencontre) {
+			m = this.tableRencontre(1).get(0);	
+		}
+		return m;
+	}
 
 
 }
