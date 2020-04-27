@@ -19,7 +19,7 @@ public class Player { //Singleton.
 	private Player() {
 	}
 
-	//	Méthodes
+	//	Mï¿½thodes
 	//	Methode du singleton
 	public static Player getInstance() {
 		if(_instance==null) {
@@ -44,7 +44,7 @@ public class Player { //Singleton.
 		this.position = position;
 	}
 
-	//	Revoie une liste de nbRencontre monstres crée aléatoirement et de niveau 1.
+	//	Revoie une liste de nbRencontre monstres crï¿½e alï¿½atoirement et de niveau 1.
 	public ArrayList<Monster> tableRencontre(int nbRencontre) {
 
 		ArrayList<Monster> tableRencontre = new ArrayList<Monster>();
@@ -77,14 +77,14 @@ public class Player { //Singleton.
 	}
 
 
-	//	Crée une sélection aléatoire de 6 Fakemon puis le joueur en choisis 1 
+	//	Crï¿½e une sï¿½lection alï¿½atoire de 6 Fakemon puis le joueur en choisis 1 
 	public void selectionStarter () {
 
 		ArrayList<Monster> table2Chen = tableRencontre(6);
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
-			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
+			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 ï¿½ 6)");
 		}
 		addEquipePlayer(table2Chen.get(i-1));
 		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
@@ -117,7 +117,7 @@ public class Player { //Singleton.
 		addEquipePlayer(starters.get(index));
 	}
 	
-	//	Remet tout les PV aux monstres du joueur, par exemple après un combat 
+	//	Remet tout les PV aux monstres du joueur, par exemple aprï¿½s un combat 
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
 			m.setPV(m.getPVmax());
@@ -134,7 +134,7 @@ public class Player { //Singleton.
 	public void changeMonster() {
 		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
-		int ip = Application.saisieInt("À quelle position voulez-vous le mettre ?");
+		int ip = Application.saisieInt("ï¿½ quelle position voulez-vous le mettre ?");
 		Monster m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
@@ -142,7 +142,7 @@ public class Player { //Singleton.
 	}
 
 
-	//	Vérifie et renvoie true s'il reste dans l'équipe du joueur un fakemon capable de se battre. ils faut qu'après le joueur selectionne un fakemon compatible pour continuer le combat
+	//	Vï¿½rifie et renvoie true s'il reste dans l'ï¿½quipe du joueur un fakemon capable de se battre. ils faut qu'aprï¿½s le joueur selectionne un fakemon compatible pour continuer le combat
 	public boolean checkEquipeJoueur() {
 		boolean reponse = false;
 				for (Monster m : equipePlayer) {
