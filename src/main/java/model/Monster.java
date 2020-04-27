@@ -401,6 +401,47 @@ public class Monster {
 		}
 	}
 
+	public Action captureMonstreFront() {
+		Action a = new Action();
+		
+		if (equipeJoueur.equals(Situation.valueOf("Sauvage"))) {
+
+			System.out.println("Tentative de capture du "+this.getNom()+" sauvage");
+			double txCap = 1;
+			if ((double) (this.getPV()/this.getPVmax()) <= 0.05) {
+				txCap = 4;
+			}
+			else if ((double) (this.getPV()/this.getPVmax()) <= 0.15) {
+				txCap = 3;
+			}
+			else if ((double) (this.getPV()/this.getPVmax()) <= 0.25) {
+				txCap = 2.5;
+			}
+			else if ((double) (this.getPV()/this.getPVmax()) <= 0.5) {
+				txCap = 2;
+			}
+			else if ((double) (this.getPV()/this.getPVmax()) <= 0.75) {
+				txCap = 1.5;
+			}
+
+			int captureRate = (int) (2 * txCap * (21-this.getLevel()));
+			Random r = new Random();
+			if (r.nextInt(100)+1>captureRate) {
+				
+				a.setMessage("La capture de "+this.getNom()+" a échouée");
+			}
+			else {
+				a.setM(this);
+				a.setMessage("La capture de "+this.getNom()+" a réussi !");
+				Player.getInstance().addEquipePlayer(this);
+			}
+
+		}
+		else {
+			a.setMessage("Le monstre adverse n'est pas capturable");
+		}
+		return a;
+	}
 
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
