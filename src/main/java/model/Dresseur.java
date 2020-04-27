@@ -71,22 +71,22 @@ public class Dresseur {
 				if (pts>=equipeDresseur.get(p).getExpNextLevel()) {
 					pts-=equipeDresseur.get(p).getExpNextLevel();			
 					equipeDresseur.get(p).levelUp();
-					System.out.println("Levelup monstre choisi:"+equipeDresseur.get(p).getNom()+". pts = "+pts);
+					//			System.out.println("Levelup monstre choisi:"+equipeDresseur.get(p).getNom()+". pts = "+pts);
 				}
 				else {
 					pts-=lePlusFaible().expNextLevel;
 					lePlusFaible().levelUp();
-					System.out.println("Levelup monstre faible:"+lePlusFaible().getNom()+". pts = "+pts);
+					//			System.out.println("Levelup monstre faible:"+lePlusFaible().getNom()+". pts = "+pts);
 				}
 			}
 			else if (pts>=3 && equipeDresseur.size()<6) {
 				this.equipeDresseur.add(Player.getInstance().tableRencontre(1).get(0));
 				pts-=3;		//	Coût d'un lv 1 : 3pts d'expérence (valeur du kill)
-				System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
+				//		System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
 			}
 			else {
 				pts=0;
-				System.out.println("fin de la Creation : pts = "+pts);
+				//		System.out.println("fin de la Creation : pts = "+pts);
 			}
 		}
 		return equipeDresseur;
@@ -108,6 +108,20 @@ public class Dresseur {
 	}
 
 
+	
+	
+	
+	
+	
+	
+	// faire une fonction qui renvoie le prochain monstre non ko de la liste de montre
+	// fait un fonction qui permet de récup le desseur à partir de monstre !!!
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public String toString() {

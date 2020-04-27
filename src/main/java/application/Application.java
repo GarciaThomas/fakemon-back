@@ -10,6 +10,7 @@ import model.Context;
 import model.Monster;
 import model.PVException;
 import model.Player;
+import model.Situation;
 
 public class Application {
 
@@ -48,7 +49,16 @@ public class Application {
 				}
 			}
 		}
-		catch (PVException e) {System.err.println(e);}
+		catch (PVException e) {System.err.println(e);
+		if (Player.getInstance().getEquipePlayer().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
+		Player.getInstance().changeMonsterActif(1);
+		combat (Player.getInstance().getEquipePlayer().getFirst(), m2);
+		}
+/*		else if (Dresseur.
+				getEquipeDresseur().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
+			combat (m1, dresseur.getEquipeDresseur().getSuivant);
+		}*/
+		}
 	}
 
 	/** permet de lancer plusieurs combat contre des monstres sauvages
@@ -83,10 +93,10 @@ public class Application {
 		}
 	}
 
-/**	Grosse mï¿½thode de combat avec les dresseurs : l'arï¿½ne
- * 
- * @param nbDresseurIntermediaires int ; nombre de dresseurs intermï¿½diaire, c'est a dire en dehors du premier et dernier dresseur qui eux sont fixes
- */
+	/**	Grosse mï¿½thode de combat avec les dresseurs : l'arï¿½ne
+	 * 
+	 * @param nbDresseurIntermediaires int ; nombre de dresseurs intermï¿½diaire, c'est a dire en dehors du premier et dernier dresseur qui eux sont fixes
+	 */
 	public static void arene(int nbDresseurIntermediaires) {
 
 		System.out.println("Bienvenue dans l'arï¿½ne ! Prï¿½parez-vous ï¿½ affronter des adversaires de plus en plus corriace.");
@@ -117,19 +127,19 @@ public class Application {
 		System.out.println(d.toStringEquipe());
 		combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 
-		System.out.println("Bravo l'arï¿½ne est finie !");
+		System.out.println("Bravo l'arène est finie !");
 
 	}
-	
-	
-	
-	
+
+
+
+
 	public static void main(String[] args) {
-		
-		System.out.println("Version actuelle 27-07-2020. V5");
+
+		System.out.println("Version actuelle 27-07-2020. V6");
 		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
-
+		arene(0);
 
 	}
 

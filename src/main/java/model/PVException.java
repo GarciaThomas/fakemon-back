@@ -1,8 +1,11 @@
 package model;
 
 public class PVException extends Exception {
+	Monster mException;
 	
-	public PVException(Monster m) {
-		super(m.getNom()+" ne peux plus se battre !");
+	public PVException(Monster mException) {
+		super(mException.getNom()+" ne peux plus se battre !");
+		this.mException = mException;
 	}
+	
 }

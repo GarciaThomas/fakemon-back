@@ -201,6 +201,9 @@ public class Monster {
 	protected void setEquipeJoueur() {
 		equipeJoueur=Situation.valueOf("Joueur");
 	}
+	public Situation getSituation() {
+		return equipeJoueur;
+	}
 	public String getNom(){
 		return this.nom;
 	}
@@ -518,6 +521,7 @@ public class Monster {
 			switch (a.getEtat()) {
 			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.getModifDef(); break;
 			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.getModifDSp(); break;
+			case "Statut" : break;
 			default : System.out.println("erreur de degat");break;
 			}
 
