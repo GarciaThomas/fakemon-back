@@ -78,12 +78,14 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		/*Player sacha = null;
-		sacha.getInstance().selectionStarter();
+		Player.getInstance();
+		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
-		*/
+		
+		/*
+		System.out.println("version encours");
 		System.out.println(Context.getInstance().getDaoAttaque().ratioEfficacite(Type.Eau, Type.Eau));
-
+*/
 
 		/*	Renargile c2 = new Renargile(1);
 		Thymtamarre c1 = new Thymtamarre(1);
