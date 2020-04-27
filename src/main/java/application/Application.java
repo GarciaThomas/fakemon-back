@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import model.Dresseur;
 import model.Context;
 import model.Monster;
 import model.PVException;
@@ -65,7 +66,7 @@ public class Application {
 		fakemonSauvage = Player.getInstance().tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
-			System.out.println("\n---------\nRencontre n°"+(i+1)+" :");
+			System.out.println("\n---------\nRencontre nï¿½"+(i+1)+" :");
 			m = fakemonSauvage.get(i);
 
 			if (i>=8) {
@@ -82,7 +83,47 @@ public class Application {
 		}
 	}
 
+/**	Grosse mï¿½thode de combat avec les dresseurs : l'arï¿½ne
+ * 
+ * @param nbDresseurIntermediaires int ; nombre de dresseurs intermï¿½diaire, c'est a dire en dehors du premier et dernier dresseur qui eux sont fixes
+ */
+	public static void arene(int nbDresseurIntermediaires) {
 
+		System.out.println("Bienvenue dans l'arï¿½ne ! Prï¿½parez-vous ï¿½ affronter des adversaires de plus en plus corriace.");
+		int pts = 35;
+
+		Dresseur d = new Dresseur("FragileJordan",pts);
+		System.out.println("Premier duel d'ï¿½chauffement contre FragileJordan.");
+		System.out.println(d.toStringEquipe());
+		combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		for (Monster m : d.getEquipeDresseur()) {
+			pts+=m.getExpGain();
+		}
+		pts=(int)(pts*1.08);
+
+		for (int i = 0;i<nbDresseurIntermediaires;i++) {
+			d = new Dresseur(pts);
+			System.out.println("Duel numï¿½ro "+(i+1)+" contre "+d.getNom()+".");
+			System.out.println(d.toStringEquipe());
+			combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+			for (Monster m : d.getEquipeDresseur()) {
+				pts+=m.getExpGain();
+			}
+			pts=(int)(pts*1.08);
+		}
+
+		d = new Dresseur("BlackJordan",(int)(pts*1.1574));
+		System.out.println("Dernier duel contre le maï¿½tre BlackJordan.");
+		System.out.println(d.toStringEquipe());
+		combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+
+		System.out.println("Bravo l'arï¿½ne est finie !");
+
+	}
+	
+	
+	
+	
 	public static void main(String[] args) {
 		
 		System.out.println("Version actuelle 27-07-2020. V5");
