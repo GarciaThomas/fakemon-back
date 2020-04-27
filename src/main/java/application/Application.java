@@ -11,8 +11,8 @@ import model.Player;
 public class Application {
 
 	/**	Fonction qui permet la saisie console d'un int. 
-	 * Pas de vï¿½rification que l'entrï¿½e est correcte
-	 * @param msg : String ; message qui sera affichï¿½ dans la console
+	 * Pas de verification que l'entree est correcte
+	 * @param msg : String ; message qui sera affiche dans la console
 	 * @return
 	 **/
 	public static int saisieInt(String msg) {
@@ -22,9 +22,9 @@ public class Application {
 		return i;
 	}
 
-/** Fonction qui va lancer le combat : calcul quel monstre ï¿½ l'initiative (fonction appelï¿½e) puis passe ï¿½ la phase de combat (fonction appelï¿½e) dans le bon ordre.
- * La sortie d'une PVexception dans la fonction combat apppelï¿½e signifie que l'un des deux monstre au combat est KO
- * @param m1 : Monster ; le monstre du joueur, cï¿½d le premier de sa liste au dï¿½but du combat puis celui actif lors des tours suivants (si KO ou switch)
+/** Fonction qui va lancer le combat : calcul quel monstre a l'initiative (fonction appelee) puis passe a la phase de combat (fonction appelee) dans le bon ordre.
+ * La sortie d'une PVexception dans la fonction combat apppelee signifie que l'un des deux monstre au combat est KO
+ * @param m1 : Monster ; le monstre du joueur, cad le premier de sa liste au debut du combat puis celui actif lors des tours suivants (si KO ou switch)
  * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
  **/
 	public static void combat(Monster m1, Monster m2){
@@ -49,10 +49,10 @@ public class Application {
 	}
 
 /** permet de lancer plusieurs combat contre des monstres sauvages
- * pour le moment le nombre de rencontre est parametrï¿½ de base ï¿½ 10 en entrï¿½e
- * les monstres rencontrï¿½s sont 5 x niveau 1, 3 x niveau 2 (le 6ï¿½me+) et 2 x niveau 3(le 9ï¿½me+)
+ * pour le moment le nombre de rencontre est parametre de base e 10 en entree
+ * les monstres rencontres sont 5 x niveau 1, 3 x niveau 2 (le 6eme+) et 2 x niveau 3(le 9eme+)
  * il y a de l'affichage dans la console
- * @param nbSauvage : int ; nombre de creatures sauvages recontrï¿½e d'affillï¿½es
+ * @param nbSauvage : int ; nombre de creatures sauvages recontree d'affillees
  **/
 	public static void rencontreSauvage(int nbSauvage) {
 
@@ -63,7 +63,7 @@ public class Application {
 		fakemonSauvage = Player.getInstance().tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
-			System.out.println("\n---------\nRencontre nï¿½"+(i+1)+" :");
+			System.out.println("\n---------\nRencontre n°"+(i+1)+" :");
 			m = fakemonSauvage.get(i);
 
 			if (i>=8) {
@@ -83,6 +83,7 @@ public class Application {
 
 	public static void main(String[] args) {
 
+		System.out.println("Version actuelle 27-07-2020");
 		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
 		
