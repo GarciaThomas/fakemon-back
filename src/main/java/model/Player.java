@@ -37,10 +37,6 @@ public class Player { //Singleton.
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}
-	
-	
-	
-
 	public int[] getPosition() {
 		return position;
 	}
@@ -126,6 +122,11 @@ public class Player { //Singleton.
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
 			m.setPV(m.getPVmax());
+			m.setModifAtk(1);
+			m.setModifDef(1);
+			m.setModifASp(1);
+			m.setModifDSp(1);
+			m.setModifVit(1);
 		}
 	}
 
