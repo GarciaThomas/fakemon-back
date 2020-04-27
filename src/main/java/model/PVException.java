@@ -2,7 +2,7 @@ package model;
 
 public class PVException extends Exception {
 	
-	public PVException() {
-		super("L'un des monstres ne peux plus se battre !");
+	public PVException(Monster m) {
+		super(m.getNom()+" ne peux plus se battre !");
 	}
 }

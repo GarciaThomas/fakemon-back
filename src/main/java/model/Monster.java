@@ -250,7 +250,7 @@ public class Monster {
 
 	//___________________________________________
 	//	Méthodes
-	
+
 	/**	Défini les IV (les statistiques cachées) du fakemon
 	 *  N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
@@ -332,20 +332,22 @@ public class Monster {
 
 
 	/** Fait prendre un niveau et recalcule les statistiques
+	 * Aucune sortie dans la console
 	 */
 	public void levelUp() {
 		level++;
-		System.out.println(this.getNom()+" est maintenant niveau "+this.getLevel()+" !");
 		expNextLevel=( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
 		calcStat();
-		System.out.println(this.toStringDetailStat());
 		/*if (level==5) --> ouvre un slot d'attaque!
 		 * if(level==3 || 5 || 8 || 10) -> propose nouvelle attaque*/
 
 	}
 
 
-	//	Gère le gain d'exp pour le monstre en cours et qui fait le levelUp si besoin
+	/** Gère le gain d'exp pour le monstre en cours et fait le levelUp si besoin
+	 * 	Texte indicatif dans console
+	 * @param m Monster ; Monstre qui a été mis KO par le monstre actuel du joueur
+	 */
 	public void expGain(Monster m) {
 
 		exp += m.getExpGain();
@@ -353,8 +355,10 @@ public class Monster {
 			System.out.println("Gain de niveau !");
 			exp-=expNextLevel;
 			levelUp();
+			System.out.println(this.getNom()+" est maintenant niveau "+this.getLevel()+" !");
+			System.out.println(this.toStringDetailStat());
 		}
-		System.out.println("Il reste "+(expNextLevel-exp)+" points d'expérience avant le niveau suivant");
+		System.out.println("Il reste "+(expNextLevel-exp)+" points d'expérience avant le niveau suivant\n");
 	}
 
 
@@ -446,7 +450,11 @@ public class Monster {
 	}
 
 
-	//	Compare les deux vitesses
+	/** Compare les deux vitesses des monstres en combat pour déterminer le plus rapide
+	 * 	Si les deux monstres ont la même vitesse, réalise un 50/50 pour choisir le plus rapide
+	 * @param m2 Monster ; Il s'agit du monstre adverse, qui n'appartient pas au Player
+	 * @return Monster ; le monstre étant le plus rapide
+	 */
 	public Monster initiative(Monster m2) {
 
 		Monster m = null;
@@ -516,16 +524,14 @@ public class Monster {
 			//	calcul des dégats
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
 			m.PV-=degat;
-			System.out.println(degat);
 
-			// Prise en compte des effets cumulé de l'attaque
 			integrationEffetCumule(a, m);
 
 			if (m.getPV()<=0) {
 				if (this.equipeJoueur.equals(Situation.valueOf("Joueur"))) {
 					this.expGain(m);
 				}
-				throw new PVException();
+				throw new PVException(m);
 			}
 			else {
 				System.out.println("Il reste "+m.getPV()+" PV (/"+m.getPVmax()+") a "+m.getNom()+".\n");
@@ -535,6 +541,10 @@ public class Monster {
 
 
 
+	/** Prise en compte des effets cumulé de l'attaque utilisée
+	 *  Pour le moment un seul effet cumulé par attaque
+	 *  Effet cumulé sur la modification temporaire de statistique ou des pv
+	 */
 	public void integrationEffetCumule(Attaque a, Monster m) throws PVException {
 		if (a.getEffetCumule() != null) {
 
@@ -620,22 +630,22 @@ public class Monster {
 
 		double ratio = 1;
 		if (sens.equals("up")) {
-			ratio = (double) (Integer.parseInt(valeur)/100);	
+			ratio = (double) Integer.parseInt(valeur)/100;	
 		}
 		else if (sens.equals("down")) {
-			ratio = (double) -(Integer.parseInt(valeur)/100);	
+			ratio = (double) -Integer.parseInt(valeur)/100;	
 		}
 		else {
 			System.out.println("Problème de sens aux modifPV");
 		}
-		
+
 		cible.setPV((int) (cible.getPV() + cible.getPVmax() * ratio));
-		
+
 		if (cible.getPV()>cible.getPVmax()) {
 			cible.setPV(cible.getPVmax());
 		}
 		else if (cible.getPV()<=0) {
-			throw new PVException(); 
+			throw new PVException(cible); 
 		}
 	}
 
@@ -693,7 +703,7 @@ public class Monster {
 			if (m.getPV()<=0) {
 				m.setPV(0);
 				action.setM(m);
-				throw new PVException();
+				throw new PVException(m);
 
 			}
 			else {

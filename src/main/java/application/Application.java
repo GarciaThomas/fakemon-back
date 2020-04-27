@@ -83,7 +83,7 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		System.out.println("Version actuelle 27-07-2020");
+		System.out.println("Version actuelle 27-07-2020. V3");
 		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
 		

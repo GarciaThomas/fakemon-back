@@ -1,7 +1,7 @@
 package model;
 
 public enum Type {
-Feu,Eau,Plante,Electrique,Sol,Roche;
+Feu,Eau,Plante,Electrique,Sol,Roche, Neutre;
 	//,Vol,Normal,Combat,Insecte,Dragon,Glace,Spectre,Psy,Poison,Tenèbre,Acier,Fee
 }
 /* effets des attaque vs types suivant :
