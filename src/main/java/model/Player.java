@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import application.Application;
-import dao.DAOJPA;
 
 public class Player { //Singleton.
 	//	Attributs

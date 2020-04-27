@@ -62,8 +62,6 @@ public class DAOAttaqueJPA extends DAOJPA implements DAOAttaque {
 	 * **/
 	public ArrayList<Attaque> selectPoolId(ArrayList<Integer> ids) {
 
-		ArrayList<Attaque> listAttaques = new ArrayList<Attaque>();
-
 		String chaine = ids.stream().map(i -> i.toString()).collect(Collectors.joining(","));
 
 		return (ArrayList<Attaque>) em.createQuery("select a from Attaque where id in (:ids)",Attaque.class).setParameter("ids", chaine).getResultList();
