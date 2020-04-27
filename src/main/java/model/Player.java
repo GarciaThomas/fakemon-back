@@ -5,26 +5,21 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import application.Application;
-import model.Monster;
-import model.creature.Bebesalt;
-import model.creature.Crameleon;
-import model.creature.Foufoudre;
-import model.creature.Pipeau;
-import model.creature.Renargile;
-import model.creature.Thymtamarre;
 
 public class Player { //Singleton.
 	//	Attributs
 	private static Player _instance = null;
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
-	protected int[] position = new int[] {0,0};
+	private int maxRencontre = 10;
+	private int cptRencontre = 0;
+	private int[] position = {0,0};
 
 	//	Constructeur Singleton
 	private Player() {
 	}
 
-	//	Méthodes
+	//	Mï¿½thodes
 	//	Methode du singleton
 	public static Player getInstance() {
 		if(_instance==null) {
@@ -41,34 +36,40 @@ public class Player { //Singleton.
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}
-	
 	public int[] getPosition() {
 		return position;
 	}
-	
+
 	public void setPosition(int[] position) {
-		this.position = position; 
+		this.position = position;
 	}
 
-
-	//	Revoie une liste de nbRencontre monstres crée aléatoirement et de niveau donné.
-	public ArrayList<Monster> tableRencontre(int nbRencontre, int niveau) {
+	//	Revoie une liste de nbRencontre monstres crï¿½e alï¿½atoirement et de niveau 1.
+	public ArrayList<Monster> tableRencontre(int nbRencontre) {
 
 		ArrayList<Monster> tableRencontre = new ArrayList<Monster>();
 		ArrayList<Monster> tableCreation = new ArrayList<Monster>();
+		Monster m = null;
 
 		for (int i=0;i<nbRencontre;i++) {
 
-			Monster test = new Crameleon(niveau);
-			tableCreation.add(test);
-			tableCreation.add(new Foufoudre(niveau));
-			tableCreation.add(new Pipeau(niveau));
-			tableCreation.add(new Renargile(niveau));
-			tableCreation.add(new Thymtamarre(niveau));
-			tableCreation.add(new Bebesalt(niveau));		
-
+			Monster pipeau = Context.getInstance().getDaoMonster().selectByNom("Pipeau");
+			Monster crameleon = Context.getInstance().getDaoMonster().selectByNom("Crameleon");
+			Monster foufoudre = Context.getInstance().getDaoMonster().selectByNom("Foufoudre");
+			Monster renargile = Context.getInstance().getDaoMonster().selectByNom("Renargile");
+			Monster bebesalt = Context.getInstance().getDaoMonster().selectByNom("Bebesalt");
+			Monster thymtamarre = Context.getInstance().getDaoMonster().selectByNom("Thymtamarre");
+			
+			tableCreation.add(pipeau);
+			tableCreation.add(crameleon);
+			tableCreation.add(foufoudre);
+			tableCreation.add(renargile);
+			tableCreation.add(bebesalt);
+			tableCreation.add(thymtamarre);		
+			
+			
 			Random r = new Random();
-			Monster m = tableCreation.get(r.nextInt(tableCreation.size()));
+			m = tableCreation.get(r.nextInt(tableCreation.size()));
 			tableRencontre.add(m);
 			tableCreation.clear();
 		}
@@ -76,17 +77,19 @@ public class Player { //Singleton.
 	}
 
 
-	//	Crée une sélection aléatoire de 6 Fakemon puis le joueur en choisis 1 
+	//	Crï¿½e une sï¿½lection alï¿½atoire de 6 Fakemon puis le joueur en choisis 1 
 	public void selectionStarter () {
 
-		ArrayList<Monster> table2Chen = tableRencontre(6, 1);
-		table2Chen.forEach(mi -> System.out.println(mi.toString2()));
+		ArrayList<Monster> table2Chen = tableRencontre(6);
+		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
-			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
+			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 ï¿½ 6)");
 		}
 		addEquipePlayer(table2Chen.get(i-1));
-		System.out.println("Vous avez choisi"+table2Chen.get(i-1).getNom()+" !");
+		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
+		System.out.println("Ses moves sont : "+table2Chen.get(i-1).toStringDetailAttaque());
+		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat());
 	}
 
 	
@@ -99,7 +102,7 @@ public class Player { //Singleton.
 	
 	public ArrayList<Monster> getStarters() {
 		if(starters.isEmpty()) {
-			starters = tableRencontre(6, 1);
+			starters = tableRencontre(6);
 		}
 		return starters;
 	}
@@ -114,19 +117,24 @@ public class Player { //Singleton.
 		addEquipePlayer(starters.get(index));
 	}
 	
-	//	Remet tout les PV aux monstres du joueur, par exemple après un combat 
+	//	Remet tout les PV aux monstres du joueur, par exemple aprï¿½s un combat 
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
 			m.setPV(m.getPVmax());
+			m.setModifAtk(1);
+			m.setModifDef(1);
+			m.setModifASp(1);
+			m.setModifDSp(1);
+			m.setModifVit(1);
 		}
 	}
 
 
 	//	Change de place deux monstres du joueur dans sa liste de monstre
 	public void changeMonster() {
-		equipePlayer.forEach(m -> System.out.println(m.toString2()));
+		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
-		int ip = Application.saisieInt("À quelle position voulez-vous le mettre ?");
+		int ip = Application.saisieInt("ï¿½ quelle position voulez-vous le mettre ?");
 		Monster m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
@@ -134,7 +142,7 @@ public class Player { //Singleton.
 	}
 
 
-	//	Vérifie et renvoie true s'il reste dans l'équipe du joueur un fakemon capable de se battre. ils faut qu'après le joueur selectionne un fakemon compatible pour continuer le combat
+	//	Vï¿½rifie et renvoie true s'il reste dans l'ï¿½quipe du joueur un fakemon capable de se battre. ils faut qu'aprï¿½s le joueur selectionne un fakemon compatible pour continuer le combat
 	public boolean checkEquipeJoueur() {
 		boolean reponse = false;
 				for (Monster m : equipePlayer) {
@@ -144,7 +152,15 @@ public class Player { //Singleton.
 				}
 		return reponse;
 	}
-
+	
+	public Monster rencontreSauvage() {
+		this.cptRencontre++;
+		Monster  m = null;
+		if(this.cptRencontre <= this.maxRencontre) {
+			m = this.tableRencontre(1).get(0);	
+		}
+		return m;
+	}
 
 
 }

@@ -11,11 +11,14 @@ import java.util.stream.Collectors;
 
 import dao.DAOAttaque;
 import dao.DAOAttaqueJDBC;
+import dao.DAOMonster;
+import dao.DAOMonsterJPA;
 
 public class Context {
 	private static Context _instance = null;
 	private Connection connect = null;
 	private DAOAttaque daoAttaque = new DAOAttaqueJDBC();
+	private DAOMonster daoMonster = new DAOMonsterJPA();
 	private ArrayList<Monster> monstresProposition = null;
 
 	private Context() {
@@ -36,6 +39,14 @@ public class Context {
 		this.connect = connect;
 	}
 	
+	public DAOMonster getDaoMonster() {
+		return daoMonster;
+	}
+
+	public void setDaoMonster(DAOMonster daoMonster) {
+		this.daoMonster = daoMonster;
+	}
+
 	public DAOAttaque getDaoAttaque() {
 		return daoAttaque;
 	}
@@ -59,7 +70,7 @@ public class Context {
 	public List<Monster> getMonstresProposition(){
 		if(monstresProposition == null) {
 			monstresProposition = new ArrayList<Monster>();
-			monstresProposition.addAll(Player.getInstance().tableRencontre(10, 1).stream()
+			monstresProposition.addAll(Player.getInstance().tableRencontre(10).stream()
 					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
 
 		}

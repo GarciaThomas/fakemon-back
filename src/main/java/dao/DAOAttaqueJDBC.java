@@ -60,7 +60,7 @@ public class DAOAttaqueJDBC implements DAOAttaque {
 			ResultSet rs = ps.executeQuery(); 
 
 			while (rs.next()) {
-				Attaque a = new Attaque(rs.getInt("id"),rs.getInt("puissance"),rs.getInt("precision"),rs.getString("nom"),rs.getString("etat"),rs.getString("description"),Type.valueOf(rs.getString("type")));
+				Attaque a = new Attaque(rs.getInt("id"),rs.getInt("puissance"),rs.getInt("precision"),rs.getString("nom"),rs.getString("etat"),rs.getString("description"),Type.valueOf(rs.getString("type")),rs.getString("effet_cumule"));
 				listAttaques.add(a);
 			}
 		}catch (Exception e) {e.printStackTrace();}
