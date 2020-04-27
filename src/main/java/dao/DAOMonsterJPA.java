@@ -39,6 +39,7 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 		}
 	}
 
+	//	Cette fonctionalité est bloquée car il ne doit pas être possible de supprimer les bases stats des créatures mise dans la BDD
 	@Override
 	public void delete(Integer id) {
 	/*	try {
@@ -55,7 +56,14 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 	}
 
 	public Monster selectByNom(String nom) {
-		return this.em.createQuery("SELECT m FROM Monster m WHERE m.nom = ?1",Monster.class).setParameter(1,nom).getSingleResult();
+		Monster m = this.em.createQuery("SELECT m FROM Monster m WHERE m.nom = ?1",Monster.class)
+				.setParameter(1,nom)
+				.getSingleResult();
+		m.init();
+		this.em.clear();
+		return m;
 	}
+
+	
 	
 }
