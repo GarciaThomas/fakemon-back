@@ -192,8 +192,8 @@ public class Player { //Singleton.
 	public ArrayList<Monster> getStarters() {
 		if(starters.isEmpty()) {
 			starters = tableRencontre(6);
-		return starters;
 		}
+		return starters;
 	}
 	/***
 	 * 
