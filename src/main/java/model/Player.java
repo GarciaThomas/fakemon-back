@@ -163,7 +163,14 @@ public class Player { //Singleton.
 		this.cptRencontre++;
 		Monster  m = null;
 		if(this.cptRencontre <= this.maxRencontre) {
-			m = this.tableRencontre(1,(int)Math.floor(this.cptRencontre*0.55)).get(0);	
+			m = this.tableRencontre(1).get(0);
+			if (this.cptRencontre>=8) {
+				m.levelUp();
+				m.levelUp();
+			}
+			else if (this.cptRencontre>=5) {
+				m.levelUp();
+			}
 		}
 		return m;
 	}
