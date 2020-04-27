@@ -143,6 +143,7 @@ public class Monster {
 
 	/** constructeur pour JPA avec initialisation à partir de la BDD
 	 * l'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
+	 * donc l'ajout des attaques se realise dans une autre méthode : init()
 	 */
 	public Monster() {
 		this.level = 1;
@@ -249,7 +250,10 @@ public class Monster {
 
 	//___________________________________________
 	//	Méthodes
-	//	Défini les IV du fakemon : ne doit être utilisé que dans le constructeur
+	
+	/**	Défini les IV (les statistiques cachées) du fakemon
+	 *  N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
+	 */
 	private void generationIV () {
 		Random r=new Random();
 		ivPV=r.nextInt(6);
@@ -265,9 +269,10 @@ public class Monster {
 		ivVit=r.nextInt(6);
 	}
 
-	//	Génère une nature qui module 2 statistiques du monstre : ne doit être utilisé que dans le constructeur 
+	/**	Génère une nature qui module 2 statistiques du monstre
+	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
+	 */
 	private void nature() {
-		//Nature sur 6 stats
 		Random r=new Random();
 		int stUp=r.nextInt(6);
 		r=new Random();
@@ -278,7 +283,11 @@ public class Monster {
 		}	
 	}
 
-	//	Génère à partir du movepool (=la totalité des attaques que peut apprendre le fakemon) les 3 attaques que le fakemon aura à sa disposition
+	/** Génère à partir du movepool du fakemon (la totalité des attaques qu'il peut apprendre) les trois attaques qu'il aura à sa disposition à la création
+	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route	
+	 * @param poolEntier Integer[] ; liste d'entier correspondant au movepool du fakemon
+	 * @return ArrayList<Attaque> ; liste des trois attaques disponible à la creation
+	 */
 	protected static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
 
 		LinkedList<Integer> mesIds = new LinkedList<Integer>();
@@ -294,7 +303,10 @@ public class Monster {
 
 	}
 
-	//	Génère à partir du movepool en string de la base de donnée la liste d'Integer
+	/** Convertie à partir du movepool en String issu de la base de donnée la liste d'Integer necessaire pour les requêtes
+	 * @param movepool String ; contenu dans la base de donnée avec les stats des fakemons
+	 * @return 
+	 */
 	private Integer[] poolAtkStringToInt(String movepool) {
 
 		String[] ids = movepool.split(",");
@@ -319,11 +331,14 @@ public class Monster {
 	}
 
 
-	//	Fait prendre un niveau et recalcule les stats
+	/** Fait prendre un niveau et recalcule les statistiques
+	 */
 	public void levelUp() {
 		level++;
+		System.out.println(this.getNom()+" est maintenant niveau "+this.getLevel()+" !");
 		expNextLevel=( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
 		calcStat();
+		System.out.println(this.toStringDetailStat());
 		/*if (level==5) --> ouvre un slot d'attaque!
 		 * if(level==3 || 5 || 8 || 10) -> propose nouvelle attaque*/
 
@@ -335,10 +350,11 @@ public class Monster {
 
 		exp += m.getExpGain();
 		if (exp>=expNextLevel) {
+			System.out.println("Gain de niveau !");
 			exp-=expNextLevel;
 			levelUp();
 		}
-
+		System.out.println("Il reste "+(expNextLevel-exp)+" points d'expérience avant le niveau suivant");
 	}
 
 
@@ -453,8 +469,7 @@ public class Monster {
 	}
 
 
-	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dégâts et update les PV des monstres
-	 *  
+	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dégâts et update les PV des monstres 
 	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre présent.
 	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
 	 */
@@ -507,6 +522,9 @@ public class Monster {
 			integrationEffetCumule(a, m);
 
 			if (m.getPV()<=0) {
+				if (this.equipeJoueur.equals(Situation.valueOf("Joueur"))) {
+					this.expGain(m);
+				}
 				throw new PVException();
 			}
 			else {
