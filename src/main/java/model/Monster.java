@@ -98,7 +98,7 @@ public class Monster {
 	@Transient
 	protected int exp = 0;
 	@Transient
-	protected int expNextLevel =5;
+	protected int expNextLevel = 5;
 
 	@Column(name = "type", length = 15, nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -215,6 +215,36 @@ public class Monster {
 	public int getExpGain() {
 		int c= (2 + (int)(level + Math.pow(level,2)) /2);
 		return c;
+	}
+	public double getModifAtk() {
+		return modifAtk;
+	}
+	public void setModifAtk(double modifAtk) {
+		this.modifAtk = modifAtk;
+	}
+	public double getModifDef() {
+		return modifDef;
+	}
+	public void setModifDef(double modifDef) {
+		this.modifDef = modifDef;
+	}
+	public double getModifASp() {
+		return modifASp;
+	}
+	public void setModifASp(double modifASp) {
+		this.modifASp = modifASp;
+	}
+	public double getModifDSp() {
+		return modifDSp;
+	}
+	public void setModifDSp(double modifDSp) {
+		this.modifDSp = modifDSp;
+	}
+	public double getModifVit() {
+		return modifVit;
+	}
+	public void setModifVit(double modifVit) {
+		this.modifVit = modifVit;
 	}
 
 	//___________________________________________
@@ -405,10 +435,10 @@ public class Monster {
 
 		Monster m = null;
 
-		if (this.getVit()*this.modifVit > m2.getVit()*m2.modifVit) {
+		if (this.getVit()*this.modifVit > m2.getVit()*m2.getModifVit()) {
 			m = this;
 		}
-		else if (this.getVit()*this.modifVit < m2.getVit()*m2.modifVit) {
+		else if (this.getVit()*this.modifVit < m2.getVit()*m2.getModifVit()) {
 			m = m2;
 		}
 		else {
@@ -463,8 +493,8 @@ public class Monster {
 			double statDegat = 0;
 			double statProtection = 0;
 			switch (a.getEtat()) {
-			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.modifDef; break;
-			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.modifDSp; break;
+			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.getModifDef(); break;
+			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.getModifDSp(); break;
 			default : System.out.println("erreur de degat");break;
 			}
 
@@ -487,7 +517,7 @@ public class Monster {
 
 
 
-	public void integrationEffetCumule(Attaque a, Monster m) {
+	public void integrationEffetCumule(Attaque a, Monster m) throws PVException {
 		if (a.getEffetCumule() != null) {
 
 			//	Transforme le string de la BDD en liste, les infos sont organisé en Proba,cible,stat,sens,valeur
@@ -504,22 +534,23 @@ public class Monster {
 				}
 
 				switch (listeEffetCumule[2]) {
-				case "pv" : cible.PV=0 ; break;
-				case "atk" : cible.modifAtk=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifAtk); 
+				case "pv" : modifPVCombat(listeEffetCumule[3], listeEffetCumule[4], cible);
+				System.out.println("Les points de vie de "+cible.getNom()+" ont été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" %"); break;
+				case "atk" : cible.setModifAtk(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifAtk())); 
 				System.out.println("L'attaque de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
-				case "def" : cible.modifDef=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDef); 
+				case "def" : cible.setModifDef(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDef())); 
 				System.out.println("La défense de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
-				case "asp" : cible.modifASp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifASp); 
+				case "asp" : cible.setModifASp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifASp())); 
 				System.out.println("L'attaque spéciale de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
-				case "dsp" : cible.modifDSp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDSp); 
+				case "dsp" : cible.setModifDSp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDSp())); 
 				System.out.println("La defense spéciale de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
-				case "vit" : cible.modifVit=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifVit); 
+				case "vit" : cible.setModifVit(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifVit())); 
 				System.out.println("La vitesse de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
-				case "all" : cible.modifAtk=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifAtk); 
-				cible.modifDef=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDef);
-				cible.modifASp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifASp);
-				cible.modifDSp=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifDSp);
-				cible.modifVit=modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.modifVit);  
+				case "all" : cible.setModifAtk(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifAtk())); 
+				cible.setModifDef(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDef()));
+				cible.setModifASp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifASp()));
+				cible.setModifDSp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDSp()));
+				cible.setModifVit(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifVit()));  
 				System.out.println("Toutes les statistiques de "+cible.getNom()+" a été "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran");break;
 				default : System.out.println("erreur de stat"); break;
 				}
@@ -533,7 +564,7 @@ public class Monster {
 	 * @param sens : "up" ou "down" selon si la stat doit augmentée ou diminuée
 	 * @param valeur : nombre de rang d'évolution, donné en string car converti en int à l'intérieur
 	 * @param valeurModifActuelle : valeur de la modifStat à modifiée
-	 * @return nouvelle valeur de la modif.
+	 * @return nouvelle valeur de la modification de statistique en combat
 	 */
 	private double modifStatCombat(String sens, String valeur, double valeurModifActuelle) {
 
@@ -550,7 +581,7 @@ public class Monster {
 			i++;
 		}
 
-		double newModif = 6;
+		double newModif = 1;
 
 		try  {
 			switch (sens) {
@@ -558,11 +589,37 @@ public class Monster {
 			case "down" : newModif=modifStats[position-Integer.parseInt(valeur)];break;
 			default : System.out.println("Problem de sens"); break;
 			}
-		}catch (Exception e) {e.printStackTrace();}
+		}catch (Exception e) {e.printStackTrace();
+		if (position+Integer.parseInt(valeur)>13) {newModif = 4;}
+		else if (position-Integer.parseInt(valeur)<0) {newModif = 0.25;}
+		}
 
 		return newModif;
 	}
 
+
+	private void modifPVCombat(String sens, String valeur, Monster cible) throws PVException {
+
+		double ratio = 1;
+		if (sens.equals("up")) {
+			ratio = (double) (Integer.parseInt(valeur)/100);	
+		}
+		else if (sens.equals("down")) {
+			ratio = (double) -(Integer.parseInt(valeur)/100);	
+		}
+		else {
+			System.out.println("Problème de sens aux modifPV");
+		}
+		
+		cible.setPV((int) (cible.getPV() + cible.getPVmax() * ratio));
+		
+		if (cible.getPV()>cible.getPVmax()) {
+			cible.setPV(cible.getPVmax());
+		}
+		else if (cible.getPV()<=0) {
+			throw new PVException(); 
+		}
+	}
 
 
 
