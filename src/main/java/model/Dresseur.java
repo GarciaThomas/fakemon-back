@@ -9,6 +9,7 @@ public class Dresseur {
 	String nom;
 
 	//	Constructeurs : vide pour nom aléatoire ou donne un nom pour le fixer
+	//	Le nombre de points d'expérience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
 	public Dresseur(int pts) {
 		this.equipeDresseur = choixEquipeDresseur(pts);
 		this.nom = choixNom();
@@ -29,15 +30,19 @@ public class Dresseur {
 	}
 
 
-	//	Choix aléatoire d'un nom
+	/**	Choix aléatoire d'un nom pour le dresseur
+	 * @return String ; Donne un nom au hasard dans la liste
+	 **/
 	private String choixNom() {
 		Random r=new Random();
-		String[] listeNom = {"Jean-loup","Giseline","Drogo","Vlad","Pueblo","Okko","Jean-Denis","Krugg","Sir Jaime","Saint-Paulin","Regis","Pr Cerizié"};
-		return listeNom[r.nextInt(listeNom.length-1)];
+		String[] listeNom = {"Jean-loup","Giseline","Drogo","Vlad","Pueblo","Okko","Jean-Denis","Krugg","Sir Jaime","Saint-Paulin","Regis","Pr Cerizié", "Lord I"};
+		return listeNom[r.nextInt(listeNom.length)];
 	}
 
 
-	//	Renvoie le monstre au niveau le plus faible
+	/** Renvoie le monstre au niveau le plus faible dans la liste des monstres du dresseur
+	 * @return Monster ; Le monstre qui a le niveau le plus faible de la liste du dresseur
+	 **/
 	private Monster lePlusFaible() {
 		Monster leNul = equipeDresseur.getFirst();
 		for (Monster m : equipeDresseur) {
@@ -49,7 +54,10 @@ public class Dresseur {
 	}
 
 
-	//	Création de l'équipe du joueur à partir d'un certain nombre de points donnés
+	/** Création de l'équipe du dresseur à partir d'un certain nombre de points donnés	
+	 * @param pts int ; Nombre de points d'expérience disponibles pour la création de l'équipe
+	 * @return LinkedList<Monster> ; L'équipe du dresseur
+	 **/
 	private LinkedList<Monster> choixEquipeDresseur(int pts) {
 
 		this.equipeDresseur.add(Player.getInstance().tableRencontre(1).get(0));
@@ -85,13 +93,10 @@ public class Dresseur {
 	}
 
 
-
-
-
-
-
-
-	//	Vérifie et renvoie true s'il reste dans l'équipe du Dresseur un fakemon capable de se battre. ils faut qu'après le prochain fakemon compatible soit envoyer pour continuer le combat
+	/**	Vérifie et renvoie "true" s'il reste dans l'équipe du Dresseur un fakemon capable de se battre
+	 * Il faut qu'après le prochain monstre en état soit envoyé pour continuer le combat
+	 * @return boolean ; "true" pour que le combat puisse continuer, "false" sinon
+	 **/
 	public boolean checkEquipeDresseur() {
 		boolean reponse = false;
 		for (Monster m : equipeDresseur) {

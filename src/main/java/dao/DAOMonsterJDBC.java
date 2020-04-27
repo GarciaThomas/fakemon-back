@@ -59,6 +59,14 @@ public class DAOMonsterJDBC implements DAOMonster {
 		return m;
 	}
 
+	
+
+	@Override
+	public Integer countNombreMonstre() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

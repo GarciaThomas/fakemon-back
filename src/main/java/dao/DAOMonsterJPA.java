@@ -20,7 +20,10 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 
 	@Override
 	public Monster selectById(Integer id) {
-		return this.em.find(Monster.class,id);
+		Monster m = this.em.find(Monster.class,id);
+		m.init();
+		this.em.clear();
+		return m;
 	}
 
 	@Override
@@ -64,6 +67,11 @@ public class DAOMonsterJPA extends DAOJPA implements DAOMonster {
 		return m;
 	}
 
-	
+	/**
+	 * @return
+	 */
+	public Integer countNombreMonstre() {
+		return (int) (long) this.em.createQuery("SELECT COUNT(m) FROM Monster m").getSingleResult();
+	}
 	
 }

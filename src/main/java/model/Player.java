@@ -19,8 +19,10 @@ public class Player { //Singleton.
 	private Player() {
 	}
 
-	//	Mï¿½thodes
-	//	Methode du singleton
+	//______________________
+	/**	Methode du singleton
+	 * @return Player ; Retourne l'unique instance possible de l'objet Player
+	 */
 	public static Player getInstance() {
 		if(_instance==null) {
 			_instance=new Player();
@@ -28,7 +30,7 @@ public class Player { //Singleton.
 		return _instance;
 	}
 
-	//	Getters Setters
+	//	Getters Setters et apparentés
 	public LinkedList<Monster> getEquipePlayer() {
 		return equipePlayer;
 	}
@@ -39,45 +41,57 @@ public class Player { //Singleton.
 	public int[] getPosition() {
 		return position;
 	}
-
 	public void setPosition(int[] position) {
 		this.position = position;
 	}
+	//______________________________________________________________________________
 
-	//	Revoie une liste de nbRencontre monstres crï¿½e alï¿½atoirement et de niveau 1.
+
+	/**Revoie une liste de monstres de niveau 1 crée aléatoirement
+	 * @param nbRencontre int ; le nombre de monstres souhaités
+	 * @return ArrayList<Monster> ; La liste des monstres aléatoire va rencontrer
+	 **/
 	public ArrayList<Monster> tableRencontre(int nbRencontre) {
 
 		ArrayList<Monster> tableRencontre = new ArrayList<Monster>();
-		ArrayList<Monster> tableCreation = new ArrayList<Monster>();
+		//	ArrayList<Monster> tableCreation = new ArrayList<Monster>();
 		Monster m = null;
 
 		for (int i=0;i<nbRencontre;i++) {
 
+			//-----------
+			Random r = new Random();
+			int choixMonstre = r.nextInt(Context.getInstance().getDaoMonster().countNombreMonstre());
+			m = Context.getInstance().getDaoMonster().selectById(choixMonstre+1);
+			tableRencontre.add(m);
+			//-----------			
+			/*		
 			Monster pipeau = Context.getInstance().getDaoMonster().selectByNom("Pipeau");
 			Monster crameleon = Context.getInstance().getDaoMonster().selectByNom("Crameleon");
 			Monster foufoudre = Context.getInstance().getDaoMonster().selectByNom("Foufoudre");
 			Monster renargile = Context.getInstance().getDaoMonster().selectByNom("Renargile");
 			Monster bebesalt = Context.getInstance().getDaoMonster().selectByNom("Bebesalt");
 			Monster thymtamarre = Context.getInstance().getDaoMonster().selectByNom("Thymtamarre");
-			
+
 			tableCreation.add(pipeau);
 			tableCreation.add(crameleon);
 			tableCreation.add(foufoudre);
 			tableCreation.add(renargile);
 			tableCreation.add(bebesalt);
 			tableCreation.add(thymtamarre);		
-			
-			
+
 			Random r = new Random();
 			m = tableCreation.get(r.nextInt(tableCreation.size()));
 			tableRencontre.add(m);
-			tableCreation.clear();
+			tableCreation.clear();			
+			 */
 		}
 		return tableRencontre;
 	}
 
 
-	//	Crï¿½e une sï¿½lection alï¿½atoire de 6 Fakemon puis le joueur en choisis 1 
+	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
+	 **/
 	public void selectionStarter () {
 
 		ArrayList<Monster> table2Chen = tableRencontre(6);
@@ -92,32 +106,9 @@ public class Player { //Singleton.
 		System.out.println("Ses statistiques sont : "+table2Chen.get(i-1).toStringDetailStat());
 	}
 
-	
-	/***
-	 * 
-	 * Generation liste starter
-	 * @return 
-	 * 
-	 */
-	
-	public ArrayList<Monster> getStarters() {
-		if(starters.isEmpty()) {
-			starters = tableRencontre(6);
-		}
-		return starters;
-	}
-	
-	/***
-	 * 
-	 * Selection starter
-	 * 
-	 */
-	
-	public void selectStarter(int index) {
-		addEquipePlayer(starters.get(index));
-	}
-	
-	//	Remet tout les PV aux monstres du joueur, par exemple aprï¿½s un combat 
+
+	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple après un combat 
+	 **/
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
 			m.setPV(m.getPVmax());
@@ -130,7 +121,9 @@ public class Player { //Singleton.
 	}
 
 
-	//	Change de place deux monstres du joueur dans sa liste de monstre
+	/**	Échange la place de deux monstres de l'équipe du joueur
+	 * Version avec scanner pour le back
+	 **/
 	public void changeMonster() {
 		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
@@ -138,21 +131,88 @@ public class Player { //Singleton.
 		Monster m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
-		
 	}
 
+	
+	/**	Échange la place de deux monstres de l'équipe du joueur
+	 * Version avec les deux index en entrée pour le front, aucune vérification des monstres
+	 * @param position1 int ; Index du premier monstre
+	 * @param position2 int ; Index du second monstre
+	 **/
+	public void changeMonster(int position1, int position2) {
+		Monster m = equipePlayer.get(position1-1);
+		equipePlayer.set(position1-1, equipePlayer.get(position2-1));
+		equipePlayer.set(position2-1, m);
+	}
+	
+	
+	/**	Remplace le monstre dit "actif" (celui en première position de la liste de monstre du joueur) par un autre qui peux se battre
+	 * il y a des vérification sur ce swap et le reset des modifStat
+	 * @param i int ; Index du monstre souhaité en remplacement du monstre actif
+	 **/
+	public void changeMonsterActif(int i) {
+		while (equipePlayer.get(i-1).getPV()<=0) {
+			i= Application.saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
+		}
+		equipePlayer.getFirst().setModifAtk(0);
+		equipePlayer.getFirst().setModifDef(0);
+		equipePlayer.getFirst().setModifASp(0);
+		equipePlayer.getFirst().setModifDSp(0);
+		equipePlayer.getFirst().setModifVit(0);
+		changeMonster(0, i);
+	}
+	
 
-	//	Vï¿½rifie et renvoie true s'il reste dans l'ï¿½quipe du joueur un fakemon capable de se battre. ils faut qu'aprï¿½s le joueur selectionne un fakemon compatible pour continuer le combat
+	/**	Vérifie et renvoie "true" s'il reste dans l'équipe du joueur un monstre capable de se battre 
+	 * Il faut qu'après le joueur selectionne un fakemon compatible pour continuer le combat
+	 * @return boolean ; "true" s'il reste un monstre capable de se battre, "false" sinon
+	 **/
 	public boolean checkEquipeJoueur() {
 		boolean reponse = false;
-				for (Monster m : equipePlayer) {
-					if (m.getPV()>0) {
-						reponse = true;
-					}
-				}
+		for (Monster m : equipePlayer) {
+			if (m.getPV()>0) {
+				reponse = true;
+			}
+		}
 		return reponse;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	/***
+	 * 
+	 * Generation liste starter
+	 * @return 
+	 * 
+	 */
+
+	public ArrayList<Monster> getStarters() {
+		if(starters.isEmpty()) {
+			starters = tableRencontre(6);
+		}
+		return starters;
+	}
+
+	/***
+	 * 
+	 * Selection starter
+	 * 
+	 */
+
+	public void selectStarter(int index) {
+		addEquipePlayer(starters.get(index));
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 **/
 	public Monster rencontreSauvage() {
 		this.cptRencontre++;
 		Monster  m = null;
