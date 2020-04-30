@@ -28,6 +28,9 @@ public class Efficacite {
 	
 	public Efficacite() {}
 
+	public Efficacite(Double ratio) {
+		this.ratio = ratio;
+	}
 
 	public String getTypeAttaque() {
 		return typeAttaque;
@@ -57,5 +60,14 @@ public class Efficacite {
 	public void setRatio(Double ratio) {
 		this.ratio = ratio;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Efficacite [id=" + id + ", typeAttaque=" + typeAttaque + ", typeDefense=" + typeDefense + ", ratio="
+				+ ratio + "]";
+	}
+	
+	
 	
 }

@@ -478,7 +478,7 @@ public class Monster {
 		}
 
 		for (Attaque i : listAttaque) {
-			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType(),m.getType())==2) {
+			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).get().getRatio()==2) {
 				r = new Random();
 				if(r.nextInt(4)==4) {
 					a=i;
@@ -550,8 +550,8 @@ public class Monster {
 				stab = 1.5;
 			}
 
-			//	set si l'attaque utilisée est efficace ou non
-			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
+			//	set si l'attaque utilis�e est efficace ou non
+			double type = (Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 			}
@@ -723,8 +723,10 @@ public class Monster {
 				stab = 1.5;
 			}
 
-			//	Détermine si l'attaque utilisée est efficace ou non et applique les modifications dans le calcul des dégâts
-			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
+			//set si l'attaque utilis�e est efficace ou non
+			Efficacite e = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
+			
+			double type = e.getRatio();
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 				action.setMessage("L'attaque est super efficace !");
