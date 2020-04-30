@@ -80,7 +80,7 @@ public class Monster {
 	@Transient
 	protected double[] tabNature={1,1,1,1,1,1};
 
-	//Pour le combat : modificateurs
+	//Pour le combat : modificateurs des statistiques
 	@Transient
 	protected double modifAtk=1;
 	@Transient	
@@ -143,9 +143,9 @@ public class Monster {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
 
-	/** constructeur pour JPA avec initialisation à partir de la BDD
-	 * l'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
-	 * donc l'ajout des attaques se realise dans une autre méthode : init()
+	/** Constructeur pour JPA avec initialisation à partir de la BDD
+	 * L'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
+	 * Donc l'ajout des attaques se réalise dans une autre méthode : init()
 	 */
 	public Monster() {
 		this.level = 1;
@@ -154,8 +154,8 @@ public class Monster {
 		calcStat();
 	}
 
-	/** initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
-	 * cette fonction est appellée dans le DAO
+	/** Initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
+	 * Cette fonction est appellée après la construction de l'objet (PostLoad)
 	 */
 	@PostLoad
 	public void init() {
@@ -275,7 +275,7 @@ public class Monster {
 		ivVit=r.nextInt(6);
 	}
 
-	/**	Génére une nature qui module 2 statistiques du monstre
+	/**	Génére une nature (fictivement car elle n'est pas réellement définie) qui module 2 statistiques du monstre
 	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
 	private void nature() {
