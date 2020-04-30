@@ -9,6 +9,8 @@
 	
 	
 	<dependencies>
+	
+		<!-- Dépendance pour la communication avec MySQL -->
 		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
@@ -16,17 +18,58 @@
 		    <scope>runtime</scope>
 		</dependency>
 		
-		
+		<!-- Dépendance pour l'utilisation de JPA ? -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>5.4.14.Final</version>
 		</dependency>	
-	</dependencies>
 	
+		<!-- Dépendance pour l'utilisation de Spring : core -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<!-- Dépendance pour l'utilisation de Spring : Data-JPA -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-jpa</artifactId>
+		    <version>2.2.6.RELEASE</version>
+		</dependency>
+	
+		<!-- Dépendance pour l'utilisation de Spring : JPA n°1 -->
+	 	<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-orm</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+	
+		<!-- Dépendance pour l'utilisation de Spring : JPA n°2 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
+	
+		<!-- Dépendance pour l'utilisation de Spring : JPA n°3 -->
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-dbcp2</artifactId>
+		    <version>2.7.0</version>
+		</dependency>
+		
+	</dependencies>
 	
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<spring.version>5.2.5.RELEASE</spring.version>
 	</properties>
 </project>
