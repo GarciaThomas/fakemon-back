@@ -33,6 +33,15 @@ public class Action {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	public Action append(String str) {
+		if(this.message == null) {
+			setMessage(str);
+		}else {
+			this.message += "\n"+str;
+		}
+		return this;
+	}
 
 	
 	@Override
