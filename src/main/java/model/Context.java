@@ -9,16 +9,14 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import dao.DAOAttaque;
-import dao.DAOAttaqueJDBC;
-import dao.DAOMonster;
-import dao.DAOMonsterJPA;
+import dao.IDAOAttaque;
+import dao.IDAOMonster;
 
 public class Context {
 	private static Context _instance = null;
 	private Connection connect = null;
-	private DAOAttaque daoAttaque = new DAOAttaqueJDBC();
-	private DAOMonster daoMonster = new DAOMonsterJPA();
+	private IDAOAttaque daoAttaque;
+	private IDAOMonster daoMonster;
 	private ArrayList<Monster> monstresProposition = null;
 
 	private Context() {
@@ -39,19 +37,19 @@ public class Context {
 		this.connect = connect;
 	}
 	
-	public DAOMonster getDaoMonster() {
+	public IDAOMonster getDaoMonster() {
 		return daoMonster;
 	}
 
-	public void setDaoMonster(DAOMonster daoMonster) {
+	public void setDaoMonster(IDAOMonster daoMonster) {
 		this.daoMonster = daoMonster;
 	}
 
-	public DAOAttaque getDaoAttaque() {
+	public IDAOAttaque getDaoAttaque() {
 		return daoAttaque;
 	}
 	
-	public void setDaoAttaque(DAOAttaque daoAttaque) {
+	public void setDaoAttaque(IDAOAttaque daoAttaque) {
 		this.daoAttaque = daoAttaque;
 	}
 	

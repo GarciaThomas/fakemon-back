@@ -64,7 +64,7 @@ public class Player { //Singleton.
 			//-----------
 			Random r = new Random();
 			int choixMonstre = r.nextInt(Context.getInstance().getDaoMonster().countNombreMonstre());
-			m = Context.getInstance().getDaoMonster().selectById(choixMonstre+1);
+			m = Context.getInstance().getDaoMonster().findById(choixMonstre+1).get();
 			tableRencontre.add(m);
 			//-----------			
 			/*		
