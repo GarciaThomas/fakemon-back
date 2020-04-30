@@ -661,6 +661,7 @@ public class Monster {
 		Random r = new Random();
 		Action action = new Action();
 		action.setM(m);
+		action.append(m.nom+" utilise "+a.nom);
 
 		if (r.nextInt(100)+1>a.getPrecision()) {
 			System.out.println("L'attaque de "+this.getNom()+" a ratée !");
@@ -676,6 +677,7 @@ public class Monster {
 			if (a.getType().equals(this.getType())) {
 				stab = 1.5;
 			}
+			
 
 			//	set si l'attaque utilis�e est efficace ou non
 			double type = (Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
