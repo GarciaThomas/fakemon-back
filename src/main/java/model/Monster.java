@@ -323,9 +323,11 @@ public class Monster {
 		return poolEntier;
 	}
 
-	//	Calcul les nouvelles stats au niveau actuel + soigne le monstre
+	/**	Calcule les nouvelles stats du niveau actuel et met à jour les points de vie du monstre
+	 * 	
+	 **/
 	public void calcStat() {
-		final double cstLv = (double) 2/5;
+		final double cstLv = (double) 1/5;
 		PVmax = (int) (10+level+((basePV+ivPV)*tabNature[0]*(level*cstLv)));
 		PV = PVmax;
 		Atk = (int) (5+((baseAtk+ivAtk)*tabNature[1]*(level*cstLv)));	
@@ -522,7 +524,12 @@ public class Monster {
 		return m;
 	}
 
-
+	/**	Permet d'initialiser le combat dans la console
+	 * Si c'est un monstre de l'équipe joueur, on utilise la méthode pour sélectionné son attaque
+	 * Si c'est un monstre sauvage ou de dresseur, on utilise la méthode automatique
+	 * @param m Monster ; Il s'agit du monstre adverse. Le monstre qui lance attaque est le "this"
+	 * @throws PVException
+	 */
 	public void selectionAttaqueCombat(Monster m) throws PVException {
 //		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
 			Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
@@ -530,8 +537,10 @@ public class Monster {
 			
 	}
 	
-	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dégâts et update les PV des monstres 
+	/**	Calcule des dégâts et update les PV des monstres en fonction des différents paramettre : constantes, stab, efficacité, statistiques physiques ou spéciales
+	 * 	Le premier test est de vérifier si l'attaque touche l'adversaire
 	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre présent.
+	 * @param idMove : int ; cet id est celui de l'attaque sélectionné dans une méthode précédente (ou par le formulaire en Front)
 	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
 	 */
 	public Action combat(Monster m, int idMove) throws PVException {
@@ -546,7 +555,6 @@ public class Monster {
 			action.setMessage("L'attaque de "+this.getNom()+" a ratée !");
 		}
 		else {
-
 			//	set les paramettres de calcul des dégâts
 			final double k1 = (double) 2/5;
 			final double k2 = 50;
