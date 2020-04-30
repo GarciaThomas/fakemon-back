@@ -27,6 +27,13 @@ public class Application {
 		int i = sc.nextInt();
 		return i;
 	}
+	public static String saisieString(String msg) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println(msg);
+		String i = sc.next();
+		return i;
+	}	
+
 
 	/** Fonction qui va lancer le combat : calcul quel monstre a l'initiative (fonction appelee) puis passe a la phase de combat (fonction appelee) dans le bon ordre.
 	 * La sortie d'une PVexception dans la fonction combat apppelee signifie que l'un des deux monstre au combat est KO
@@ -138,7 +145,7 @@ public class Application {
 
 	public static void main(String[] args) {	
 
-		System.out.println("Version actuelle 27-07-2020. V6");
+		System.out.println("Version actuelle 30-04-2020. V1");
 
 
 		Player.getInstance().selectionStarter();

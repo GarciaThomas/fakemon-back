@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -127,7 +128,10 @@ public class Attaque implements Serializable {
 	public String toStringDescription() {
 		return nom + " : " + description;
 	}
-
+	
+	public String toStringDetailAttaque() {
+		return "\n* "+nom+" ["+type+", "+etat+"] : Puissance = "+puissance+", Precision = "+precision+" ("+description+")";
+	}
 
 	
 }

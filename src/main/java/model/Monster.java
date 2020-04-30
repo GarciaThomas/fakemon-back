@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -274,6 +278,7 @@ public class Monster {
 		ivVit=r.nextInt(6);
 	}
 
+
 	/**	Génére une nature (fictivement car elle n'est pas réellement définie) qui module 2 statistiques du monstre
 	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
@@ -287,6 +292,7 @@ public class Monster {
 			tabNature[stDown]=0.9;
 		}	
 	}
+
 
 	/** Génére à partir du movepool du fakemon (la totalité des attaques qu'il peut apprendre) les trois attaques qu'il aura à sa disposition à la création
 	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route	
@@ -308,6 +314,7 @@ public class Monster {
 
 	}
 
+
 	/** Converti à partir du movepool en String issu de la base de donnée la liste d'Integer necessaire pour les requêtes
 	 * @param movepool String ; contenu dans la base de donnée avec les stats des fakemons
 	 * @return 
@@ -323,8 +330,9 @@ public class Monster {
 		return poolEntier;
 	}
 
+
 	/**	Calcule les nouvelles stats du niveau actuel et met à jour les points de vie du monstre
-	 * 	
+	 * 	Utilisée dans constructeur et aussi dans levelUp()
 	 **/
 	public void calcStat() {
 		final double cstLv = (double) 1/5;
@@ -345,10 +353,114 @@ public class Monster {
 		level++;
 		expNextLevel=( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
 		calcStat();
-		/*if (level==5) --> ouvre un slot d'attaque!
-		 * if(level==3 || 5 || 8 || 10) -> propose nouvelle attaque*/
 
+		//--------------
+
+		//--> ouvre un slot d'attaque!
+		if (level==5) {
+
+			//	Récupère nouvelle attaque et l'ajoute au moves du monstre
+			listAttaque.add(newAttaque());
+			System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
+		}
+
+		//	-> propose trois nouvelle attaque en remplacement d'une actuelle
+		if (level == 3 || level == 5 || level == 8 || level == 10) {
+			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
+			List<Attaque> proposition = new ArrayList<>();
+			proposition.add(newAttaque());
+			Attaque a;
+			boolean b;
+
+			while (proposition.size()<3) {
+				a = newAttaque();
+				b = true;
+				for (Attaque atk : proposition) {
+					if (atk == a) {
+						b=false;
+					}
+				}
+				if (b) {
+					proposition.add(a);
+				}
+			}
+			System.out.println(proposition.stream().map(atk -> atk.toStringDetailAttaque()).collect(Collectors.joining("\n* ")));
+			remplacementMove(0, 0, proposition, 0);
+		}
 	}
+
+
+	/**
+	 * 
+	 * @param idMoveOublie
+	 * @param idMoveAppris
+	 * @param proposition
+	 */
+	private void remplacementMove(int idMoveOublie, int idMoveAppris, List<Attaque> proposition, int ouiOuNon) {
+
+		boolean b = false;
+		if (ouiOuNon == 0) {
+			String sc = Application.saisieString("\nVoulez-vous remplacer une attaque existante ? (Y : oui / N : non)");
+			switch (sc) {
+			case "Y" : b=true;break;
+			case "N" : System.out.println("Pas de remplacement de move");break;
+			default : System.out.println("Mauvaise saisie, veuillez recommencer");remplacementMove(0, 0, proposition, 0);break;
+			}
+		}
+
+		if (b) {
+			while (idMoveAppris<1) {
+				int sc = Application.saisieInt("Quelle move voulez-vous apprendre ? (1 à 3) : ");
+				idMoveAppris=proposition.get(sc-1).getId();
+			}
+
+			while (idMoveOublie<1) {
+				this.toStringDetailAttaque();
+				int sc = Application.saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
+				idMoveOublie=this.getListAttaque().get(sc-1).getId();
+			}
+			
+			int ocnzi = idMoveOublie;
+			Attaque moveOublie = this.getListAttaque().stream().filter(atk -> atk.getId() == ocnzi ).findFirst().get();
+			int dzdzd = idMoveAppris;
+			Attaque moveAppris = proposition.stream().filter(atk -> atk.getId() == dzdzd).findFirst().get();
+			this.getListAttaque().add(this.getListAttaque().indexOf(moveOublie), moveAppris);
+			this.getListAttaque().remove(moveOublie);
+			System.out.println("le move "+moveAppris.getNom()+" a remplacé le move "+moveOublie.getNom());
+		}
+	}
+
+
+
+
+
+
+
+	/**
+	 * 
+	 * @return
+	 */
+	private Attaque newAttaque() {
+
+		//		Récupère et converti la liste de tous les moves dans une List<>  
+		Integer[] listIdTotal = poolAtkStringToInt(poolAtkString);
+		List<Integer> listeFormate = Arrays.asList(listIdTotal);
+
+		//	Retire les id des attaques déjà connues. Ne fonctionne pas avec remove()
+		for (Attaque a : this.listAttaque) {
+			listeFormate = listeFormate.stream().filter(m -> m != a.getId()).collect(Collectors.toList());
+		}
+
+		//	Récupère id de la nouvelle attaque
+		Random r = new Random();
+		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
+
+		return Context.getInstance().getDaoAttaque().findById(idNewMove).get();
+	}
+
+
+
+
 
 
 	/** Gére le gain d'exp pour le monstre en cours et fait le levelUp si besoin
@@ -361,8 +473,8 @@ public class Monster {
 		if (exp>=expNextLevel) {
 			System.out.println("Gain de niveau !");
 			exp-=expNextLevel;
+			System.out.println(this.getNom()+" est maintenant niveau "+(this.getLevel()+1)+" !");
 			levelUp();
-			System.out.println(this.getNom()+" est maintenant niveau "+this.getLevel()+" !");
 			System.out.println(this.toStringDetailStat());
 		}
 		System.out.println("Il reste "+(expNextLevel-exp)+" points d'expérience avant le niveau suivant\n");
@@ -410,7 +522,7 @@ public class Monster {
 
 	public Action captureMonstreFront() {
 		Action a = new Action();
-		
+
 		if (equipeJoueur.equals(Situation.valueOf("Sauvage"))) {
 
 			System.out.println("Tentative de capture du "+this.getNom()+" sauvage");
@@ -434,7 +546,7 @@ public class Monster {
 			int captureRate = (int) (2 * txCap * (21-this.getLevel()));
 			Random r = new Random();
 			if (r.nextInt(100)+1>captureRate) {
-				
+
 				a.setMessage("La capture de "+this.getNom()+" a échouée");
 			}
 			else {
@@ -531,12 +643,12 @@ public class Monster {
 	 * @throws PVException
 	 */
 	public void selectionAttaqueCombat(Monster m) throws PVException {
-//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
-			Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
-			combat(m,a.getId());
-			
+		//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
+		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
+		combat(m,a.getId());
+
 	}
-	
+
 	/**	Calcule des dégâts et update les PV des monstres en fonction des différents paramettre : constantes, stab, efficacité, statistiques physiques ou spéciales
 	 * 	Le premier test est de vérifier si l'attaque touche l'adversaire
 	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre présent.
@@ -717,7 +829,7 @@ public class Monster {
 	}
 
 
-/*
+	/*
 	//	Doublon action combat pour le front
 	public Action combatVieuxFront(Monster m,int id) throws PVException {
 
@@ -744,7 +856,7 @@ public class Monster {
 
 			//set si l'attaque utilis�e est efficace ou non
 			Efficacite e = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
-			
+
 			double type = e.getRatio();
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
@@ -783,7 +895,7 @@ public class Monster {
 		}
 		return action;
 	}
-*/
+	 */
 
 
 
