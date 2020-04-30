@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -478,9 +477,9 @@ public class Monster {
 		}
 
 		for (Attaque i : listAttaque) {
-			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).get().getRatio()==2) {
+			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio()==2) {
 				r = new Random();
-				if(r.nextInt(4)==4) {
+				if(r.nextInt(4)==0) {
 					a=i;
 				}
 			}
@@ -524,19 +523,27 @@ public class Monster {
 	}
 
 
+	public void selectionAttaqueCombat(Monster m) throws PVException {
+//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
+			Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
+			combat(m,a.getId());
+			
+	}
+	
 	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dégâts et update les PV des monstres 
 	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre présent.
 	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
 	 */
-	public void combat(Monster m) throws PVException {
+	public Action combat(Monster m, int idMove) throws PVException {
 
-		//	Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
-		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
-
+		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
+		Action action = new Action();
+		action.setM(m);
 
 		if (r.nextInt(100)+1>a.getPrecision()) {
 			System.out.println("L'attaque de "+this.getNom()+" a ratée !");
+			action.setMessage("L'attaque de "+this.getNom()+" a ratée !");
 		}
 		else {
 
@@ -554,9 +561,11 @@ public class Monster {
 			double type = (Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
+				action.setMessage("L'attaque est super efficace !");
 			}
 			if (type == 0.5) {
 				System.out.println("L'attaque est peu efficace ...");
+				action.setMessage("L'attaque est peu efficace ...");
 			}
 
 			//	détermine si l'attaque est physique ou spéciale
@@ -583,8 +592,10 @@ public class Monster {
 			}
 			else {
 				System.out.println("Il reste "+m.getPV()+" PV (/"+m.getPVmax()+") a "+m.getNom()+".\n");
+				action.setM(m);
 			}
 		}
+		return action;
 	}
 
 
@@ -698,9 +709,9 @@ public class Monster {
 	}
 
 
-
+/*
 	//	Doublon action combat pour le front
-	public Action combat(Monster m,int id) throws PVException {
+	public Action combatVieuxFront(Monster m,int id) throws PVException {
 
 		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == id).findFirst().get();	
 		Random r = new Random();
@@ -764,7 +775,7 @@ public class Monster {
 		}
 		return action;
 	}
-
+*/
 
 
 

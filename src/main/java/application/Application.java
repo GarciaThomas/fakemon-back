@@ -39,24 +39,24 @@ public class Application {
 			while (m1.getPV()>0 && m2.getPV()>0) {
 				if (m1.initiative(m2).equals(m1)) {
 					System.out.println(m1.getNom()+" attaque "+m2.getNom()+" en premier");
-					m1.combat(m2);
+					m1.selectionAttaqueCombat(m2);
 					System.out.println(m2.getNom()+" attaque "+m1.getNom());
-					m2.combat(m1);
+					m2.selectionAttaqueCombat(m1);
 				}
 				else {
 					System.out.println(m2.getNom()+" attaque "+m1.getNom()+" en premier");
-					m2.combat(m1);
+					m2.selectionAttaqueCombat(m1);
 					System.out.println(m1.getNom()+" attaque "+m2.getNom());
-					m1.combat(m2);
+					m1.selectionAttaqueCombat(m2);
 				}
 			}
 		}
 		catch (PVException e) {System.err.println(e);
 		if (Player.getInstance().getEquipePlayer().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
-		Player.getInstance().changeMonsterActif(1);
-		combat (Player.getInstance().getEquipePlayer().getFirst(), m2);
+			Player.getInstance().changeMonsterActif(1);
+			combat (Player.getInstance().getEquipePlayer().getFirst(), m2);
 		}
-/*		else if (Dresseur.
+		/*		else if (Dresseur.
 				getEquipeDresseur().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
 			combat (m1, dresseur.getEquipeDresseur().getSuivant);
 		}*/
@@ -137,10 +137,10 @@ public class Application {
 
 
 	public static void main(String[] args) {	
-		
+
 		System.out.println("Version actuelle 27-07-2020. V6");
-		
-		
+
+
 		Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
 		arene(0);
