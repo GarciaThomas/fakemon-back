@@ -9,14 +9,18 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import config.fakemonConfig;
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
 
 public class Context {
 	private static Context _instance = null;
 	private Connection connect = null;
-	private IDAOAttaque daoAttaque;
-	private IDAOMonster daoMonster;
+	AnnotationConfigApplicationContext myContext = new AnnotationConfigApplicationContext(fakemonConfig.class);
+	private IDAOAttaque daoAttaque = myContext.getBean(IDAOAttaque.class);
+	private IDAOMonster daoMonster = myContext.getBean(IDAOMonster.class);
 	private ArrayList<Monster> monstresProposition = null;
 
 	private Context() {

@@ -10,7 +10,7 @@ import model.Type;
 
 public interface IDAOAttaque extends JpaRepository<Attaque, Integer> {
 
-	@Query("SELECT a FROM Attaque WHERE id IN (?1)")
+	@Query("SELECT a FROM Attaque a WHERE id IN (?1)")
 	public ArrayList<Attaque> selectPoolId(ArrayList<Integer> ids);
 
 	@Query("SELECT e FROM Efficacite e WHERE typeAttaque = ?1 AND typeDefense = ?2")

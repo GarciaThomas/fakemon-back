@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -155,6 +157,7 @@ public class Monster {
 	/** initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
 	 * cette fonction est appellée dans le DAO
 	 */
+	@PostLoad
 	public void init() {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
