@@ -63,11 +63,11 @@ public class Application {
 		}
 	}
 
-	/** permet de lancer plusieurs combat contre des monstres sauvages
-	 * pour le moment le nombre de rencontre est parametre de base e 10 en entree
-	 * les monstres rencontres sont 5 x niveau 1, 3 x niveau 2 (le 6eme+) et 2 x niveau 3(le 9eme+)
-	 * il y a de l'affichage dans la console
-	 * @param nbSauvage : int ; nombre de creatures sauvages recontree d'affillees
+	/** Permet de lancer plusieurs combat contre des monstres sauvages générés aléatoirement
+	 * Pour le moment, le nombre de rencontres est parametré de base avec 10 en entré
+	 * Les monstres rencontrés sont : 5 x niveau 1, 3 x niveau 2 (le 6eme+) et 2 x niveau 3(le 9eme+)
+	 * Il y a de l'affichage dans la console
+	 * @param nbSauvage : int ; nombre de créatures sauvages rencontrées d'affillées
 	 **/
 	public static void rencontreSauvage(int nbSauvage) {
 

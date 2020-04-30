@@ -21,11 +21,11 @@ import javax.persistence.Transient;
 
 import application.Application;
 
-//	DÈclaration Attribut
+//	D√©claration Attribut
 @Entity
 @Table(name = "fakemon_stats")
 public class Monster {
-	//Stats de l'…tat actuel du fakemon
+	//Stats de l'√©tat actuel du fakemon
 	@Transient
 	protected int level; 
 	@Transient
@@ -43,7 +43,7 @@ public class Monster {
 	@Transient
 	protected int Vit;
 
-	//Pour le calcul des stats : base commune de l'espËce
+	//Pour le calcul des stats : base commune de l'esp√®ce
 	@Column (name = "pv", nullable = false)
 	protected double basePV;
 
@@ -62,7 +62,7 @@ public class Monster {
 	@Column (name = "vitesse", nullable = false)
 	protected double baseVit;
 
-	//Pour le calcul des stats : stats alÈatoire de ce fakemon prÈcis
+	//Pour le calcul des stats : stats al√©atoire de ce fakemon pr√©cis
 	@Transient
 	protected double ivPV;
 	@Transient
@@ -80,7 +80,7 @@ public class Monster {
 	@Transient
 	protected double[] tabNature={1,1,1,1,1,1};
 
-	//Pour le combat : modificateurs. Pour le moment pas de moyen de les modifier MAIS important ‡ avoir pour futures amÈliorations du systËme de combat
+	//Pour le combat : modificateurs
 	@Transient
 	protected double modifAtk=1;
 	@Transient	
@@ -120,7 +120,7 @@ public class Monster {
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
-	 *	protected int modifPrÈcision;
+	 *	protected int modifPr√©cision;
 	 *	protected int modifCritique;
 	 */
 
@@ -143,9 +143,9 @@ public class Monster {
 		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
 	}
 
-	/** constructeur pour JPA avec initialisation ‡ partir de la BDD
+	/** constructeur pour JPA avec initialisation √† partir de la BDD
 	 * l'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
-	 * donc l'ajout des attaques se realise dans une autre mÈthode : init()
+	 * donc l'ajout des attaques se realise dans une autre m√©thode : init()
 	 */
 	public Monster() {
 		this.level = 1;
@@ -155,7 +155,7 @@ public class Monster {
 	}
 
 	/** initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
-	 * cette fonction est appellÈe dans le DAO
+	 * cette fonction est appell√©e dans le DAO
 	 */
 	@PostLoad
 	public void init() {
@@ -255,10 +255,10 @@ public class Monster {
 	}
 
 	//___________________________________________
-	//	MÈthodes
+	//	M√©thodes
 
-	/**	DÈfini les IV (les statistiques cachÈes) du fakemon
-	 *  N'est appellÈe que dans le constructeur et ‡ aucun autre moment pour ne pas modifier ces valeurs en cours de route
+	/**	D√©fini les IV (les statistiques cach√©es) du fakemon
+	 *  N'est appell√©e que dans le constructeur et √† aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
 	private void generationIV () {
 		Random r=new Random();
@@ -275,8 +275,8 @@ public class Monster {
 		ivVit=r.nextInt(6);
 	}
 
-	/**	GÈnËre une nature qui module 2 statistiques du monstre
-	 * N'est appellÈe que dans le constructeur et ‡ aucun autre moment pour ne pas modifier ces valeurs en cours de route
+	/**	G√©n√©re une nature qui module 2 statistiques du monstre
+	 * N'est appell√©e que dans le constructeur et √† aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
 	private void nature() {
 		Random r=new Random();
@@ -289,10 +289,10 @@ public class Monster {
 		}	
 	}
 
-	/** GÈnËre ‡ partir du movepool du fakemon (la totalitÈ des attaques qu'il peut apprendre) les trois attaques qu'il aura ‡ sa disposition ‡ la crÈation
-	 * N'est appellÈe que dans le constructeur et ‡ aucun autre moment pour ne pas modifier ces valeurs en cours de route	
+	/** G√©n√©re √† partir du movepool du fakemon (la totalit√© des attaques qu'il peut apprendre) les trois attaques qu'il aura √† sa disposition √† la cr√©ation
+	 * N'est appell√©e que dans le constructeur et √† aucun autre moment pour ne pas modifier ces valeurs en cours de route	
 	 * @param poolEntier Integer[] ; liste d'entier correspondant au movepool du fakemon
-	 * @return ArrayList<Attaque> ; liste des trois attaques disponible ‡ la creation
+	 * @return ArrayList<Attaque> ; liste des trois attaques disponible √† la creation
 	 */
 	protected static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
 
@@ -309,8 +309,8 @@ public class Monster {
 
 	}
 
-	/** Convertie ‡ partir du movepool en String issu de la base de donnÈe la liste d'Integer necessaire pour les requÍtes
-	 * @param movepool String ; contenu dans la base de donnÈe avec les stats des fakemons
+	/** Converti √† partir du movepool en String issu de la base de donn√©e la liste d'Integer necessaire pour les requ√™tes
+	 * @param movepool String ; contenu dans la base de donn√©e avec les stats des fakemons
 	 * @return 
 	 */
 	private Integer[] poolAtkStringToInt(String movepool) {
@@ -350,9 +350,9 @@ public class Monster {
 	}
 
 
-	/** GËre le gain d'exp pour le monstre en cours et fait le levelUp si besoin
+	/** G√©re le gain d'exp pour le monstre en cours et fait le levelUp si besoin
 	 * 	Texte indicatif dans console
-	 * @param m Monster ; Monstre qui a ÈtÈ mis KO par le monstre actuel du joueur
+	 * @param m Monster ; Monstre qui a √©t√© mis KO par le monstre actuel du joueur
 	 */
 	public void expGain(Monster m) {
 
@@ -364,11 +364,11 @@ public class Monster {
 			System.out.println(this.getNom()+" est maintenant niveau "+this.getLevel()+" !");
 			System.out.println(this.toStringDetailStat());
 		}
-		System.out.println("Il reste "+(expNextLevel-exp)+" points d'expÈrience avant le niveau suivant\n");
+		System.out.println("Il reste "+(expNextLevel-exp)+" points d'exp√©rience avant le niveau suivant\n");
 	}
 
 
-	//	VÈrifie si le monstre est capturable et rÈalise le test de capture. Si la capture rÈussie ajoute le monstre ‡ l'Èquipe du joueur.
+	//	V√©rifie si le monstre est capturable et r√©alise le test de capture. Si la capture r√©ussie ajoute le monstre √† l'√©quipe du joueur.
 	public void captureMonstre() {
 
 		if (equipeJoueur.equals(Situation.valueOf("Sauvage"))) {
@@ -394,10 +394,10 @@ public class Monster {
 			int captureRate = (int) (2 * txCap * (21-this.getLevel()));
 			Random r = new Random();
 			if (r.nextInt(100)+1>captureRate) {
-				System.out.println("La capture de "+this.getNom()+" a ÈchouÈe");
+				System.out.println("La capture de "+this.getNom()+" a √©chou√©e");
 			}
 			else {
-				System.out.println("La capture de "+this.getNom()+" a rÈussi !");
+				System.out.println("La capture de "+this.getNom()+" a r√©ussi !");
 				Player.getInstance().addEquipePlayer(this);
 			}
 
@@ -434,11 +434,11 @@ public class Monster {
 			Random r = new Random();
 			if (r.nextInt(100)+1>captureRate) {
 				
-				a.setMessage("La capture de "+this.getNom()+" a ÈchouÈe");
+				a.setMessage("La capture de "+this.getNom()+" a √©chou√©e");
 			}
 			else {
 				a.setM(this);
-				a.setMessage("La capture de "+this.getNom()+" a rÈussi !");
+				a.setMessage("La capture de "+this.getNom()+" a r√©ussie !");
 				Player.getInstance().addEquipePlayer(this);
 			}
 
@@ -451,14 +451,14 @@ public class Monster {
 
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
-		int sc = Application.saisieInt("Quelle attaque ? (1 ‡ 3)");
+		int sc = Application.saisieInt("Quelle attaque ? (1 √† 3)");
 
 		Attaque a=null;
 		switch (sc) {
 		case 1 : a = listAttaque.get(0);break;
 		case 2 : a = listAttaque.get(1);break;
 		case 3 : a = listAttaque.get(2);break;
-		//		case 4 : a = listAttaque.get(3);break;  ‡ utiliser que si on dÈcide d'utiliser 4 slots d'attaques
+		//		case 4 : a = listAttaque.get(3);break;  √† utiliser que si on d√©cide d'utiliser 4 slots d'attaques
 		default : System.out.println("Mauvaise saisie. Veuillez recommencer");choixAttaque();break;
 		}
 		return a;
@@ -473,7 +473,7 @@ public class Monster {
 		case 0 : a = listAttaque.get(0);break;
 		case 1 : a = listAttaque.get(1);break;
 		case 2 : a = listAttaque.get(2);break;
-		//		case 4 : a = listAttaque.get(3);break;  ‡ utiliser que si on dÈcide d'utiliser 4 slots d'attaques
+		//		case 4 : a = listAttaque.get(3);break;  √† utiliser que si on d√©cide d'utiliser 4 slots d'attaques
 		default : choixAttaqueBOT(m);break;
 		}
 
@@ -497,10 +497,10 @@ public class Monster {
 	}
 
 
-	/** Compare les deux vitesses des monstres en combat pour dÈterminer le plus rapide
-	 * 	Si les deux monstres ont la mÍme vitesse, rÈalise un 50/50 pour choisir le plus rapide
+	/** Compare les deux vitesses des monstres en combat pour d√©terminer le plus rapide
+	 * 	Si les deux monstres ont la m√™me vitesse, r√©alise un 50/50 pour choisir le plus rapide
 	 * @param m2 Monster ; Il s'agit du monstre adverse, qui n'appartient pas au Player
-	 * @return Monster ; le monstre Ètant le plus rapide
+	 * @return Monster ; le monstre √©tant le plus rapide
 	 */
 	public Monster initiative(Monster m2) {
 
@@ -524,23 +524,23 @@ public class Monster {
 	}
 
 
-	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des dÈg‚ts et update les PV des monstres 
-	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre prÈsent.
-	 * @throws PVException : cette exception est renvoyÈe lorsque l'un des deux monstre ne peux plus se battre !
+	/**	fonction qui appelle les fonctions de choix d'attaque, puis qui calcule des d√©g√¢ts et update les PV des monstres 
+	 * @param m : Monster ; Le monstre adverse qui vas se prendre l'attaque du monstre pr√©sent.
+	 * @throws PVException : cette exception est renvoy√©e lorsque l'un des deux monstre ne peux plus se battre !
 	 */
 	public void combat(Monster m) throws PVException {
 
-		//	Boolean qui permet soit au joueur de choisir son attaque, soit ‡ l'IA de le faire
+		//	Boolean qui permet soit au joueur de choisir son attaque, soit √† l'IA de le faire
 		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
 
 		Random r = new Random();
 
 		if (r.nextInt(100)+1>a.getPrecision()) {
-			System.out.println("L'attaque de "+this.getNom()+" a ratÈ !");
+			System.out.println("L'attaque de "+this.getNom()+" a rat√©e !");
 		}
 		else {
 
-			//	set les paramettres de calcul des dÈg‚ts
+			//	set les paramettres de calcul des d√©g√¢ts
 			final double k1 = (double) 2/5;
 			final double k2 = 50;
 
@@ -550,7 +550,7 @@ public class Monster {
 				stab = 1.5;
 			}
 
-			//	set si l'attaque utilisÈe est efficace ou non
+			//	set si l'attaque utilis√©e est efficace ou non
 			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
@@ -559,17 +559,17 @@ public class Monster {
 				System.out.println("L'attaque est peu efficace ...");
 			}
 
-			//	dÈtermine si l'attaque est physique ou spÈciale
+			//	d√©termine si l'attaque est physique ou sp√©ciale
 			double statDegat = 0;
 			double statProtection = 0;
 			switch (a.getEtat()) {
 			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.getModifDef(); break;
 			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.getModifDSp(); break;
 			case "Statut" : break;
-			default : System.out.println("erreur de degat");break;
+			default : System.out.println("erreur de d√©g√¢t");break;
 			}
 
-			//	calcul des dÈgats
+			//	calcul des d√©gats
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
 			m.PV-=degat;
 
@@ -589,14 +589,14 @@ public class Monster {
 
 
 
-	/** Prise en compte des effets cumulÈ de l'attaque utilisÈe
-	 *  Pour le moment un seul effet cumulÈ par attaque
-	 *  Effet cumulÈ sur la modification temporaire de statistique ou des pv
+	/** Prise en compte des effets cumul√© de l'attaque utilis√©e
+	 *  Pour le moment un seul effet cumul√© par attaque
+	 *  Effet cumul√© sur la modification temporaire de statistique ou des pv
 	 */
 	public void integrationEffetCumule(Attaque a, Monster m) throws PVException {
 		if (a.getEffetCumule() != null) {
 
-			//	Transforme le string de la BDD en liste, les infos sont organisÈ en Proba,cible,stat,sens,valeur
+			//	Transforme le string de la BDD en liste, les infos sont organis√© en Proba,Cible,Statistique,Sens,Cran
 			String[] listeEffetCumule = a.getEffetCumule().split(",");
 			Random r = new Random();
 			Monster cible = null;
@@ -611,23 +611,23 @@ public class Monster {
 
 				switch (listeEffetCumule[2]) {
 				case "pv" : modifPVCombat(listeEffetCumule[3], listeEffetCumule[4], cible);
-				System.out.println("Les points de vie de "+cible.getNom()+" ont ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" %"); break;
+				System.out.println("Les points de vie de "+cible.getNom()+" ont √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" %"); break;
 				case "atk" : cible.setModifAtk(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifAtk())); 
-				System.out.println("L'attaque de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				System.out.println("L'attaque de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
 				case "def" : cible.setModifDef(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDef())); 
-				System.out.println("La dÈfense de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				System.out.println("La d√©fense de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
 				case "asp" : cible.setModifASp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifASp())); 
-				System.out.println("L'attaque spÈciale de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				System.out.println("L'attaque sp√©ciale de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
 				case "dsp" : cible.setModifDSp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDSp())); 
-				System.out.println("La defense spÈciale de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				System.out.println("La d√©fense sp√©ciale de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
 				case "vit" : cible.setModifVit(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifVit())); 
-				System.out.println("La vitesse de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
+				System.out.println("La vitesse de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran"); break;
 				case "all" : cible.setModifAtk(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifAtk())); 
 				cible.setModifDef(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDef()));
 				cible.setModifASp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifASp()));
 				cible.setModifDSp(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifDSp()));
 				cible.setModifVit(modifStatCombat(listeEffetCumule[3], listeEffetCumule[4], cible.getModifVit()));  
-				System.out.println("Toutes les statistiques de "+cible.getNom()+" a ÈtÈ "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran");break;
+				System.out.println("Toutes les statistiques de "+cible.getNom()+" a √©t√© "+listeEffetCumule[3]+" de "+listeEffetCumule[4]+" cran");break;
 				default : System.out.println("erreur de stat"); break;
 				}
 			}
@@ -637,9 +637,9 @@ public class Monster {
 
 	/** Methode qui met a jour la modif de stat du monstre actuel
 	 * 
-	 * @param sens : "up" ou "down" selon si la stat doit augmentÈe ou diminuÈe
-	 * @param valeur : nombre de rang d'Èvolution, donnÈ en string car converti en int ‡ l'intÈrieur
-	 * @param valeurModifActuelle : valeur de la modifStat ‡ modifiÈe
+	 * @param sens : "up" ou "down" selon si la stat doit augment√©e ou diminu√©e
+	 * @param valeur : nombre de rang d'√©volution, donn√© en string car converti en int √† l'int√©rieur
+	 * @param valeurModifActuelle : valeur de la modifStat √† modifi√©e
 	 * @return nouvelle valeur de la modification de statistique en combat
 	 */
 	private double modifStatCombat(String sens, String valeur, double valeurModifActuelle) {
@@ -684,7 +684,7 @@ public class Monster {
 			ratio = (double) -Integer.parseInt(valeur)/100;	
 		}
 		else {
-			System.out.println("ProblËme de sens aux modifPV");
+			System.out.println("Probl√®me de sens aux modifPV");
 		}
 
 		cible.setPV((int) (cible.getPV() + cible.getPVmax() * ratio));
@@ -707,13 +707,13 @@ public class Monster {
 		Action action = new Action();
 
 		if (r.nextInt(100)>a.getPrecision()) {
-			System.out.println("L'attaque de "+this.getNom()+" a ratÈ !");
+			System.out.println("L'attaque de "+this.getNom()+" a rat√©e !");
 			action.setM(m);
-			action.setMessage("L'attaque de "+this.getNom()+" a ratÈ !");
+			action.setMessage("L'attaque de "+this.getNom()+" a rat√©e !");
 		}
 		else {
 
-			//set les paramettres de calcul des dÈg‚ts
+			//set les paramettres de calcul des d√©g√¢ts
 			final double k1 = (double) 2/5;
 			final double k2 = 50;
 
@@ -723,7 +723,7 @@ public class Monster {
 				stab = 1.5;
 			}
 
-			//set si l'attaque utilisÈe est efficace ou non
+			//	D√©termine si l'attaque utilis√©e est efficace ou non et applique les modifications dans le calcul des d√©g√¢ts
 			double type = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType(),m.getType());
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
@@ -734,7 +734,7 @@ public class Monster {
 				action.setMessage("L'attaque est peu efficace ...");
 			}
 
-			//dedermine si l'attaque est physique ou spÈciale
+			//dedermine si l'attaque est physique ou sp√©ciale
 			int statDegat = 0;
 			int statProtection = 0;
 			switch (a.getEtat()) {
@@ -743,7 +743,7 @@ public class Monster {
 			default : System.out.println("erreur de degat");break;
 			}
 
-			//calcul des dÈgats
+			//calcul des d√©g√¢ts
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
 			m.PV-=degat;
 
@@ -787,7 +787,7 @@ public class Monster {
 	}
 
 	public String toStringDetailStat() {
-		return "Niveau =" + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", DÈfense = " + Def + ", Attaque SpÈciale = " + ASp + ", DÈfense SpÈciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
+		return "Niveau =" + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", D√©fense = " + Def + ", Attaque Sp√©ciale = " + ASp + ", D√©fense Sp√©ciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
 	}
 
 

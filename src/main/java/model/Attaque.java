@@ -47,11 +47,11 @@ public class Attaque implements Serializable {
 	public Attaque() {}
 	
 	/** Constructeur complet d'une attaque pour JDBC
-	 * @param id : int ; C'est la clef primaire dans la BDD, sert ‡ identifier quelles attaques peuvent Ítres connues par chaque monstre
-	 * @param puissance : int ; valeur indiquant la puissance intrinseque de l'attaque, c'est ‡ dire les dÈg‚ts qu'elle engendre
-	 * @param precision : int ; prÈcision sur 100 de l'attaque, une prÈcision >=100 indique qu'elle n'echoue jamais. Plus la valeur est faible, plus la probabilitÈ de rater l'attaque est ÈlevÈ
-	 * @param nom : String ; l'intitulÈ de l'attaque
-	 * @param etat : String ; donne de quelle faÁon doit Ítre gÈrer l'attaque : une attaque Physique utilisera les statistiques d'Attaque et de DÈfense pour le calcul des dÈg‚ts, une attaque SpÈciale utilisera les statistiques d'Attaque spÈciale et de DÈfense spÈciale pour le calcul des dÈgats et une attaque Statut n'infligera pas de dÈg‚ts mais impactera les statistique ou autre du fakemon 
+	 * @param id : int ; C'est la clef primaire dans la BDD, sert √† identifier quelles attaques peuvent √™tres connues par chaque monstre
+	 * @param puissance : int ; valeur indiquant la puissance intrinseque de l'attaque, c'est √† dire les d√©g√¢ts qu'elle engendre
+	 * @param precision : int ; pr√©cision sur 100 de l'attaque, une pr√©cision >=100 indique qu'elle n'echoue jamais. Plus la valeur est faible, plus la probabilit√© de rater l'attaque est √©lev√©
+	 * @param nom : String ; l'intitul√© de l'attaque
+	 * @param etat : String ; donne de quelle fa√ßon doit √™tre g√©rer l'attaque : une attaque Physique utilisera les statistiques d'Attaque et de D√©fense pour le calcul des d√©g√¢ts, une attaque Sp√©ciale utilisera les statistiques d'Attaque sp√©ciale et de D√©fense sp√©ciale pour le calcul des d√©g√¢ts et une attaque Statut n'infligera pas de d√©g√¢ts mais impactera les statistique ou autre du fakemon 
 	 * @param description
 	 * @param type
 	 */

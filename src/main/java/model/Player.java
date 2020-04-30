@@ -31,7 +31,7 @@ public class Player { //Singleton.
 		return _instance;
 	}
 
-	//	Getters Setters et apparent�s
+	//	Getters Setters et apparentés
 	public LinkedList<Monster> getEquipePlayer() {
 		return equipePlayer;
 	}
@@ -49,9 +49,9 @@ public class Player { //Singleton.
 	//______________________________________________________________________________
 
 
-	/**Revoie une liste de monstres de niveau 1 cr�e al�atoirement
-	 * @param nbRencontre int ; le nombre de monstres souhait�s
-	 * @return ArrayList<Monster> ; La liste des monstres al�atoire va rencontrer
+	/**Revoie une liste de monstres de niveau 1 crée aléatoirement
+	 * @param nbRencontre int ; le nombre de monstres souhaités
+	 * @return ArrayList<Monster> ; La liste des monstres aléatoire va rencontrer
 	 **/
 	public ArrayList<Monster> tableRencontre(int nbRencontre) {
 
@@ -92,7 +92,7 @@ public class Player { //Singleton.
 	}
 
 
-	/**	Cr�e une s�lection al�atoire de six monstres puis le joueur doit en choisir un comme monstre de d�part
+	/**	Crée une sélection aléatoire de six monstres puis le joueur doit en choisir un comme monstre de départ
 	 **/
 	public void selectionStarter () {
 
@@ -100,7 +100,7 @@ public class Player { //Singleton.
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
-			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 � 6)");
+			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
 		}
 		addEquipePlayer(table2Chen.get(i-1));
 		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
@@ -109,7 +109,7 @@ public class Player { //Singleton.
 	}
 
 
-	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple apr�s un combat 
+	/** Remet tout les monstres du joueur en sitation quiescente (PV, modifsStats...), par exemple après un combat 
 	 **/
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
@@ -123,21 +123,21 @@ public class Player { //Singleton.
 	}
 
 
-	/**	�change la place de deux monstres de l'�quipe du joueur
+	/**	échange la place de deux monstres de l'équipe du joueur
 	 * Version avec scanner pour le back
 	 **/
 	public void changeMonster() {
 		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
 		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
-		int ip = Application.saisieInt("� quelle position voulez-vous le mettre ?");
+		int ip = Application.saisieInt("À quelle position voulez-vous le mettre ?");
 		Monster m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
 	}
 
 	
-	/**	�change la place de deux monstres de l'�quipe du joueur
-	 * Version avec les deux index en entr�e pour le front, aucune v�rification des monstres
+	/**	Échange la place de deux monstres de l'équipe du joueur
+	 * Version avec les deux index en entrée pour le front, aucune vérification des monstres
 	 * @param position1 int ; Index du premier monstre
 	 * @param position2 int ; Index du second monstre
 	 **/
@@ -148,13 +148,13 @@ public class Player { //Singleton.
 	}
 	
 	
-	/**	Remplace le monstre dit "actif" (celui en premi�re position de la liste de monstre du joueur) par un autre qui peux se battre
-	 * il y a des v�rification sur ce swap et le reset des modifStat
-	 * @param i int ; Index du monstre souhait� en remplacement du monstre actif
+	/**	Remplace le monstre dit "actif" (celui en première position de la liste de monstre du joueur) par un autre qui peux se battre
+	 * il y a des vérification sur ce swap et le reset des modifStat
+	 * @param i int ; Index du monstre souhaité en remplacement du monstre actif
 	 **/
 	public void changeMonsterActif(int i) {
 		while (equipePlayer.get(i-1).getPV()<=0) {
-			i= Application.saisieInt("Le monstre s�lectionn� est hors-combat. Veuillez en s�lectionner un autre");
+			i= Application.saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
 		}
 		equipePlayer.getFirst().setModifAtk(0);
 		equipePlayer.getFirst().setModifDef(0);
@@ -165,8 +165,8 @@ public class Player { //Singleton.
 	}
 	
 
-	/**	V�rifie et renvoie "true" s'il reste dans l'�quipe du joueur un monstre capable de se battre 
-	 * Il faut qu'apr�s le joueur selectionne un fakemon compatible pour continuer le combat
+	/**	Vérifie et renvoie "true" s'il reste dans l'équipe du joueur un monstre capable de se battre 
+	 * Il faut qu'après le joueur selectionne un fakemon compatible pour continuer le combat
 	 * @return boolean ; "true" s'il reste un monstre capable de se battre, "false" sinon
 	 **/
 	public boolean checkEquipeJoueur() {

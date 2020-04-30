@@ -8,8 +8,8 @@ public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
 
-	//	Constructeurs : vide pour nom aléatoire ou donne un nom pour le fixer
-	//	Le nombre de points d'expérience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
+	//	Constructeurs : vide pour nom alÃ©atoire ou donne un nom pour le fixer
+	//	Le nombre de points d'expÃ©rience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
 	public Dresseur(int pts) {
 		this.equipeDresseur = choixEquipeDresseur(pts);
 		this.nom = choixNom();
@@ -30,12 +30,12 @@ public class Dresseur {
 	}
 
 
-	/**	Choix aléatoire d'un nom pour le dresseur
+	/**	Choix alÃ©atoire d'un nom pour le dresseur
 	 * @return String ; Donne un nom au hasard dans la liste
 	 **/
 	private String choixNom() {
 		Random r=new Random();
-		String[] listeNom = {"Jean-loup","Giseline","Drogo","Vlad","Pueblo","Okko","Jean-Denis","Krugg","Sir Jaime","Saint-Paulin","Regis","Pr Cerizié", "Lord I"};
+		String[] listeNom = {"Jean-loup","Giseline","Drogo","Vlad","Pueblo","Okko","Jean-Denis","Krugg","Sir Jaime","Saint-Paulin","Regis","Pr CeriziÃ©", "Lord I"};
 		return listeNom[r.nextInt(listeNom.length)];
 	}
 
@@ -54,9 +54,9 @@ public class Dresseur {
 	}
 
 
-	/** Création de l'équipe du dresseur à partir d'un certain nombre de points donnés	
-	 * @param pts int ; Nombre de points d'expérience disponibles pour la création de l'équipe
-	 * @return LinkedList<Monster> ; L'équipe du dresseur
+	/** CrÃ©ation de l'Ã©quipe du dresseur Ã  partir d'un certain nombre de points donnÃ©s	
+	 * @param pts int ; Nombre de points d'expÃ©rience disponibles pour la crÃ©ation de l'Ã©quipe
+	 * @return LinkedList<Monster> ; L'Ã©quipe du dresseur
 	 **/
 	private LinkedList<Monster> choixEquipeDresseur(int pts) {
 
@@ -81,7 +81,7 @@ public class Dresseur {
 			}
 			else if (pts>=3 && equipeDresseur.size()<6) {
 				this.equipeDresseur.add(Player.getInstance().tableRencontre(1).get(0));
-				pts-=3;		//	Coût d'un lv 1 : 3pts d'expérence (valeur du kill)
+				pts-=3;		//	CoÃ»t d'un lv 1 : 3pts d'expÃ©rence (valeur du kill)
 				//		System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
 			}
 			else {
@@ -93,8 +93,8 @@ public class Dresseur {
 	}
 
 
-	/**	Vérifie et renvoie "true" s'il reste dans l'équipe du Dresseur un fakemon capable de se battre
-	 * Il faut qu'après le prochain monstre en état soit envoyé pour continuer le combat
+	/**	VÃ©rifie et renvoie "true" s'il reste dans l'Ã©quipe du Dresseur un fakemon capable de se battre
+	 * Il faut qu'aprÃ©s le prochain monstre en Ã©tat soit envoyÃ© pour continuer le combat
 	 * @return boolean ; "true" pour que le combat puisse continuer, "false" sinon
 	 **/
 	public boolean checkEquipeDresseur() {
@@ -115,7 +115,7 @@ public class Dresseur {
 	
 	
 	// faire une fonction qui renvoie le prochain monstre non ko de la liste de montre
-	// fait un fonction qui permet de récup le desseur à partir de monstre !!!
+	// fait un fonction qui permet de rÃ©cupÃ©rer le desseur Ã  partir de monstre !!!
 	
 	
 	
@@ -129,11 +129,11 @@ public class Dresseur {
 	}
 
 	public String toString2() {
-		return "Dresseur "+nom+"\nÉquipe : " + equipeDresseur.stream().map( m -> m.getNom()+", niveau "+m.getLevel()).collect(Collectors.joining("\n\t "));
+		return "Dresseur "+nom+"\nÃ©quipe : " + equipeDresseur.stream().map( m -> m.getNom()+", niveau "+m.getLevel()).collect(Collectors.joining("\n\t "));
 	}
 
 	public String toStringEquipe() {
-		return "Son équipe est constitué de :\n\t" + equipeDresseur.stream().map( m -> m.getNom()+", niveau "+m.getLevel()).collect(Collectors.joining("\n\t "));
+		return "Son Ã©quipe est constituÃ© de :\n\t" + equipeDresseur.stream().map( m -> m.getNom()+", niveau "+m.getLevel()).collect(Collectors.joining("\n\t "));
 	}
 }
 
