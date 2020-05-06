@@ -287,6 +287,28 @@ public class Monster {
 	}
 
 
+<<<<<<< HEAD
+=======
+	/** Génére à partir du movepool du fakemon (la totalité des attaques qu'il peut apprendre) les trois attaques qu'il aura à sa disposition à la création
+	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route	
+	 * @param poolEntier Integer[] ; liste d'entier correspondant au movepool du fakemon
+	 * @return ArrayList<Attaque> ; liste des trois attaques disponible à la creation
+	 */
+	protected static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
+
+		LinkedList<Integer> mesIds = new LinkedList<Integer>();
+		mesIds.addAll(Arrays.asList(poolEntier));
+		Collections.shuffle(mesIds);
+
+		ArrayList<Integer> idsForQuery = new ArrayList<Integer>();
+
+		for(int i=0; i < 3; i++) {
+			idsForQuery.add(mesIds.poll());
+		}
+		return ContextService.getDaoAttaque().selectPoolId(idsForQuery);
+
+	}
+>>>>>>> TransitionSpring
 
 
 	/** Converti à partir du movepool en String issu de la base de donnée la liste d'Integer necessaire pour les requêtes
@@ -411,6 +433,15 @@ public class Monster {
 
 
 
+<<<<<<< HEAD
+=======
+		//	Récupère id de la nouvelle attaque
+		Random r = new Random();
+		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
+
+		return ContextService.getDaoAttaque().findById(idNewMove).get();
+	}
+>>>>>>> TransitionSpring
 
 
 
@@ -463,16 +494,34 @@ public class Monster {
 		Integer[] listIdTotal = this.poolAtkStringToInt(this.getPoolAtkString());
 		List<Integer> listeFormate = Arrays.asList(listIdTotal);
 
+<<<<<<< HEAD
 		//	Retire les id des attaques déjà connues. Ne fonctionne pas avec remove()
 		for (Attaque a : this.listAttaque) {
 			listeFormate = listeFormate.stream().filter(m -> m != a.getId()).collect(Collectors.toList());
+=======
+		for (Attaque i : listAttaque) {
+			if (ContextService.getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio()==2) {
+				r = new Random();
+				if(r.nextInt(4)==0) {
+					a=i;
+				}
+			}
+>>>>>>> TransitionSpring
 		}
 
 		//	Récupère id de la nouvelle attaque
 		Random r = new Random();
 		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
 
+<<<<<<< HEAD
 		return ctxtsvc.getAttaqueid(idNewMove);
+=======
+
+	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
+
+		this.listAttaque = ContextService.getDaoAttaque().selectPoolId(ids);
+		return listAttaque;
+>>>>>>> TransitionSpring
 	}
 
 
@@ -579,7 +628,11 @@ public class Monster {
 			
 
 			//	set si l'attaque utilis�e est efficace ou non
+<<<<<<< HEAD
 			double type = ctxtsvc.getRatioEfficacite(a,m);
+=======
+			double type = (ContextService.getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
+>>>>>>> TransitionSpring
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 				action.setMessage("L'attaque est super efficace !");
@@ -729,6 +782,83 @@ public class Monster {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+
+	/*
+	//	Doublon action combat pour le front
+	public Action combatVieuxFront(Monster m,int id) throws PVException {
+
+		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == id).findFirst().get();	
+		Random r = new Random();
+		Action action = new Action();
+
+		if (r.nextInt(100)>a.getPrecision()) {
+			System.out.println("L'attaque de "+this.getNom()+" a ratée !");
+			action.setM(m);
+			action.setMessage("L'attaque de "+this.getNom()+" a ratée !");
+		}
+		else {
+
+			//set les paramettres de calcul des dégâts
+			final double k1 = (double) 2/5;
+			final double k2 = 50;
+
+			//set le bonus de stab
+			double stab = 1.0;
+			if (a.getType().equals(this.getType())) {
+				stab = 1.5;
+			}
+
+			//set si l'attaque utilis�e est efficace ou non
+			Efficacite e = ContextService.getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
+
+			double type = e.getRatio();
+			if (type == 2) {
+				System.out.println("L'attaque est super efficace !");
+				action.setMessage("L'attaque est super efficace !");
+			}
+			if (type == 0.5) {
+				System.out.println("L'attaque est peu efficace ...");
+				action.setMessage("L'attaque est peu efficace ...");
+			}
+
+			//dedermine si l'attaque est physique ou spéciale
+			int statDegat = 0;
+			int statProtection = 0;
+			switch (a.getEtat()) {
+			case "Physique": statDegat=this.Atk ; statProtection=m.getDef(); break;
+			case "Special" : statDegat=this.ASp ; statProtection=m.getDSp(); break;
+			default : System.out.println("erreur de degat");break;
+			}
+
+			//calcul des dégâts
+			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
+			m.PV-=degat;
+
+
+			if (m.getPV()<=0) {
+				m.setPV(0);
+				action.setM(m);
+				throw new PVException(m);
+
+			}
+			else {
+				action.setM(m);
+				System.out.println("Il reste "+m.getPV()+" PV a "+m.getNom()+".\n");
+
+			}
+		}
+		return action;
+	}
+	 */
+
+
+
+
+
+
+>>>>>>> TransitionSpring
 	@Override
 	public String toString() {
 		return "Monster [level=" + level + ", PV=" + PV + ", Atk=" + Atk + ", Def=" + Def + ", ASp=" + ASp + ", DSp="
