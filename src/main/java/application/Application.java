@@ -12,7 +12,7 @@ import dao.IDAOMonster;
 import model.Dresseur;
 import model.Monster;
 import model.PVException;
-import model.Player;
+import service.PlayerService;
 
 public class Application {
 

@@ -350,7 +350,7 @@ public class Monster {
 				a =  this.newAttaque();
 				b = true;
 				for (Attaque atk : proposition) {
-					if (atk.getNom().equals(a.getNom())) {
+					if (atk.getId() == a.getId()) {
 						b = false;
 					}
 				}
@@ -747,7 +747,7 @@ public class Monster {
 	}
 
 	public String toStringDetailStat() {
-		return "Niveau = " + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
+		return "Niveau = " + level + ", Points de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
 	}
 
 

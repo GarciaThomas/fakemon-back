@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import service.PlayerService;
+
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
