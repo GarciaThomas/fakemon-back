@@ -59,12 +59,12 @@ public class Application {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-		if (Player.getInstance().getEquipePlayer().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
-			Player.getInstance().changeMonsterActif(1);
-			combat (Player.getInstance().getEquipePlayer().getFirst(), m2);
+		if (PlayerService.getEquipePlayer().getFirst().getPV()<=0 && PlayerService.checkEquipeJoueur()) {
+			PlayerService.changeMonsterActif(1);
+			combat (PlayerService.getEquipePlayer().getFirst(), m2);
 		}
 		/*		else if (Dresseur.
-				getEquipeDresseur().getFirst().getPV()<=0 && Player.getInstance().checkEquipeJoueur()) {
+				getEquipeDresseur().getFirst().getPV()<=0 && PlayerService.checkEquipeJoueur()) {
 			combat (m1, dresseur.getEquipeDresseur().getSuivant);
 		}*/
 		}
@@ -82,7 +82,7 @@ public class Application {
 		Monster m = null;	
 
 		ArrayList<Monster> fakemonSauvage = new ArrayList<Monster>();
-		fakemonSauvage = Player.getInstance().tableRencontre(nbSauvage);
+		fakemonSauvage = PlayerService.tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
 			System.out.println("\n---------\nRencontre n°"+(i+1)+" :");
@@ -97,8 +97,8 @@ public class Application {
 			}
 
 			System.out.println("Vous allez combatre un "+m.getNom()+" sauvage de niveau "+m.getLevel()+".");
-			combat(Player.getInstance().getEquipePlayer().getFirst(),m);
-			Player.getInstance().soinEquipeJoueur();
+			combat(PlayerService.getEquipePlayer().getFirst(),m);
+			PlayerService.soinEquipeJoueur();
 		}
 	}
 
@@ -114,7 +114,7 @@ public class Application {
 		Dresseur d = new Dresseur("FragileJordan",pts);
 		System.out.println("Premier duel d'échauffement contre FragileJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 		for (Monster m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
 		}
@@ -124,7 +124,7 @@ public class Application {
 			d = new Dresseur(pts);
 			System.out.println("Duel numéro "+(i+1)+" contre "+d.getNom()+".");
 			System.out.println(d.toStringEquipe());
-			combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+			combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 			for (Monster m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
 			}
@@ -134,7 +134,7 @@ public class Application {
 		d = new Dresseur("BlackJordan",(int)(pts*1.1574));
 		System.out.println("Dernier duel contre le maître BlackJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(Player.getInstance().getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 
 		System.out.println("Bravo l'arène est finie !");
 
@@ -146,13 +146,13 @@ public class Application {
 	public static void main(String[] args) {	
 
 
-		Monster m = Player.getInstance().tableRencontre(1).get(0);
+		Monster m = PlayerService.tableRencontre(1).get(0);
 		System.out.println(m.toStringGeneral()+"\n-----------------------");
 	//	System.out.println(m.toStringDetailStat());
 		m.levelUp();
 	//	System.out.println(m.toStringDetailStat());
 		m.levelUp();
-	/*	Player.getInstance().selectionStarter();
+	/*	PlayerService.selectionStarter();
 		rencontreSauvage(10);
 		arene(0);*/
 

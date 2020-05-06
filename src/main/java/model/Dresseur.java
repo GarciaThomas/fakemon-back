@@ -60,7 +60,7 @@ public class Dresseur {
 	 **/
 	private LinkedList<Monster> choixEquipeDresseur(int pts) {
 
-		this.equipeDresseur.add(Player.getInstance().tableRencontre(1).get(0));
+		this.equipeDresseur.add(PlayerService.tableRencontre(1).get(0));
 		Random r = new Random();
 
 		while ( (pts>=3 && equipeDresseur.size()<6) || pts>=lePlusFaible().getExpNextLevel() ) {
@@ -80,7 +80,7 @@ public class Dresseur {
 				}
 			}
 			else if (pts>=3 && equipeDresseur.size()<6) {
-				this.equipeDresseur.add(Player.getInstance().tableRencontre(1).get(0));
+				this.equipeDresseur.add(PlayerService.tableRencontre(1).get(0));
 				pts-=3;		//	Coût d'un lv 1 : 3pts d'expérence (valeur du kill)
 				//		System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
 			}

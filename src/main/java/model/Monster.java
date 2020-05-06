@@ -310,7 +310,7 @@ public class Monster {
 		for(int i=0; i < 3; i++) {
 			idsForQuery.add(mesIds.poll());
 		}
-		return Context.getInstance().getDaoAttaque().selectPoolId(idsForQuery);
+		return ContextService.getDaoAttaque().selectPoolId(idsForQuery);
 
 	}
 
@@ -455,7 +455,7 @@ public class Monster {
 		Random r = new Random();
 		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
 
-		return Context.getInstance().getDaoAttaque().findById(idNewMove).get();
+		return ContextService.getDaoAttaque().findById(idNewMove).get();
 	}
 
 
@@ -512,7 +512,7 @@ public class Monster {
 		}
 
 		for (Attaque i : listAttaque) {
-			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio()==2) {
+			if (ContextService.getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio()==2) {
 				r = new Random();
 				if(r.nextInt(4)==0) {
 					a=i;
@@ -526,7 +526,7 @@ public class Monster {
 
 	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
 
-		this.listAttaque = Context.getInstance().getDaoAttaque().selectPoolId(ids);
+		this.listAttaque = ContextService.getDaoAttaque().selectPoolId(ids);
 		return listAttaque;
 	}
 
@@ -601,7 +601,7 @@ public class Monster {
 			
 
 			//	set si l'attaque utilis�e est efficace ou non
-			double type = (Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
+			double type = (ContextService.getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 				action.setMessage("L'attaque est super efficace !");
@@ -778,7 +778,7 @@ public class Monster {
 			}
 
 			//set si l'attaque utilis�e est efficace ou non
-			Efficacite e = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
+			Efficacite e = ContextService.getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
 
 			double type = e.getRatio();
 			if (type == 2) {
