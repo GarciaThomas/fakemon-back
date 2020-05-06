@@ -65,6 +65,24 @@
 		    <version>2.7.0</version>
 		</dependency>
 		
+
+		<!-- Pour les tests unitaires liés à Spring Test -->
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<!-- Pour les tests unitaires JUNIT -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-test</artifactId>
+		    <version>${spring.version}</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<properties>

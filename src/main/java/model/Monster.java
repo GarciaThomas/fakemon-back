@@ -368,29 +368,21 @@ public class Monster {
 		if (level == 3 || level == 5 || level == 8 || level == 10) {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
-			proposition.add(newAttaque());
-			System.out.println(proposition.toString()); /////////////////////////////////
-			Attaque a;
+			Attaque a = newAttaque();
+			proposition.add(a);
 			boolean b;
 
-			int i =1;
 			while (proposition.size()<3) {
 				a = newAttaque();
-				System.out.println(a.toStringDetailAttaque());/////////////////////////////////
 				b = true;
 				for (Attaque atk : proposition) {
-					System.out.println("pour chaqye attaque");/////////////////////////////////
-					if (atk == a) {
-						b=false;
-						System.out.println("b passé en false");/////////////////////////////////
+					if (atk.getNom().equals(a.getNom())) {
+						b = false;
 					}
 				}
 				if (b) {
 					proposition.add(a);
-					System.out.println("a ajouté à la liste");/////////////////////////////////
 				}
-				System.out.println(proposition.toString()+". tour "+i);/////////////////////////////////
-				i++;
 			}
 			System.out.println(proposition.stream().map(atk -> atk.toStringDetailAttaque()).collect(Collectors.joining("")));
 			remplacementMove(0, 0, proposition, 0);
@@ -930,7 +922,7 @@ public class Monster {
 	}
 
 	public String toStringDetailStat() {
-		return "Niveau =" + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
+		return "Niveau = " + level + ", Point de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
 	}
 
 

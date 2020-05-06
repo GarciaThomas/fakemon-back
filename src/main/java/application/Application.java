@@ -145,12 +145,16 @@ public class Application {
 
 	public static void main(String[] args) {	
 
-		System.out.println("Version actuelle 30-04-2020. V1");
 
-
-		Player.getInstance().selectionStarter();
+		Monster m = Player.getInstance().tableRencontre(1).get(0);
+		System.out.println(m.toStringGeneral()+"\n-----------------------");
+	//	System.out.println(m.toStringDetailStat());
+		m.levelUp();
+	//	System.out.println(m.toStringDetailStat());
+		m.levelUp();
+	/*	Player.getInstance().selectionStarter();
 		rencontreSauvage(10);
-		arene(0);
+		arene(0);*/
 
 	}
 
