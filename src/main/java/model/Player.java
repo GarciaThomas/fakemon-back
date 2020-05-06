@@ -4,17 +4,24 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
+import javax.persistence.PostLoad;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import application.Application;
+import service.ContextService;
 
 @Service
 public class Player { //Singleton.
 	//	Attributs
 	@Autowired
 	private Context context;
-	private static Player _instance = null;
+	
+	@Autowired
+	private ContextService srvContext;
+	
+	
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
 	protected int[] position = new int[] {0,0};
@@ -63,6 +70,9 @@ public class Player { //Singleton.
 			Random r = new Random();
 			int choixMonstre = r.nextInt(this.context.getDaoMonster().countNombreMonstre());
 			m = this.context.getDaoMonster().findById(choixMonstre+1).get();
+			
+			m.setListAttaque(srvContext.creationAttaque(m.poolAtkStringToInt(m.getPoolAtkString())));
+			
 			tableRencontre.add(m);
 			//-----------			
 			/*		
@@ -220,5 +230,85 @@ public class Player { //Singleton.
 		}
 		return m;
 	}
+	
+	//	Vérifie si le monstre est capturable et réalise le test de capture. Si la capture réussie ajoute le monstre à l'équipe du joueur.
+	public void captureMonstre(Monster m) {
 
+		if (m.equipeJoueur.equals(Situation.valueOf("Sauvage"))) {
+
+			System.out.println("Tentative de capture du "+m.getNom()+" sauvage");
+			double txCap = 1;
+			if ((double) (m.getPV()/m.getPVmax()) <= 0.05) {
+				txCap = 4;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.15) {
+				txCap = 3;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.25) {
+				txCap = 2.5;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.5) {
+				txCap = 2;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.75) {
+				txCap = 1.5;
+			}
+
+			int captureRate = (int) (2 * txCap * (21-m.getLevel()));
+			Random r = new Random();
+			if (r.nextInt(100)+1>captureRate) {
+				System.out.println("La capture de "+m.getNom()+" a échouée");
+			}
+			else {
+				System.out.println("La capture de "+m.getNom()+" a réussi !");
+				this.addEquipePlayer(m);
+			}
+
+		}
+		else {
+			System.out.println("Le monstre adverse n'est pas capturable");
+		}
+	}
+
+	public Action captureMonstreFront(Monster m) {
+		Action a = new Action();
+
+		if (m.equipeJoueur.equals(Situation.valueOf("Sauvage"))) {
+
+			System.out.println("Tentative de capture du "+m.getNom()+" sauvage");
+			double txCap = 1;
+			if ((double) (m.getPV()/m.getPVmax()) <= 0.05) {
+				txCap = 4;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.15) {
+				txCap = 3;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.25) {
+				txCap = 2.5;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.5) {
+				txCap = 2;
+			}
+			else if ((double) (m.getPV()/m.getPVmax()) <= 0.75) {
+				txCap = 1.5;
+			}
+
+			int captureRate = (int) (2 * txCap * (21-m.getLevel()));
+			Random r = new Random();
+			if (r.nextInt(100)+1>captureRate) {
+
+				a.setMessage("La capture de "+m.getNom()+" a échouée");
+			}
+			else {
+				a.setM(m);
+				a.setMessage("La capture de "+m.getNom()+" a réussie !");
+				this.addEquipePlayer(m);
+			}
+
+		}
+		else {
+			a.setMessage("Le monstre adverse n'est pas capturable");
+		}
+		return a;
+	}
 }

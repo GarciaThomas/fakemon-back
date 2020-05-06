@@ -17,7 +17,7 @@ import dao.IDAOMonster;
 @Service
 public class Context {
 	// Penser a scanner package model
-	private static Context _instance = null;
+
 	private Connection connect = null;
 	//AnnotationConfigApplicationContext myContext = new AnnotationConfigApplicationContext(fakemonConfig.class);
 	@Autowired

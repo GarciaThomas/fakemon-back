@@ -2,13 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -22,7 +17,10 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import application.Application;
+import service.ContextService;
 
 //	Déclaration Attribut
 @Entity
@@ -118,8 +116,11 @@ public class Monster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@Transient
+	private ContextService ctxtsvc;
 
-
+	
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
@@ -131,20 +132,6 @@ public class Monster {
 	//___________________________________________
 	//	Constructeur
 
-	public Monster(int level, double basePV, double baseAtk, double baseDef,double baseASp,double baseDSp, double baseVit, String poolAtkString,Type type){
-		this.level=level;
-		this.basePV=basePV;
-		this.baseAtk=baseAtk;
-		this.baseDef=baseDef;
-		this.baseASp=baseASp;
-		this.baseDSp=baseDSp;
-		this.baseVit=baseVit;
-		this.type = type;
-		generationIV();	
-		nature();
-		calcStat();
-		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
-	}
 
 	/** Constructeur pour JPA avec initialisation à partir de la BDD
 	 * L'ajout des attaques ne fonctionne pas dans ce construteur, probablement pas un effet de timing
@@ -160,10 +147,10 @@ public class Monster {
 	/** Initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
 	 * Cette fonction est appellée après la construction de l'objet (PostLoad)
 	 */
-	@PostLoad
-	public void init() {
-		this.listAttaque = creationAttaque(poolAtkStringToInt(poolAtkString));
-	}
+//	@PostLoad
+//	public void init() {
+//		this.listAttaque = ctxtsvc.creationAttaque(poolAtkStringToInt(poolAtkString));
+//	}
 
 
 	//___________________________________________
@@ -256,9 +243,15 @@ public class Monster {
 	public void setModifVit(double modifVit) {
 		this.modifVit = modifVit;
 	}
+	
+	
 
 	//___________________________________________
 	//	Méthodes
+
+	public void setListAttaque(ArrayList<Attaque> listAttaque) {
+		this.listAttaque = listAttaque;
+	}
 
 	/**	Défini les IV (les statistiques cachées) du fakemon
 	 *  N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
@@ -294,32 +287,13 @@ public class Monster {
 	}
 
 
-	/** Génére à partir du movepool du fakemon (la totalité des attaques qu'il peut apprendre) les trois attaques qu'il aura à sa disposition à la création
-	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route	
-	 * @param poolEntier Integer[] ; liste d'entier correspondant au movepool du fakemon
-	 * @return ArrayList<Attaque> ; liste des trois attaques disponible à la creation
-	 */
-	protected static ArrayList<Attaque> creationAttaque(Integer[] poolEntier) {
-
-		LinkedList<Integer> mesIds = new LinkedList<Integer>();
-		mesIds.addAll(Arrays.asList(poolEntier));
-		Collections.shuffle(mesIds);
-
-		ArrayList<Integer> idsForQuery = new ArrayList<Integer>();
-
-		for(int i=0; i < 3; i++) {
-			idsForQuery.add(mesIds.poll());
-		}
-		return Context.getInstance().getDaoAttaque().selectPoolId(idsForQuery);
-
-	}
 
 
 	/** Converti à partir du movepool en String issu de la base de donnée la liste d'Integer necessaire pour les requêtes
 	 * @param movepool String ; contenu dans la base de donnée avec les stats des fakemons
 	 * @return 
 	 */
-	private Integer[] poolAtkStringToInt(String movepool) {
+	public Integer[] poolAtkStringToInt(String movepool) {
 
 		String[] ids = movepool.split(",");
 		Integer[] poolEntier = new Integer[ids.length];
@@ -360,7 +334,7 @@ public class Monster {
 		if (level==5) {
 
 			//	Récupère nouvelle attaque et l'ajoute au moves du monstre
-			listAttaque.add(newAttaque());
+			listAttaque.add( this.newAttaque());
 			System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
 		}
 
@@ -368,12 +342,12 @@ public class Monster {
 		if (level == 3 || level == 5 || level == 8 || level == 10) {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
-			Attaque a = newAttaque();
+			Attaque a = this.newAttaque();
 			proposition.add(a);
 			boolean b;
 
 			while (proposition.size()<3) {
-				a = newAttaque();
+				a =  this.newAttaque();
 				b = true;
 				for (Attaque atk : proposition) {
 					if (atk.getNom().equals(a.getNom())) {
@@ -436,27 +410,7 @@ public class Monster {
 
 
 
-	/**
-	 * 
-	 * @return
-	 */
-	private Attaque newAttaque() {
 
-		//		Récupère et converti la liste de tous les moves dans une List<>  
-		Integer[] listIdTotal = poolAtkStringToInt(poolAtkString);
-		List<Integer> listeFormate = Arrays.asList(listIdTotal);
-
-		//	Retire les id des attaques déjà connues. Ne fonctionne pas avec remove()
-		for (Attaque a : this.listAttaque) {
-			listeFormate = listeFormate.stream().filter(m -> m != a.getId()).collect(Collectors.toList());
-		}
-
-		//	Récupère id de la nouvelle attaque
-		Random r = new Random();
-		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
-
-		return Context.getInstance().getDaoAttaque().findById(idNewMove).get();
-	}
 
 
 
@@ -499,35 +453,26 @@ public class Monster {
 	}
 
 
-	public Attaque choixAttaqueBOT(Monster m) {
+	/**
+	 * 
+	 * @return
+	 */
+	public Attaque newAttaque() {
 
-		Attaque a=null;
+		//		Récupère et converti la liste de tous les moves dans une List<>  
+		Integer[] listIdTotal = this.poolAtkStringToInt(this.getPoolAtkString());
+		List<Integer> listeFormate = Arrays.asList(listIdTotal);
+
+		//	Retire les id des attaques déjà connues. Ne fonctionne pas avec remove()
+		for (Attaque a : this.listAttaque) {
+			listeFormate = listeFormate.stream().filter(m -> m != a.getId()).collect(Collectors.toList());
+		}
+
+		//	Récupère id de la nouvelle attaque
 		Random r = new Random();
-		switch (r.nextInt(3)) {
-		case 0 : a = listAttaque.get(0);break;
-		case 1 : a = listAttaque.get(1);break;
-		case 2 : a = listAttaque.get(2);break;
-		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
-		default : choixAttaqueBOT(m);break;
-		}
+		int idNewMove =listeFormate.get(r.nextInt(listeFormate.size()));
 
-		for (Attaque i : listAttaque) {
-			if (Context.getInstance().getDaoAttaque().ratioEfficacite(i.getType().toString(),m.getType().toString()).orElse(new Efficacite(1.0)).getRatio()==2) {
-				r = new Random();
-				if(r.nextInt(4)==0) {
-					a=i;
-				}
-			}
-		}
-		return a;
-	}
-
-
-
-	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
-
-		this.listAttaque = Context.getInstance().getDaoAttaque().selectPoolId(ids);
-		return listAttaque;
+		return ctxtsvc.getAttaqueid(idNewMove);
 	}
 
 
@@ -566,9 +511,39 @@ public class Monster {
 	public void selectionAttaqueCombat(Monster m) throws PVException {
 		//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
 		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
-		combat(m,a.getId());
+		combat(m,a.getId() , null);
 
 	}
+	
+	public Attaque choixAttaqueBOT(Monster m) {
+
+		Attaque a=null;
+		Random r = new Random();
+		switch (r.nextInt(3)) {
+		case 0 : a = listAttaque.get(0);break;
+		case 1 : a = listAttaque.get(1);break;
+		case 2 : a = listAttaque.get(2);break;
+		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
+		default : choixAttaqueBOT(m);break;
+		}
+
+		for (Attaque i : listAttaque) {
+			if ( ctxtsvc.getRatioEfficacite(i,m)==2) {
+				r = new Random();
+				if(r.nextInt(4)==0) {
+					a=i;
+				}
+			}
+		}
+		return a;
+	}
+	
+	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
+
+		this.listAttaque = ctxtsvc.poolAttaque(ids);
+		return listAttaque;
+	}
+
 
 	/**	Calcule des dégâts et update les PV des monstres en fonction des différents paramettre : constantes, stab, efficacité, statistiques physiques ou spéciales
 	 * 	Le premier test est de vérifier si l'attaque touche l'adversaire
@@ -576,8 +551,11 @@ public class Monster {
 	 * @param idMove : int ; cet id est celui de l'attaque sélectionné dans une méthode précédente (ou par le formulaire en Front)
 	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
 	 */
-	public Action combat(Monster m, int idMove) throws PVException {
+	public Action combat(Monster m, int idMove, ContextService ctxtsvc) throws PVException {
 
+		this.ctxtsvc = ctxtsvc;
+		
+		
 		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
 		Action action = new Action();
@@ -601,7 +579,7 @@ public class Monster {
 			
 
 			//	set si l'attaque utilis�e est efficace ou non
-			double type = (Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() -> new Efficacite(1.0))).getRatio();
+			double type = ctxtsvc.getRatioEfficacite(a,m);
 			if (type == 2) {
 				System.out.println("L'attaque est super efficace !");
 				action.setMessage("L'attaque est super efficace !");
@@ -750,80 +728,6 @@ public class Monster {
 			throw new PVException(cible); 
 		}
 	}
-
-
-	/*
-	//	Doublon action combat pour le front
-	public Action combatVieuxFront(Monster m,int id) throws PVException {
-
-		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == id).findFirst().get();	
-		Random r = new Random();
-		Action action = new Action();
-
-		if (r.nextInt(100)>a.getPrecision()) {
-			System.out.println("L'attaque de "+this.getNom()+" a ratée !");
-			action.setM(m);
-			action.setMessage("L'attaque de "+this.getNom()+" a ratée !");
-		}
-		else {
-
-			//set les paramettres de calcul des dégâts
-			final double k1 = (double) 2/5;
-			final double k2 = 50;
-
-			//set le bonus de stab
-			double stab = 1.0;
-			if (a.getType().equals(this.getType())) {
-				stab = 1.5;
-			}
-
-			//set si l'attaque utilis�e est efficace ou non
-			Efficacite e = Context.getInstance().getDaoAttaque().ratioEfficacite(a.getType().toString(),m.getType().toString()).orElseGet(() ->new Efficacite(1.0));
-
-			double type = e.getRatio();
-			if (type == 2) {
-				System.out.println("L'attaque est super efficace !");
-				action.setMessage("L'attaque est super efficace !");
-			}
-			if (type == 0.5) {
-				System.out.println("L'attaque est peu efficace ...");
-				action.setMessage("L'attaque est peu efficace ...");
-			}
-
-			//dedermine si l'attaque est physique ou spéciale
-			int statDegat = 0;
-			int statProtection = 0;
-			switch (a.getEtat()) {
-			case "Physique": statDegat=this.Atk ; statProtection=m.getDef(); break;
-			case "Special" : statDegat=this.ASp ; statProtection=m.getDSp(); break;
-			default : System.out.println("erreur de degat");break;
-			}
-
-			//calcul des dégâts
-			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
-			m.PV-=degat;
-
-
-			if (m.getPV()<=0) {
-				m.setPV(0);
-				action.setM(m);
-				throw new PVException(m);
-
-			}
-			else {
-				action.setM(m);
-				System.out.println("Il reste "+m.getPV()+" PV a "+m.getNom()+".\n");
-
-			}
-		}
-		return action;
-	}
-	 */
-
-
-
-
-
 
 	@Override
 	public String toString() {

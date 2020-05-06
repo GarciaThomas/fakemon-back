@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan({"config","controller","model"})
+@ComponentScan({"config","controller","service","model"})
 public class fakemonConfig {
 
 		@Bean
