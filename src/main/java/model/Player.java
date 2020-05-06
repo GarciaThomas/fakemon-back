@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import application.Application;
 
+@Service
 public class Player { //Singleton.
 	//	Attributs
+	@Autowired
+	private Context context;
 	private static Player _instance = null;
 	protected LinkedList<Monster> equipePlayer = new LinkedList<Monster>();
 	protected ArrayList<Monster> starters = new ArrayList<Monster>();
@@ -21,15 +27,7 @@ public class Player { //Singleton.
 	}
 
 	//______________________
-	/**	Methode du singleton
-	 * @return Player ; Retourne l'unique instance possible de l'objet Player
-	 */
-	public static Player getInstance() {
-		if(_instance==null) {
-			_instance=new Player();
-		}
-		return _instance;
-	}
+
 
 	//	Getters Setters et apparentés
 	public LinkedList<Monster> getEquipePlayer() {
@@ -63,17 +61,17 @@ public class Player { //Singleton.
 
 			//-----------
 			Random r = new Random();
-			int choixMonstre = r.nextInt(Context.getInstance().getDaoMonster().countNombreMonstre());
-			m = Context.getInstance().getDaoMonster().findById(choixMonstre+1).get();
+			int choixMonstre = r.nextInt(this.context.getDaoMonster().countNombreMonstre());
+			m = this.context.getDaoMonster().findById(choixMonstre+1).get();
 			tableRencontre.add(m);
 			//-----------			
 			/*		
-			Monster pipeau = Context.getInstance().getDaoMonster().selectByNom("Pipeau");
-			Monster crameleon = Context.getInstance().getDaoMonster().selectByNom("Crameleon");
-			Monster foufoudre = Context.getInstance().getDaoMonster().selectByNom("Foufoudre");
-			Monster renargile = Context.getInstance().getDaoMonster().selectByNom("Renargile");
-			Monster bebesalt = Context.getInstance().getDaoMonster().selectByNom("Bebesalt");
-			Monster thymtamarre = Context.getInstance().getDaoMonster().selectByNom("Thymtamarre");
+			Monster pipeau = this.context.getDaoMonster().selectByNom("Pipeau");
+			Monster crameleon = this.context.getDaoMonster().selectByNom("Crameleon");
+			Monster foufoudre = this.context.getDaoMonster().selectByNom("Foufoudre");
+			Monster renargile = this.context.getDaoMonster().selectByNom("Renargile");
+			Monster bebesalt = this.context.getDaoMonster().selectByNom("Bebesalt");
+			Monster thymtamarre = this.context.getDaoMonster().selectByNom("Thymtamarre");
 
 			tableCreation.add(pipeau);
 			tableCreation.add(crameleon);

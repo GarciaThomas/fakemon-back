@@ -9,29 +9,29 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import config.fakemonConfig;
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
-
+@Service
 public class Context {
+	// Penser a scanner package model
 	private static Context _instance = null;
 	private Connection connect = null;
-	AnnotationConfigApplicationContext myContext = new AnnotationConfigApplicationContext(fakemonConfig.class);
-	private IDAOAttaque daoAttaque = myContext.getBean(IDAOAttaque.class);
-	private IDAOMonster daoMonster = myContext.getBean(IDAOMonster.class);
+	//AnnotationConfigApplicationContext myContext = new AnnotationConfigApplicationContext(fakemonConfig.class);
+	@Autowired
+	private IDAOAttaque daoAttaque;// = myContext.getBean(IDAOAttaque.class);
+	@Autowired
+	private IDAOMonster daoMonster; // = myContext.getBean(IDAOMonster.class);
 	private ArrayList<Monster> monstresProposition = null;
+	
+	@Autowired
+	private Player player;
 
 	private Context() {
 	}
 
-	public static Context getInstance() {
-		if(_instance==null) {
-			_instance=new Context();
-		}
-		return _instance;
-	}
 
 	public Connection getConnect() {
 		return connect;
@@ -72,7 +72,7 @@ public class Context {
 	public List<Monster> getMonstresProposition(){
 		if(monstresProposition == null) {
 			monstresProposition = new ArrayList<Monster>();
-			monstresProposition.addAll(Player.getInstance().tableRencontre(10).stream()
+			monstresProposition.addAll(player.tableRencontre(10).stream()
 					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
 
 		}
