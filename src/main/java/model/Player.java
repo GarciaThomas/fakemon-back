@@ -36,7 +36,7 @@ public class Player { //Singleton.
 		return equipePlayer;
 	}
 	public void addEquipePlayer(Monster m) {
-		System.out.println("Call");
+//		System.out.println("Call");
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}

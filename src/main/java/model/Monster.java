@@ -369,22 +369,30 @@ public class Monster {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
 			proposition.add(newAttaque());
+			System.out.println(proposition.toString()); /////////////////////////////////
 			Attaque a;
 			boolean b;
 
+			int i =1;
 			while (proposition.size()<3) {
 				a = newAttaque();
+				System.out.println(a.toStringDetailAttaque());/////////////////////////////////
 				b = true;
 				for (Attaque atk : proposition) {
+					System.out.println("pour chaqye attaque");/////////////////////////////////
 					if (atk == a) {
 						b=false;
+						System.out.println("b passé en false");/////////////////////////////////
 					}
 				}
 				if (b) {
 					proposition.add(a);
+					System.out.println("a ajouté à la liste");/////////////////////////////////
 				}
+				System.out.println(proposition.toString()+". tour "+i);/////////////////////////////////
+				i++;
 			}
-			System.out.println(proposition.stream().map(atk -> atk.toStringDetailAttaque()).collect(Collectors.joining("\n* ")));
+			System.out.println(proposition.stream().map(atk -> atk.toStringDetailAttaque()).collect(Collectors.joining("")));
 			remplacementMove(0, 0, proposition, 0);
 		}
 	}
