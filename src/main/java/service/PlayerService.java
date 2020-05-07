@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import model.Action;
-import model.Context;
 import model.Monster;
 import model.Situation;
 
@@ -18,7 +17,7 @@ import model.Situation;
 public class PlayerService {
 
 	@Autowired
-	private Context context;
+	private ContextService context;
 
 	@Autowired
 	private ContextService srvContext;
