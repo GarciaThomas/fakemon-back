@@ -160,11 +160,11 @@ public class Monster {
 	public void setPoolAtkString(String poolAtkString) {
 		this.poolAtkString = poolAtkString;
 	}
-	public void setLevel(int level) {
-		this.level = level;
-	}
 	public int getLevel() {
 		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
 	}
 	public int getPV() {
 		return PV;
@@ -190,7 +190,7 @@ public class Monster {
 	public Type getType() {
 		return type;
 	}
-	protected void setEquipeJoueur() {
+	public void setEquipeJoueur() {
 		equipeJoueur=Situation.valueOf("Joueur");
 	}
 	public Situation getSituation() {
@@ -334,11 +334,13 @@ public class Monster {
 
 			//	Récupère nouvelle attaque et l'ajoute au moves du monstre
 			listAttaque.add( this.newAttaque());
+			if (this.getSituation().equals(Situation.valueOf("Joueur"))) {
 			System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
+			}
 		}
 
 		//	-> propose trois nouvelle attaque en remplacement d'une actuelle
-		if (level == 3 || level == 5 || level == 8 || level == 10) {
+		if ( (level == 3 || level == 5 || level == 8 || level == 10) && this.getSituation().equals(Situation.valueOf("Joueur"))) {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
 			Attaque a = this.newAttaque();
@@ -507,15 +509,17 @@ public class Monster {
 	 * @param m Monster ; Il s'agit du monstre adverse. Le monstre qui lance attaque est le "this"
 	 * @throws PVException
 	 */
-	public void selectionAttaqueCombat(Monster m) throws PVException {
+	public void selectionAttaqueCombat(Monster m, ContextService ctxtsvc) throws PVException {
 		//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
-		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
-		combat(m,a.getId() , null);
+		this.ctxtsvc = ctxtsvc;
+		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m, ctxtsvc);	
+		combat(m,a.getId() , ctxtsvc);
 
 	}
 	
-	public Attaque choixAttaqueBOT(Monster m) {
-
+	public Attaque choixAttaqueBOT(Monster m, ContextService ctxtsvc) {
+		
+		this.ctxtsvc = ctxtsvc;
 		Attaque a=null;
 		Random r = new Random();
 		switch (r.nextInt(3)) {
@@ -523,7 +527,7 @@ public class Monster {
 		case 1 : a = listAttaque.get(1);break;
 		case 2 : a = listAttaque.get(2);break;
 		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
-		default : choixAttaqueBOT(m);break;
+		default : choixAttaqueBOT(m, ctxtsvc);break;
 		}
 
 		for (Attaque i : listAttaque) {

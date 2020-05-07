@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
+import service.PlayerService;
+
 @Service
 public class Context {
 	// Penser a scanner package model
@@ -27,7 +29,7 @@ public class Context {
 	private ArrayList<Monster> monstresProposition = null;
 	
 	@Autowired
-	private Player player;
+	private PlayerService player;
 
 	private Context() {
 	}

@@ -8,19 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import config.FakemonConfig;
-import dao.IDAOAttaque;
-import dao.IDAOMonster;
 import model.Dresseur;
 import model.Monster;
 import model.PVException;
-import model.Player;
+import service.ContextService;
 import service.PlayerService;
 
 public class Application {
 
 	@Autowired
-	static Player player;
+	PlayerService player;
 	
+	@Autowired
+	ContextService ctxtsvc;
+
 	/**	Fonction qui permet la saisie console d'un int. 
 	 * Pas de verification que l'entree est correcte
 	 * @param msg : String ; message qui sera affiche dans la console
@@ -45,21 +46,21 @@ public class Application {
 	 * @param m1 : Monster ; le monstre du joueur, cad le premier de sa liste au debut du combat puis celui actif lors des tours suivants (si KO ou switch)
 	 * @param m2 : Monster ; Le monstre sauvage ou du dresseur adverse
 	 **/
-	public static void combat(Monster m1, Monster m2){
+	public void combat(Monster m1, Monster m2){
 
 		try {
 			while (m1.getPV()>0 && m2.getPV()>0) {
 				if (m1.initiative(m2).equals(m1)) {
 					System.out.println(m1.getNom()+" attaque "+m2.getNom()+" en premier");
-					m1.selectionAttaqueCombat(m2);
+					m1.selectionAttaqueCombat(m2, ctxtsvc);
 					System.out.println(m2.getNom()+" attaque "+m1.getNom());
-					m2.selectionAttaqueCombat(m1);
+					m2.selectionAttaqueCombat(m1, ctxtsvc);
 				}
 				else {
 					System.out.println(m2.getNom()+" attaque "+m1.getNom()+" en premier");
-					m2.selectionAttaqueCombat(m1);
+					m2.selectionAttaqueCombat(m1, ctxtsvc);
 					System.out.println(m1.getNom()+" attaque "+m2.getNom());
-					m1.selectionAttaqueCombat(m2);
+					m1.selectionAttaqueCombat(m2, ctxtsvc);
 				}
 			}
 		}
@@ -81,7 +82,7 @@ public class Application {
 	 * Il y a de l'affichage dans la console
 	 * @param nbSauvage : int ; nombre de créatures sauvages rencontrées d'affillées
 	 **/
-	public static void rencontreSauvage(int nbSauvage) {
+	public void rencontreSauvage(int nbSauvage) {
 
 		System.out.println("Vous allez rencontrer "+nbSauvage+" Fakemon sauvages.");
 		Monster m = null;	
@@ -111,56 +112,61 @@ public class Application {
 	 * 
 	 * @param nbDresseurIntermediaires int ; nombre de dresseurs intermédiaire, c'est a dire en dehors du premier et dernier dresseur qui eux sont fixes
 	 */
-	public static void arene(int nbDresseurIntermediaires) {
+	public void arene(int nbDresseurIntermediaires) {
 
 		System.out.println("Bienvenue dans l'arène ! Préparez-vous à affronter des adversaires de plus en plus corriace.");
 		int pts = 35;
 
-		Dresseur d = new Dresseur("FragileJordan",pts);
+		Dresseur d = new Dresseur("FragileJordan", pts, player);
 		System.out.println("Premier duel d'échauffement contre FragileJordan.");
 		System.out.println(d.toStringEquipe());
 		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		player.soinEquipeJoueur();
 		for (Monster m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
 		}
 		pts=(int)(pts*1.08);
 
 		for (int i = 0;i<nbDresseurIntermediaires;i++) {
-			d = new Dresseur(pts);
+			d = new Dresseur(pts, player);
 			System.out.println("Duel numéro "+(i+1)+" contre "+d.getNom()+".");
 			System.out.println(d.toStringEquipe());
 			combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+			player.soinEquipeJoueur();
 			for (Monster m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
 			}
 			pts=(int)(pts*1.08);
 		}
 
-		d = new Dresseur("BlackJordan",(int)(pts*1.1574));
+		d = new Dresseur("BlackJordan",(int)(pts*1.1574), player);
 		System.out.println("Dernier duel contre le maître BlackJordan.");
 		System.out.println(d.toStringEquipe());
 		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
-
+		player.soinEquipeJoueur();
 		System.out.println("Bravo l'arène est finie !");
 
 	}
 
-
+	public void run() {
+		player.selectionStarter();
+	//	rencontreSauvage(10);
+		arene(0);
+	}
 
 
 	public static void main(String[] args) {	
-
-
-	/*	Monster m = player.tableRencontre(1).get(0);
+		AnnotationConfigApplicationContext monContext = new AnnotationConfigApplicationContext(FakemonConfig.class);
+		monContext.getBeanFactory().createBean(Application.class).run();
+		
+		/*	Monster m = player.tableRencontre(1).get(0);
 		System.out.println(m.toStringGeneral()+"\n-----------------------");
 		System.out.println(m.toStringDetailStat());
 		m.levelUp();
 		System.out.println(m.toStringDetailStat());
 		m.levelUp();*/
-		
-		player.selectionStarter();
-		rencontreSauvage(10);
-		arene(0);
+
+
 
 	}
 

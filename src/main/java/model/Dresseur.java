@@ -6,25 +6,29 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import service.PlayerService;
+
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
 	
 	@Autowired
-	private Player player;
+	private PlayerService player;
 	
 	
 	
 	//	Constructeurs : vide pour nom aléatoire ou donne un nom pour le fixer
 	//	Le nombre de points d'expérience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
-	public Dresseur(int pts) {
-		this.equipeDresseur = choixEquipeDresseur(pts);
+	public Dresseur(int pts, PlayerService player) {
+		this.equipeDresseur = choixEquipeDresseur(pts, player);
 		this.nom = choixNom();
+		this.player = player;
 	}
 
-	public Dresseur(String nom, int pts) {
-		this.equipeDresseur = choixEquipeDresseur(pts);
+	public Dresseur(String nom, int pts, PlayerService player) {
+		this.equipeDresseur = choixEquipeDresseur(pts, player);
 		this.nom = nom;
+		this.player = player;
 	}
 
 
@@ -65,9 +69,10 @@ public class Dresseur {
 	 * @param pts int ; Nombre de points d'expérience disponibles pour la création de l'équipe
 	 * @return LinkedList<Monster> ; L'équipe du dresseur
 	 **/
-	private LinkedList<Monster> choixEquipeDresseur(int pts) {
+	private LinkedList<Monster> choixEquipeDresseur(int pts, PlayerService player) {
 
-		this.equipeDresseur.add(player.tableRencontre(1).get(0));
+		Monster m = player.tableRencontre(1).get(0);
+		this.equipeDresseur.add(m);
 		Random r = new Random();
 
 		while ( (pts>=3 && equipeDresseur.size()<6) || pts>=lePlusFaible().getExpNextLevel() ) {
