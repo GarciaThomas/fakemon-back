@@ -27,6 +27,7 @@ public class PlayerService {
 	protected int[] position = new int[] {0,0};
 	private int maxRencontre = 10;
 	private int cptRencontre = 0;
+	private int idScene = 0;
 
 
 	//	Getters Setters et apparentés
@@ -50,9 +51,18 @@ public class PlayerService {
 	public void setPosition(int[] position) {
 		this.position = position;
 	}
+	
+	
+	
 	//______________________________________________________________________________
 
 
+	public int getIdScene() {
+		return idScene;
+	}
+	public void setIdScene(int idScene) {
+		this.idScene = idScene;
+	}
 	/**Revoie une liste de monstres de niveau 1 crée aléatoirement
 	 * @param nbRencontre int ; le nombre de monstres souhaités
 	 * @return ArrayList<Monster> ; La liste des monstres aléatoire va rencontrer
