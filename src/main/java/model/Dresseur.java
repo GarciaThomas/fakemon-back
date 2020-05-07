@@ -11,12 +11,12 @@ import service.PlayerService;
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
-	
+
 	@Autowired
 	private PlayerService player;
-	
-	
-	
+
+
+
 	//	Constructeurs : vide pour nom aléatoire ou donne un nom pour le fixer
 	//	Le nombre de points d'expérience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
 	public Dresseur(int pts, PlayerService player) {
@@ -72,6 +72,7 @@ public class Dresseur {
 	private LinkedList<Monster> choixEquipeDresseur(int pts, PlayerService player) {
 
 		Monster m = player.tableRencontre(1).get(0);
+		m.setEquipeDresseur();
 		this.equipeDresseur.add(m);
 		Random r = new Random();
 
@@ -92,7 +93,9 @@ public class Dresseur {
 				}
 			}
 			else if (pts>=3 && equipeDresseur.size()<6) {
-				this.equipeDresseur.add(player.tableRencontre(1).get(0));
+				m = player.tableRencontre(1).get(0);
+				m.setEquipeDresseur();
+				this.equipeDresseur.add(m);
 				pts-=3;		//	Coût d'un lv 1 : 3pts d'expérence (valeur du kill)
 				//		System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
 			}
@@ -120,20 +123,38 @@ public class Dresseur {
 	}
 
 
-	
-	
-	
-	
-	
-	
-	// faire une fonction qui renvoie le prochain monstre non ko de la liste de montre
-	// fait un fonction qui permet de récupérer le desseur à partir de monstre !!!
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+	/** Change l'ordre de la liste de monstre
+	 * Le monstre en première position devient le premier monstre non-KO de la liste actuelle
+	 **/
+	public void fakemonSuivant() {
+		boolean b = true; 
+		int i = 0; int index = 0; 
+		Monster firstM = null;
+		Monster mSwitch = this.equipeDresseur.getFirst();
+		equipeDresseur.removeFirst();
+		for (Monster m : equipeDresseur) {
+			i++;
+			if (m.getPV() > 0 && b) {
+				firstM = m;
+				index = i;
+				b = false;
+			}
+		}
+		equipeDresseur.addFirst(firstM);
+		equipeDresseur.set(index, mSwitch);
+	}
+
+
+
+
+
+
 
 	@Override
 	public String toString() {
@@ -147,6 +168,8 @@ public class Dresseur {
 	public String toStringEquipe() {
 		return "Son équipe est constitué de :\n\t" + equipeDresseur.stream().map( m -> m.getNom()+", niveau "+m.getLevel()).collect(Collectors.joining("\n\t "));
 	}
+
+
 }
 
 

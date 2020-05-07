@@ -2,6 +2,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class Application {
 
 	@Autowired
 	PlayerService player;
-	
+
 	@Autowired
 	ContextService ctxtsvc;
 
@@ -69,10 +71,6 @@ public class Application {
 			player.changeMonsterActif(1);
 			combat (player.getEquipePlayer().getFirst(), m2);
 		}
-		/*		else if (Dresseur.
-				getEquipeDresseur().getFirst().getPV()<=0 && PlayerService.checkEquipeJoueur()) {
-			combat (m1, dresseur.getEquipeDresseur().getSuivant);
-		}*/
 		}
 	}
 
@@ -108,6 +106,50 @@ public class Application {
 		}
 	}
 
+	public void combatDresseur(PlayerService player, Dresseur dresseur){
+		Monster mPlayer = player.getEquipePlayer().getFirst();
+		Monster mDresseur = dresseur.getEquipeDresseur().getFirst();
+		try {
+			while (mPlayer.getPV()>0 && mDresseur.getPV()>0) {
+				if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
+					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse en premier");
+					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
+					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom());
+					mDresseur.selectionAttaqueCombat(mPlayer, ctxtsvc);
+				}
+				else {
+					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom()+" en premier");
+					mDresseur.selectionAttaqueCombat(mPlayer, ctxtsvc);
+					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse");
+					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
+				}
+			}
+		}
+		catch (PVException e) {System.err.println(e);
+			if (mPlayer.getPV()<=0 && player.checkEquipeJoueur()) {
+				System.out.println("Vous devez changer de Fakemon. Qui voulez-vous envoyer ?");
+				player.changeMonsterActif(1);
+				combatDresseur(player, dresseur);
+			}
+			else if (mDresseur.getPV()<=0 && dresseur.checkEquipeDresseur()) {
+				System.out.println("Le dresseur adverse change de fakemon.");
+				dresseur.fakemonSuivant();
+				combatDresseur(player, dresseur);
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 	/**	Grosse méthode de combat avec les dresseurs : l'arène
 	 * 
 	 * @param nbDresseurIntermediaires int ; nombre de dresseurs intermédiaire, c'est a dire en dehors du premier et dernier dresseur qui eux sont fixes
@@ -120,7 +162,7 @@ public class Application {
 		Dresseur d = new Dresseur("FragileJordan", pts, player);
 		System.out.println("Premier duel d'échauffement contre FragileJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combatDresseur(player, d);
 		player.soinEquipeJoueur();
 		for (Monster m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
@@ -131,7 +173,7 @@ public class Application {
 			d = new Dresseur(pts, player);
 			System.out.println("Duel numéro "+(i+1)+" contre "+d.getNom()+".");
 			System.out.println(d.toStringEquipe());
-			combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+			combatDresseur(player, d);
 			player.soinEquipeJoueur();
 			for (Monster m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
@@ -142,7 +184,7 @@ public class Application {
 		d = new Dresseur("BlackJordan",(int)(pts*1.1574), player);
 		System.out.println("Dernier duel contre le maître BlackJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combatDresseur(player, d);
 		player.soinEquipeJoueur();
 		System.out.println("Bravo l'arène est finie !");
 
@@ -150,15 +192,45 @@ public class Application {
 
 	public void run() {
 		player.selectionStarter();
-	//	rencontreSauvage(10);
+		rencontreSauvage(10);
 		arene(0);
 	}
-
+	
+	public void test1() {
+		ArrayList<Monster> ltArray = player.tableRencontre(3);
+		LinkedList<Monster> ltLinked = new LinkedList<>();
+		ltLinked.addAll(ltArray);
+		player.setEquipePlayer(ltLinked);
+		for (Monster m : player.getEquipePlayer()) {
+			m.setContextService(ctxtsvc);
+			m.levelUp();
+			m.levelUp();
+			m.levelUp();
+		}
+		arene(0);
+	}
+	public void test() {
+		ArrayList<Monster> ltArray = player.tableRencontre(3);
+		LinkedList<Monster> ltLinked = new LinkedList<>();
+		ltLinked.addAll(ltArray);
+		player.setEquipePlayer(ltLinked);
+		for (Monster m : player.getEquipePlayer()) {
+			m.setContextService(ctxtsvc);
+			m.levelUp();
+			m.levelUp();
+			m.levelUp();
+		}
+		player.getEquipePlayer().getFirst().setPV(0);
+		player.changeMonsterActif(1);
+		for (Monster m : player.getEquipePlayer()) {
+			System.out.println(m.toStringGeneral());
+		}
+	}
 
 	public static void main(String[] args) {	
 		AnnotationConfigApplicationContext monContext = new AnnotationConfigApplicationContext(FakemonConfig.class);
-		monContext.getBeanFactory().createBean(Application.class).run();
-		
+		monContext.getBeanFactory().createBean(Application.class).test1();
+
 		/*	Monster m = player.tableRencontre(1).get(0);
 		System.out.println(m.toStringGeneral()+"\n-----------------------");
 		System.out.println(m.toStringDetailStat());

@@ -115,11 +115,11 @@ public class Monster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@Transient
 	private ContextService ctxtsvc;
 
-	
+
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
@@ -146,10 +146,10 @@ public class Monster {
 	/** Initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
 	 * Cette fonction est appellée après la construction de l'objet (PostLoad)
 	 */
-//	@PostLoad
-//	public void init() {
-//		this.listAttaque = ctxtsvc.creationAttaque(poolAtkStringToInt(poolAtkString));
-//	}
+	//	@PostLoad
+	//	public void init() {
+	//		this.listAttaque = ctxtsvc.creationAttaque(poolAtkStringToInt(poolAtkString));
+	//	}
 
 
 	//___________________________________________
@@ -192,6 +192,9 @@ public class Monster {
 	}
 	public void setEquipeJoueur() {
 		equipeJoueur=Situation.valueOf("Joueur");
+	}
+	public void setEquipeDresseur() {
+		equipeJoueur=Situation.valueOf("Adversaire");
 	}
 	public Situation getSituation() {
 		return equipeJoueur;
@@ -242,8 +245,10 @@ public class Monster {
 	public void setModifVit(double modifVit) {
 		this.modifVit = modifVit;
 	}
-	
-	
+	public void setContextService(ContextService ctxtsvc) {
+		this.ctxtsvc = ctxtsvc;
+	}
+
 
 	//___________________________________________
 	//	Méthodes
@@ -333,9 +338,9 @@ public class Monster {
 		if (level==5) {
 
 			//	Récupère nouvelle attaque et l'ajoute au moves du monstre
-			listAttaque.add( this.newAttaque());
+			listAttaque.add( this.newAttaque(ctxtsvc));
 			if (this.getSituation().equals(Situation.valueOf("Joueur"))) {
-			System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
+				System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
 			}
 		}
 
@@ -343,12 +348,12 @@ public class Monster {
 		if ( (level == 3 || level == 5 || level == 8 || level == 10) && this.getSituation().equals(Situation.valueOf("Joueur"))) {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
-			Attaque a = this.newAttaque();
+			Attaque a = this.newAttaque(ctxtsvc);
 			proposition.add(a);
 			boolean b;
 
 			while (proposition.size()<3) {
-				a =  this.newAttaque();
+				a =  this.newAttaque(ctxtsvc);
 				b = true;
 				for (Attaque atk : proposition) {
 					if (atk.getId() == a.getId()) {
@@ -394,7 +399,7 @@ public class Monster {
 				int sc = saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
 				idMoveOublie=this.getListAttaque().get(sc-1).getId();
 			}
-			
+
 			int ocnzi = idMoveOublie;
 			Attaque moveOublie = this.getListAttaque().stream().filter(atk -> atk.getId() == ocnzi ).findFirst().get();
 			int dzdzd = idMoveAppris;
@@ -440,17 +445,14 @@ public class Monster {
 
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
-		int sc = saisieInt("Quelle attaque ? (1 à 3)");
-
-		Attaque a=null;
-		switch (sc) {
-		case 1 : a = listAttaque.get(0);break;
-		case 2 : a = listAttaque.get(1);break;
-		case 3 : a = listAttaque.get(2);break;
-		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
-		default : System.out.println("Mauvaise saisie. Veuillez recommencer");choixAttaque();break;
-		}
-		return a;
+		int sc = saisieInt("Quelle attaque ? (1 à "+this.listAttaque.size()+")");
+		
+		while (sc < 1 || sc > this.listAttaque.size()) {
+			System.out.println("Mauvaise saisie. Veuillez recommencer" + sc);
+			sc = saisieInt("Quelle attaque ? (1 à "+this.listAttaque.size()+")");
+		} 
+		
+		return listAttaque.get(sc-1);
 	}
 
 
@@ -458,7 +460,7 @@ public class Monster {
 	 * 
 	 * @return
 	 */
-	public Attaque newAttaque() {
+	public Attaque newAttaque(ContextService ctxtsvc) {
 
 		//		Récupère et converti la liste de tous les moves dans une List<>  
 		Integer[] listIdTotal = this.poolAtkStringToInt(this.getPoolAtkString());
@@ -516,20 +518,21 @@ public class Monster {
 		combat(m,a.getId() , ctxtsvc);
 
 	}
-	
-	public Attaque choixAttaqueBOT(Monster m, ContextService ctxtsvc) {
-		
-		this.ctxtsvc = ctxtsvc;
-		Attaque a=null;
-		Random r = new Random();
-		switch (r.nextInt(3)) {
-		case 0 : a = listAttaque.get(0);break;
-		case 1 : a = listAttaque.get(1);break;
-		case 2 : a = listAttaque.get(2);break;
-		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
-		default : choixAttaqueBOT(m, ctxtsvc);break;
-		}
 
+	
+	/** Choix par l'IA de l'attaque à lancer	
+	 * Pour le moment pas de différence entre IA des monstres sauvages et dresseur
+	 * Choisis au hasard une attaque, puis si jamais le monstre a un move super efficace donne une chance supplémentaire de le sélectionner
+	 * @param m Monster ; Le monstre ciblé du joueur
+	 * @param ctxtsvc ContextService ; donne le contexte de Spring pour faire fonctionner le back en console
+	 * @return
+	 **/
+	public Attaque choixAttaqueBOT(Monster m, ContextService ctxtsvc) {
+
+		this.ctxtsvc = ctxtsvc;
+		Random r = new Random();
+		Attaque a = listAttaque.get(r.nextInt(this.listAttaque.size()));;
+		
 		for (Attaque i : listAttaque) {
 			if ( ctxtsvc.getRatioEfficacite(i,m)==2) {
 				r = new Random();
@@ -540,7 +543,7 @@ public class Monster {
 		}
 		return a;
 	}
-	
+
 	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
 
 		this.listAttaque = ctxtsvc.poolAttaque(ids);
@@ -557,8 +560,8 @@ public class Monster {
 	public Action combat(Monster m, int idMove, ContextService ctxtsvc) throws PVException {
 
 		this.ctxtsvc = ctxtsvc;
-		
-		
+
+
 		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
 		Action action = new Action();
@@ -579,7 +582,7 @@ public class Monster {
 			if (a.getType().equals(this.getType())) {
 				stab = 1.5;
 			}
-			
+
 
 			//	set si l'attaque utilis�e est efficace ou non
 			double type = ctxtsvc.getRatioEfficacite(a,m);
@@ -743,6 +746,10 @@ public class Monster {
 
 	public String toStringGeneral() {
 		return "- "+nom+" ["+type+"] : Attaques = "+listAttaque.stream().map( a -> a.getNom()).collect(Collectors.joining(", "));
+	}
+	
+	public String toStringGeneralPV() {
+		return "- "+nom+" ["+type+"] (PV = "+PV+"/"+PVmax+") : Attaques = "+listAttaque.stream().map( a -> a.getNom()).collect(Collectors.joining(", "));
 	}
 
 	public String toStringDetailAttaque() {

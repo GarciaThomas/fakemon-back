@@ -39,6 +39,12 @@ public class PlayerService {
 		m.setEquipeJoueur();
 		equipePlayer.add(m);
 	}
+	public void setEquipePlayer(LinkedList<Monster> equipePlayer) {
+		for (Monster m :equipePlayer) {
+			m.setEquipeJoueur();
+		}
+		this.equipePlayer = equipePlayer;
+	}
 	public int[] getPosition() {
 		return position;
 	}
@@ -155,15 +161,18 @@ public class PlayerService {
 	 * @param i int ; Index du monstre souhaité en remplacement du monstre actif
 	 **/
 	public void changeMonsterActif(int i) {
-		while (equipePlayer.get(i-1).getPV()<=0) {
-			i= saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
+		for (Monster m : equipePlayer) {
+		System.out.println(m.toStringGeneralPV());
 		}
-		equipePlayer.getFirst().setModifAtk(0);
-		equipePlayer.getFirst().setModifDef(0);
-		equipePlayer.getFirst().setModifASp(0);
-		equipePlayer.getFirst().setModifDSp(0);
-		equipePlayer.getFirst().setModifVit(0);
-		changeMonster(0, i);
+		while (equipePlayer.get(i-1).getPV()<=0) {			
+			i = saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
+		}
+		equipePlayer.getFirst().setModifAtk(1);
+		equipePlayer.getFirst().setModifDef(1);
+		equipePlayer.getFirst().setModifASp(1);
+		equipePlayer.getFirst().setModifDSp(1);
+		equipePlayer.getFirst().setModifVit(1);
+		changeMonster(1, i);
 	}
 
 
