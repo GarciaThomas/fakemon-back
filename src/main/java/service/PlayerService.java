@@ -164,7 +164,7 @@ public class PlayerService {
 		for (Monster m : equipePlayer) {
 		System.out.println(m.toStringGeneralPV());
 		}
-		while (equipePlayer.get(i-1).getPV()<=0) {			
+		while (equipePlayer.get(i-1).getPV()<=0 && (i<1 || i>6) ) {			
 			i = saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
 		}
 		equipePlayer.getFirst().setModifAtk(1);

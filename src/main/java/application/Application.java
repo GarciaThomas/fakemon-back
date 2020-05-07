@@ -109,9 +109,20 @@ public class Application {
 	public void combatDresseur(PlayerService player, Dresseur dresseur){
 		Monster mPlayer = player.getEquipePlayer().getFirst();
 		Monster mDresseur = dresseur.getEquipeDresseur().getFirst();
+		String scString = "chose"; int scInt = 0;
 		try {
 			while (mPlayer.getPV()>0 && mDresseur.getPV()>0) {
-				if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
+				while (scString.equalsIgnoreCase("y") && scString.equalsIgnoreCase("n")) {
+					scString = saisieString("Voulez-vous changer de monstre actif ?");
+				}
+				if(scString.equalsIgnoreCase("y")) {
+					while (scInt < 1 || scInt > player.getEquipePlayer().size()) {
+						for (Monster m : player.getEquipePlayer()) {System.out.println(m.toStringGeneralPV());}
+					scInt = saisieInt("Quel monstre voulez-vous en monstre actif?");
+					}
+					player.changeMonsterActif(scInt);
+				}
+			else if (mPlayer.initiative(mDresseur).equals(mPlayer)) {
 					System.out.println("Votre "+mPlayer.getNom()+" attaque le "+mDresseur.getNom()+" adverse en premier");
 					mPlayer.selectionAttaqueCombat(mDresseur, ctxtsvc);
 					System.out.println("Le "+mDresseur.getNom()+" adverse attaque votre "+mPlayer.getNom());
@@ -217,8 +228,8 @@ public class Application {
 		for (Monster m : player.getEquipePlayer()) {
 			m.setContextService(ctxtsvc);
 			m.levelUp();
-			m.levelUp();
-			m.levelUp();
+		//	m.levelUp();
+	//		m.levelUp();
 		}
 		player.getEquipePlayer().getFirst().setPV(0);
 		player.changeMonsterActif(1);
