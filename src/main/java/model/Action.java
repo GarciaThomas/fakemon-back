@@ -17,7 +17,6 @@ public class Action {
 	/** Constructeur vide JPA ?
 	 **/
 	public Action() {
-		
 	}
 
 	//Getters et Setters
@@ -34,6 +33,10 @@ public class Action {
 		this.message = message;
 	}
 	
+	/**	Ajoute un message au(x) message(x) existant(s) ou crée un nouveau message si pas de message déjà existant
+	 * @param str String ; Le message à ajouter pour affichage dans le front
+	 * @return Action ; retourne l'action avec ses messages updatés
+	 */
 	public Action append(String str) {
 		if(this.message == null) {
 			setMessage(str);

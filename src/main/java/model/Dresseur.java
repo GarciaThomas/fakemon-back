@@ -4,12 +4,17 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import service.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
-
+	
+	@Autowired
+	private Player player;
+	
+	
+	
 	//	Constructeurs : vide pour nom aléatoire ou donne un nom pour le fixer
 	//	Le nombre de points d'expérience de base obtenus par le joueur pendant la phase de rencontre sauvage est de 48 points
 	public Dresseur(int pts) {
@@ -62,7 +67,7 @@ public class Dresseur {
 	 **/
 	private LinkedList<Monster> choixEquipeDresseur(int pts) {
 
-		this.equipeDresseur.add(PlayerService.tableRencontre(1).get(0));
+		this.equipeDresseur.add(player.tableRencontre(1).get(0));
 		Random r = new Random();
 
 		while ( (pts>=3 && equipeDresseur.size()<6) || pts>=lePlusFaible().getExpNextLevel() ) {
@@ -82,7 +87,7 @@ public class Dresseur {
 				}
 			}
 			else if (pts>=3 && equipeDresseur.size()<6) {
-				this.equipeDresseur.add(PlayerService.tableRencontre(1).get(0));
+				this.equipeDresseur.add(player.tableRencontre(1).get(0));
 				pts-=3;		//	Coût d'un lv 1 : 3pts d'expérence (valeur du kill)
 				//		System.out.println("ajout nouveau monstre :"+equipeDresseur.getLast().getNom()+". pts = "+pts);
 			}

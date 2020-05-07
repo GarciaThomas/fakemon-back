@@ -36,48 +36,37 @@ public class Context {
 	public Connection getConnect() {
 		return connect;
 	}
-	
 	public void setConnect(Connection connect) {
 		this.connect = connect;
 	}
-	
 	public IDAOMonster getDaoMonster() {
 		return daoMonster;
 	}
-
 	public void setDaoMonster(IDAOMonster daoMonster) {
 		this.daoMonster = daoMonster;
 	}
-
 	public IDAOAttaque getDaoAttaque() {
 		return daoAttaque;
 	}
-	
 	public void setDaoAttaque(IDAOAttaque daoAttaque) {
 		this.daoAttaque = daoAttaque;
 	}
-	
-	public void setMonstresProposition(ArrayList<Monster> monstresProposition) {
-		this.monstresProposition = monstresProposition;
-	}
 	public Connection getConnection() throws SQLException, ClassNotFoundException {
-
 		Class.forName("com.mysql.jdbc.Driver");
 		connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/fakemon","root","");
 
 		return connect;
 	}
-
-
 	public List<Monster> getMonstresProposition(){
 		if(monstresProposition == null) {
 			monstresProposition = new ArrayList<Monster>();
 			monstresProposition.addAll(player.tableRencontre(10).stream()
 					.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Monster::getNom))),ArrayList::new)));
-
 		}
-
 		return monstresProposition;
+	}
+	public void setMonstresProposition(ArrayList<Monster> monstresProposition) {
+		this.monstresProposition = monstresProposition;
 	}
 
 	public void rebuildPropositions() {

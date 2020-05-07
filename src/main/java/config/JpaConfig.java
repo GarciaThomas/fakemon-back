@@ -20,7 +20,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories("dao")
 public class JpaConfig {
 	
-	@Bean public LocalContainerEntityManagerFactoryBean entityManagerFactory(BasicDataSource dataSource) {
+	@Bean 
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(BasicDataSource dataSource) {
 		System.out.println("Chargement");
 		LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -40,12 +41,14 @@ public class JpaConfig {
 		return properties;
 	}
 	
-	@Bean public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+	@Bean 
+	public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(emf); return transactionManager;
 	}
 	
-	@Bean public PersistenceExceptionTranslationPostProcessor exceptionTranslation() { 
+	@Bean 
+	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() { 
 		return new PersistenceExceptionTranslationPostProcessor(); 
 	}
 

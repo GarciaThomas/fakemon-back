@@ -4,18 +4,23 @@ package application;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import config.fakemonConfig;
+import config.FakemonConfig;
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
 import model.Dresseur;
 import model.Monster;
 import model.PVException;
+import model.Player;
 import service.PlayerService;
 
 public class Application {
 
+	@Autowired
+	static Player player;
+	
 	/**	Fonction qui permet la saisie console d'un int. 
 	 * Pas de verification que l'entree est correcte
 	 * @param msg : String ; message qui sera affiche dans la console
@@ -59,9 +64,9 @@ public class Application {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-		if (PlayerService.getEquipePlayer().getFirst().getPV()<=0 && PlayerService.checkEquipeJoueur()) {
-			PlayerService.changeMonsterActif(1);
-			combat (PlayerService.getEquipePlayer().getFirst(), m2);
+		if (player.getEquipePlayer().getFirst().getPV()<=0 && player.checkEquipeJoueur()) {
+			player.changeMonsterActif(1);
+			combat (player.getEquipePlayer().getFirst(), m2);
 		}
 		/*		else if (Dresseur.
 				getEquipeDresseur().getFirst().getPV()<=0 && PlayerService.checkEquipeJoueur()) {
@@ -82,7 +87,7 @@ public class Application {
 		Monster m = null;	
 
 		ArrayList<Monster> fakemonSauvage = new ArrayList<Monster>();
-		fakemonSauvage = PlayerService.tableRencontre(nbSauvage);
+		fakemonSauvage = player.tableRencontre(nbSauvage);
 
 		for(int i=0;i<nbSauvage;i++) {
 			System.out.println("\n---------\nRencontre n°"+(i+1)+" :");
@@ -97,8 +102,8 @@ public class Application {
 			}
 
 			System.out.println("Vous allez combatre un "+m.getNom()+" sauvage de niveau "+m.getLevel()+".");
-			combat(PlayerService.getEquipePlayer().getFirst(),m);
-			PlayerService.soinEquipeJoueur();
+			combat(player.getEquipePlayer().getFirst(),m);
+			player.soinEquipeJoueur();
 		}
 	}
 
@@ -114,7 +119,7 @@ public class Application {
 		Dresseur d = new Dresseur("FragileJordan",pts);
 		System.out.println("Premier duel d'échauffement contre FragileJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 		for (Monster m : d.getEquipeDresseur()) {
 			pts+=m.getExpGain();
 		}
@@ -124,7 +129,7 @@ public class Application {
 			d = new Dresseur(pts);
 			System.out.println("Duel numéro "+(i+1)+" contre "+d.getNom()+".");
 			System.out.println(d.toStringEquipe());
-			combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+			combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 			for (Monster m : d.getEquipeDresseur()) {
 				pts+=m.getExpGain();
 			}
@@ -134,7 +139,7 @@ public class Application {
 		d = new Dresseur("BlackJordan",(int)(pts*1.1574));
 		System.out.println("Dernier duel contre le maître BlackJordan.");
 		System.out.println(d.toStringEquipe());
-		combat(PlayerService.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
+		combat(player.getEquipePlayer().getFirst(),d.getEquipeDresseur().getFirst());
 
 		System.out.println("Bravo l'arène est finie !");
 
@@ -146,15 +151,16 @@ public class Application {
 	public static void main(String[] args) {	
 
 
-		Monster m = PlayerService.tableRencontre(1).get(0);
+	/*	Monster m = player.tableRencontre(1).get(0);
 		System.out.println(m.toStringGeneral()+"\n-----------------------");
-	//	System.out.println(m.toStringDetailStat());
+		System.out.println(m.toStringDetailStat());
 		m.levelUp();
-	//	System.out.println(m.toStringDetailStat());
-		m.levelUp();
-	/*	PlayerService.selectionStarter();
+		System.out.println(m.toStringDetailStat());
+		m.levelUp();*/
+		
+		player.selectionStarter();
 		rencontreSauvage(10);
-		arene(0);*/
+		arene(0);
 
 	}
 

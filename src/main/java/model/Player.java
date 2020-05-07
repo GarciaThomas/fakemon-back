@@ -1,15 +1,14 @@
 package model;
 
+import static application.Application.saisieInt;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-import javax.persistence.PostLoad;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import application.Application;
 import service.ContextService;
 
 @Service
@@ -108,7 +107,7 @@ public class Player { //Singleton.
 		table2Chen.forEach(mi -> System.out.println(mi.toStringGeneral()));
 		int i=0;
 		while (i<1 || i>6) {
-			i = Application.saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
+			i = saisieInt("Quel Fakemon souhaitez-vous comme starter ? (1 à 6)");
 		}
 		addEquipePlayer(table2Chen.get(i-1));
 		System.out.println("Vous avez choisi "+table2Chen.get(i-1).getNom()+" !");
@@ -136,8 +135,8 @@ public class Player { //Singleton.
 	 **/
 	public void changeMonster() {
 		equipePlayer.forEach(m -> System.out.println(m.toStringGeneral()));
-		int im = Application.saisieInt("Quel monstre voulez-vous changer de position ?");
-		int ip = Application.saisieInt("À quelle position voulez-vous le mettre ?");
+		int im = saisieInt("Quel monstre voulez-vous changer de position ?");
+		int ip = saisieInt("À quelle position voulez-vous le mettre ?");
 		Monster m = equipePlayer.get(im-1);
 		equipePlayer.set(im-1, equipePlayer.get(ip-1));
 		equipePlayer.set(ip-1, m);
@@ -162,7 +161,7 @@ public class Player { //Singleton.
 	 **/
 	public void changeMonsterActif(int i) {
 		while (equipePlayer.get(i-1).getPV()<=0) {
-			i= Application.saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
+			i= saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
 		}
 		equipePlayer.getFirst().setModifAtk(0);
 		equipePlayer.getFirst().setModifDef(0);
@@ -191,23 +190,21 @@ public class Player { //Singleton.
 		return this.cptRencontre <= this.maxRencontre;
 	}
 	
-	/***
-	 * 
+	/**
 	 * Generation liste starter
 	 * @return 
 	 * 
-	 */
+	 **/
 	public ArrayList<Monster> getStarters() {
 		if(starters.isEmpty()) {
 			starters = tableRencontre(6);
 		}
 		return starters;
 	}
-	/***
-	 * 
+	/** 
 	 * Selection starter
 	 * 
-	 */
+	 **/
 	public void selectStarter(int index) {
 		addEquipePlayer(starters.get(index));
 	}

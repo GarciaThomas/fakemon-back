@@ -1,5 +1,8 @@
 package model;
 
+import static application.Application.saisieInt;
+import static application.Application.saisieString;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,13 +16,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import application.Application;
 import service.ContextService;
 
 //	Déclaration Attribut
@@ -374,7 +373,7 @@ public class Monster {
 
 		boolean b = false;
 		if (ouiOuNon == 0) {
-			String sc = Application.saisieString("\nVoulez-vous remplacer une attaque existante ? (Y : oui / N : non)");
+			String sc = saisieString("\nVoulez-vous remplacer une attaque existante ? (Y : oui / N : non)");
 			switch (sc) {
 			case "Y" : b=true;break;
 			case "N" : System.out.println("Pas de remplacement de move");break;
@@ -384,13 +383,13 @@ public class Monster {
 
 		if (b) {
 			while (idMoveAppris<1) {
-				int sc = Application.saisieInt("Quelle move voulez-vous apprendre ? (1 à 3) : ");
+				int sc = saisieInt("Quelle move voulez-vous apprendre ? (1 à 3) : ");
 				idMoveAppris=proposition.get(sc-1).getId();
 			}
 
 			while (idMoveOublie<1) {
 				this.toStringDetailAttaque();
-				int sc = Application.saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
+				int sc = saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
 				idMoveOublie=this.getListAttaque().get(sc-1).getId();
 			}
 			
@@ -439,7 +438,7 @@ public class Monster {
 
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
-		int sc = Application.saisieInt("Quelle attaque ? (1 à 3)");
+		int sc = saisieInt("Quelle attaque ? (1 à 3)");
 
 		Attaque a=null;
 		switch (sc) {

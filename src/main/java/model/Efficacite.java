@@ -35,28 +35,18 @@ public class Efficacite {
 	public String getTypeAttaque() {
 		return typeAttaque;
 	}
-
-
 	public void setTypeAttaque(String typeAttaque) {
 		this.typeAttaque = typeAttaque;
 	}
-
-
 	public String getTypeDefense() {
 		return typeDefense;
 	}
-
-
 	public void setTypeDefense(String typeDefense) {
 		this.typeDefense = typeDefense;
 	}
-
-
 	public Double getRatio() {
 		return ratio;
 	}
-
-
 	public void setRatio(Double ratio) {
 		this.ratio = ratio;
 	}
