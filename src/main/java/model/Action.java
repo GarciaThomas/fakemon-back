@@ -41,7 +41,7 @@ public class Action {
 		if(this.message == null) {
 			setMessage(str);
 		}else {
-			this.message += "\n"+str;
+			this.message += "\\n"+str;
 		}
 		return this;
 	}

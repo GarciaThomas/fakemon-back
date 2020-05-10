@@ -130,7 +130,7 @@ public class PlayerService {
 	 **/
 	public void soinEquipeJoueur() {
 		for (Monster m : equipePlayer) {
-			m.setPV(m.getPVmax());
+			m.setPv(m.getPvMax());
 			m.setModifAtk(1);
 			m.setModifDef(1);
 			m.setModifASp(1);
@@ -171,9 +171,9 @@ public class PlayerService {
 	 **/
 	public void changeMonsterActif(int i) {
 		for (Monster m : equipePlayer) {
-		System.out.println(m.toStringGeneralPV());
+		System.out.println(m.toStringGeneral());
 		}
-		while (equipePlayer.get(i-1).getPV()<=0 && (i<1 || i>6) ) {			
+		while (equipePlayer.get(i-1).getPv()<=0 && (i<1 || i>6) ) {			
 			i = saisieInt("Le monstre sélectionné est hors-combat. Veuillez en sélectionner un autre");
 		}
 		equipePlayer.getFirst().setModifAtk(1);
@@ -192,7 +192,7 @@ public class PlayerService {
 	public boolean checkEquipeJoueur() {
 		boolean reponse = false;
 		for (Monster m : equipePlayer) {
-			if (m.getPV()>0) {
+			if (m.getPv()>0) {
 				reponse = true;
 			}
 		}
@@ -248,19 +248,19 @@ public class PlayerService {
 
 			System.out.println("Tentative de capture du "+m.getNom()+" sauvage");
 			double txCap = 1;
-			if ((double) (m.getPV()/m.getPVmax()) <= 0.05) {
+			if ((double) (m.getPv()/m.getPvMax()) <= 0.05) {
 				txCap = 4;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.15) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.15) {
 				txCap = 3;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.25) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.25) {
 				txCap = 2.5;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.5) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.5) {
 				txCap = 2;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.75) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.75) {
 				txCap = 1.5;
 			}
 
@@ -287,19 +287,19 @@ public class PlayerService {
 
 			System.out.println("Tentative de capture du "+m.getNom()+" sauvage");
 			double txCap = 1;
-			if ((double) (m.getPV()/m.getPVmax()) <= 0.05) {
+			if ((double) (m.getPv()/m.getPvMax()) <= 0.05) {
 				txCap = 4;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.15) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.15) {
 				txCap = 3;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.25) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.25) {
 				txCap = 2.5;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.5) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.5) {
 				txCap = 2;
 			}
-			else if ((double) (m.getPV()/m.getPVmax()) <= 0.75) {
+			else if ((double) (m.getPv()/m.getPvMax()) <= 0.75) {
 				txCap = 1.5;
 			}
 

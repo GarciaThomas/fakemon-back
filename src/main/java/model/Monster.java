@@ -1,12 +1,10 @@
 package model;
 
-import static application.Application.saisieInt;
-import static application.Application.saisieString;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -19,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import application.Application;
 import service.ContextService;
 
 //	Déclaration Attribut
@@ -29,72 +30,92 @@ public class Monster {
 	@Transient
 	protected int level; 
 	@Transient
-	protected int PV;
+	protected int pv;
 	@Transient
-	protected int PVmax;
+	protected int pvMax;
 	@Transient
-	protected int Atk;	
+	protected int atk;	
 	@Transient
-	protected int Def;
+	protected int def;
 	@Transient
-	protected int ASp;	
+	protected int aSp;	
 	@Transient
-	protected int DSp;
+	protected int dSp;
 	@Transient
-	protected int Vit;
+	protected int vit;
 
 	//Pour le calcul des stats : base commune de l'espèce
+	@JsonIgnore
 	@Column (name = "pv", nullable = false)
 	protected double basePV;
 
+	@JsonIgnore
 	@Column (name = "attaque", nullable = false)
 	protected double baseAtk;	
 
+	@JsonIgnore
 	@Column (name = "defense", nullable = false)
 	protected double baseDef;
 
+	@JsonIgnore
 	@Column (name = "atk_speciale", nullable = false)
 	protected double baseASp;
 
+	@JsonIgnore
 	@Column (name = "def_speciale", nullable = false)
 	protected double baseDSp;
 
+	@JsonIgnore
 	@Column (name = "vitesse", nullable = false)
 	protected double baseVit;
 
 	//Pour le calcul des stats : stats aléatoire de ce fakemon précis
+	@JsonIgnore
 	@Transient
 	protected double ivPV;
+	@JsonIgnore
 	@Transient
-	protected double ivAtk;	
+	protected double ivAtk;
+	@JsonIgnore
 	@Transient
 	protected double ivDef;
+	@JsonIgnore
 	@Transient
 	protected double ivASp;
+	@JsonIgnore
 	@Transient
-	protected double ivDSp;	
+	protected double ivDSp;
+	@JsonIgnore
 	@Transient
 	protected double ivVit;
 
 	//Pour le calcul des stats : effet de la nature
+	@JsonIgnore
 	@Transient
 	protected double[] tabNature={1,1,1,1,1,1};
 
 	//Pour le combat : modificateurs des statistiques
+	@JsonIgnore
 	@Transient
 	protected double modifAtk=1;
+	@JsonIgnore
 	@Transient	
 	protected double modifDef=1;
+	@JsonIgnore
 	@Transient
 	protected double modifASp=1;
+	@JsonIgnore
 	@Transient
 	protected double modifDSp=1;
+	@JsonIgnore
 	@Transient
 	protected double modifVit=1;
 
 	//Autres attributs importants
 	@Transient
 	protected ArrayList<Attaque> listAttaque = new ArrayList<Attaque>();
+	
+	@JsonIgnore
 	@Transient
 	protected Situation equipeJoueur=Situation.valueOf("Sauvage");
 	@Transient
@@ -115,11 +136,15 @@ public class Monster {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	
+	@Transient
+	UUID uniqueId = UUID.randomUUID();
+	
+	
 	@Transient
 	private ContextService ctxtsvc;
 
-
+	
 	/* 	Stats non-utiles pour le moment : futures implementation ?
 	 * 	Mana ? Remplace les PP des attaques
 	 *	protected int modifEsquive;
@@ -146,113 +171,170 @@ public class Monster {
 	/** Initilisation des attaques du monstre en dehors du constructeur car bug avec JPA
 	 * Cette fonction est appellée après la construction de l'objet (PostLoad)
 	 */
-	//	@PostLoad
-	//	public void init() {
-	//		this.listAttaque = ctxtsvc.creationAttaque(poolAtkStringToInt(poolAtkString));
-	//	}
+//	@PostLoad
+//	public void init() {
+//		this.listAttaque = ctxtsvc.creationAttaque(poolAtkStringToInt(poolAtkString));
+//	}
 
 
 	//___________________________________________
 	//	Getters/Setters
+
+	public void setEquipeDresseur() {
+		equipeJoueur=Situation.valueOf("Adversaire");
+	}
+	
+	public int getId() {
+		return id;
+	}
 	public String getPoolAtkString() {
 		return poolAtkString;
 	}
 	public void setPoolAtkString(String poolAtkString) {
 		this.poolAtkString = poolAtkString;
 	}
-	public int getLevel() {
-		return level;
-	}
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	public int getPV() {
-		return PV;
+	public int getLevel() {
+		return level;
 	}
-	public void setPV(int pV) {
-		PV = pV;
+
+	
+	public int getPv() {
+		return pv;
 	}
+
+	public void setPv(int pv) {
+		this.pv = pv;
+	}
+
+	public int getPvMax() {
+		return pvMax;
+	}
+
+	public void setPvMax(int pvMax) {
+		this.pvMax = pvMax;
+	}
+
 	public int getAtk() {
-		return Atk;
+		return atk;
 	}
+	
+	public void setAtk(int atk) {
+		this.atk = atk;
+	}
+	
+	
+	public int getaSp() {
+		return aSp;
+	}
+
+	public void setaSp(int aSp) {
+		this.aSp = aSp;
+	}
+
+	public int getdSp() {
+		return dSp;
+	}
+
+	public void setdSp(int dSp) {
+		this.dSp = dSp;
+	}
+
 	public int getDef() {
-		return Def;
+		return def;
 	}
-	public int getASp() {
-		return ASp;
-	}
-	public int getDSp() {
-		return DSp;
-	}
+
 	public int getVit() {
-		return Vit;
+		return vit;
 	}
+	
 	public Type getType() {
 		return type;
 	}
 	public void setEquipeJoueur() {
 		equipeJoueur=Situation.valueOf("Joueur");
 	}
-	public void setEquipeDresseur() {
-		equipeJoueur=Situation.valueOf("Adversaire");
-	}
+	@JsonIgnore
 	public Situation getSituation() {
 		return equipeJoueur;
 	}
 	public String getNom(){
 		return this.nom;
 	}
-	public Integer getPVmax() {
-		return this.PVmax;
-	}
+
 	public ArrayList<Attaque> getListAttaque() {
 		return listAttaque;	
 	}
+	
 	public int getExpNextLevel () {
 		return expNextLevel;
 	}
+
+	public UUID getUniqueId() {
+		return uniqueId;
+	}
+	
+	@JsonIgnore
 	public int getExpGain() {
 		int c= (2 + (int)(level + Math.pow(level,2)) /2);
 		return c;
 	}
+	@JsonIgnore
 	public double getModifAtk() {
 		return modifAtk;
 	}
+	@JsonIgnore
 	public void setModifAtk(double modifAtk) {
 		this.modifAtk = modifAtk;
 	}
+	@JsonIgnore
 	public double getModifDef() {
 		return modifDef;
 	}
+	@JsonIgnore
 	public void setModifDef(double modifDef) {
 		this.modifDef = modifDef;
 	}
+	@JsonIgnore
 	public double getModifASp() {
 		return modifASp;
 	}
+	@JsonIgnore
 	public void setModifASp(double modifASp) {
 		this.modifASp = modifASp;
 	}
+	@JsonIgnore
 	public double getModifDSp() {
 		return modifDSp;
 	}
+	@JsonIgnore
 	public void setModifDSp(double modifDSp) {
 		this.modifDSp = modifDSp;
 	}
+	@JsonIgnore
 	public double getModifVit() {
 		return modifVit;
 	}
+	@JsonIgnore
 	public void setModifVit(double modifVit) {
 		this.modifVit = modifVit;
 	}
-	public void setContextService(ContextService ctxtsvc) {
-		this.ctxtsvc = ctxtsvc;
+	
+	
+	
+
+	public int getExp() {
+		return exp;
 	}
 
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
 
 	//___________________________________________
 	//	Méthodes
-
 	public void setListAttaque(ArrayList<Attaque> listAttaque) {
 		this.listAttaque = listAttaque;
 	}
@@ -260,6 +342,7 @@ public class Monster {
 	/**	Défini les IV (les statistiques cachées) du fakemon
 	 *  N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
+	@JsonIgnore
 	private void generationIV () {
 		Random r=new Random();
 		ivPV=r.nextInt(6);
@@ -279,6 +362,7 @@ public class Monster {
 	/**	Génére une nature (fictivement car elle n'est pas réellement définie) qui module 2 statistiques du monstre
 	 * N'est appellée que dans le constructeur et à aucun autre moment pour ne pas modifier ces valeurs en cours de route
 	 */
+	@JsonIgnore
 	private void nature() {
 		Random r=new Random();
 		int stUp=r.nextInt(6);
@@ -297,6 +381,7 @@ public class Monster {
 	 * @param movepool String ; contenu dans la base de donnée avec les stats des fakemons
 	 * @return 
 	 */
+	@JsonIgnore
 	public Integer[] poolAtkStringToInt(String movepool) {
 
 		String[] ids = movepool.split(",");
@@ -312,21 +397,23 @@ public class Monster {
 	/**	Calcule les nouvelles stats du niveau actuel et met à jour les points de vie du monstre
 	 * 	Utilisée dans constructeur et aussi dans levelUp()
 	 **/
+	@JsonIgnore
 	public void calcStat() {
 		final double cstLv = (double) 1/5;
-		PVmax = (int) (10+level+((basePV+ivPV)*tabNature[0]*(level*cstLv)));
-		PV = PVmax;
-		Atk = (int) (5+((baseAtk+ivAtk)*tabNature[1]*(level*cstLv)));	
-		Def = (int) (5+((baseDef+ivDef)*tabNature[2]*(level*cstLv)));
-		ASp = (int) (5+((baseASp+ivASp)*tabNature[3]*(level*cstLv)));	
-		DSp = (int) (5+((baseDSp+ivDSp)*tabNature[4]*(level*cstLv)));
-		Vit = (int) (5+((baseVit+ivVit)*tabNature[5]*(level*cstLv)));
+		pvMax = (int) (10+level+((basePV+ivPV)*tabNature[0]*(level*cstLv)));
+		pv = pvMax;
+		atk = (int) (5+((baseAtk+ivAtk)*tabNature[1]*(level*cstLv)));	
+		def = (int) (5+((baseDef+ivDef)*tabNature[2]*(level*cstLv)));
+		aSp = (int) (5+((baseASp+ivASp)*tabNature[3]*(level*cstLv)));	
+		dSp = (int) (5+((baseDSp+ivDSp)*tabNature[4]*(level*cstLv)));
+		vit = (int) (5+((baseVit+ivVit)*tabNature[5]*(level*cstLv)));
 	}
 
 
 	/** Fait prendre un niveau et recalcule les statistiques
 	 * Aucune sortie dans la console
 	 */
+	@JsonIgnore
 	public void levelUp() {
 		level++;
 		expNextLevel=( (int) (7*this.getLevel() + Math.pow(this.getLevel(),2) )/2 )+1;
@@ -338,22 +425,20 @@ public class Monster {
 		if (level==5) {
 
 			//	Récupère nouvelle attaque et l'ajoute au moves du monstre
-			listAttaque.add( this.newAttaque(ctxtsvc));
-			if (this.getSituation().equals(Situation.valueOf("Joueur"))) {
-				System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
-			}
+			listAttaque.add( this.newAttaque());
+			System.out.println(this.getNom()+" à appris un nouveau move : "+listAttaque.get(3).getNom());
 		}
 
 		//	-> propose trois nouvelle attaque en remplacement d'une actuelle
-		if ( (level == 3 || level == 5 || level == 8 || level == 10) && this.getSituation().equals(Situation.valueOf("Joueur"))) {
+		if (level == 3 || level == 5 || level == 8 || level == 10) {
 			System.out.println(this.getNom()+" peut remplacer une de ses attaque par l'une de ces attaque :");
 			List<Attaque> proposition = new ArrayList<>();
-			Attaque a = this.newAttaque(ctxtsvc);
+			Attaque a = this.newAttaque();
 			proposition.add(a);
 			boolean b;
 
 			while (proposition.size()<3) {
-				a =  this.newAttaque(ctxtsvc);
+				a =  this.newAttaque();
 				b = true;
 				for (Attaque atk : proposition) {
 					if (atk.getId() == a.getId()) {
@@ -376,11 +461,12 @@ public class Monster {
 	 * @param idMoveAppris
 	 * @param proposition
 	 */
+	@JsonIgnore
 	private void remplacementMove(int idMoveOublie, int idMoveAppris, List<Attaque> proposition, int ouiOuNon) {
 
 		boolean b = false;
 		if (ouiOuNon == 0) {
-			String sc = saisieString("\nVoulez-vous remplacer une attaque existante ? (Y : oui / N : non)");
+			String sc = Application.saisieString("\nVoulez-vous remplacer une attaque existante ? (Y : oui / N : non)");
 			switch (sc) {
 			case "Y" : b=true;break;
 			case "N" : System.out.println("Pas de remplacement de move");break;
@@ -390,16 +476,16 @@ public class Monster {
 
 		if (b) {
 			while (idMoveAppris<1) {
-				int sc = saisieInt("Quelle move voulez-vous apprendre ? (1 à 3) : ");
+				int sc = Application.saisieInt("Quelle move voulez-vous apprendre ? (1 à 3) : ");
 				idMoveAppris=proposition.get(sc-1).getId();
 			}
 
 			while (idMoveOublie<1) {
 				this.toStringDetailAttaque();
-				int sc = saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
+				int sc = Application.saisieInt("\nQuelle move voulez-vous oublier ? (1 à 3) : ");
 				idMoveOublie=this.getListAttaque().get(sc-1).getId();
 			}
-
+			
 			int ocnzi = idMoveOublie;
 			Attaque moveOublie = this.getListAttaque().stream().filter(atk -> atk.getId() == ocnzi ).findFirst().get();
 			int dzdzd = idMoveAppris;
@@ -411,22 +497,11 @@ public class Monster {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	/** Gére le gain d'exp pour le monstre en cours et fait le levelUp si besoin
 	 * 	Texte indicatif dans console
 	 * @param m Monster ; Monstre qui a été mis KO par le monstre actuel du joueur
 	 */
+	@JsonIgnore
 	public void expGain(Monster m) {
 
 		exp += m.getExpGain();
@@ -442,17 +517,20 @@ public class Monster {
 
 
 
-
+	@JsonIgnore
 	public Attaque choixAttaque() {
 		this.listAttaque.forEach(a -> System.out.println("- "+a.getNom()+" ["+a.getType()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()));
-		int sc = saisieInt("Quelle attaque ? (1 à "+this.listAttaque.size()+")");
-		
-		while (sc < 1 || sc > this.listAttaque.size()) {
-			System.out.println("Mauvaise saisie. Veuillez recommencer" + sc);
-			sc = saisieInt("Quelle attaque ? (1 à "+this.listAttaque.size()+")");
-		} 
-		
-		return listAttaque.get(sc-1);
+		int sc = Application.saisieInt("Quelle attaque ? (1 à 3)");
+
+		Attaque a=null;
+		switch (sc) {
+		case 1 : a = listAttaque.get(0);break;
+		case 2 : a = listAttaque.get(1);break;
+		case 3 : a = listAttaque.get(2);break;
+		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
+		default : System.out.println("Mauvaise saisie. Veuillez recommencer");choixAttaque();break;
+		}
+		return a;
 	}
 
 
@@ -460,7 +538,8 @@ public class Monster {
 	 * 
 	 * @return
 	 */
-	public Attaque newAttaque(ContextService ctxtsvc) {
+	@JsonIgnore
+	public Attaque newAttaque() {
 
 		//		Récupère et converti la liste de tous les moves dans une List<>  
 		Integer[] listIdTotal = this.poolAtkStringToInt(this.getPoolAtkString());
@@ -484,6 +563,7 @@ public class Monster {
 	 * @param m2 Monster ; Il s'agit du monstre adverse, qui n'appartient pas au Player
 	 * @return Monster ; le monstre étant le plus rapide
 	 */
+	@JsonIgnore
 	public Monster initiative(Monster m2) {
 
 		Monster m = null;
@@ -511,28 +591,30 @@ public class Monster {
 	 * @param m Monster ; Il s'agit du monstre adverse. Le monstre qui lance attaque est le "this"
 	 * @throws PVException
 	 */
-	public void selectionAttaqueCombat(Monster m, ContextService ctxtsvc) throws PVException {
+	@JsonIgnore
+	public void selectionAttaqueCombat(Monster m) throws PVException {
 		//		Boolean qui permet soit au joueur de choisir son attaque, soit à l'IA de le faire
-		this.ctxtsvc = ctxtsvc;
-		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m, ctxtsvc);	
-		combat(m,a.getId() , ctxtsvc);
+		Attaque a = (equipeJoueur.equals(Situation.valueOf("Joueur"))) ? choixAttaque() : choixAttaqueBOT(m);	
+		combat(m,a.getId() , null);
 
 	}
-
-	
-	/** Choix par l'IA de l'attaque à lancer	
-	 * Pour le moment pas de différence entre IA des monstres sauvages et dresseur
-	 * Choisis au hasard une attaque, puis si jamais le monstre a un move super efficace donne une chance supplémentaire de le sélectionner
-	 * @param m Monster ; Le monstre ciblé du joueur
-	 * @param ctxtsvc ContextService ; donne le contexte de Spring pour faire fonctionner le back en console
-	 * @return
-	 **/
+	@JsonIgnore
+	public Attaque choixAttaqueBOT(Monster m) {
+		return choixAttaqueBOT(m,null);
+	}
+	@JsonIgnore
 	public Attaque choixAttaqueBOT(Monster m, ContextService ctxtsvc) {
 
-		this.ctxtsvc = ctxtsvc;
+		Attaque a=null;
 		Random r = new Random();
-		Attaque a = listAttaque.get(r.nextInt(this.listAttaque.size()));;
-		
+		switch (r.nextInt(3)) {
+		case 0 : a = listAttaque.get(0);break;
+		case 1 : a = listAttaque.get(1);break;
+		case 2 : a = listAttaque.get(2);break;
+		//		case 4 : a = listAttaque.get(3);break;  à utiliser que si on décide d'utiliser 4 slots d'attaques
+		default : choixAttaqueBOT(m);break;
+		}
+
 		for (Attaque i : listAttaque) {
 			if ( ctxtsvc.getRatioEfficacite(i,m)==2) {
 				r = new Random();
@@ -543,7 +625,7 @@ public class Monster {
 		}
 		return a;
 	}
-
+	@JsonIgnore
 	public ArrayList<Attaque> poolAttaque(ArrayList<Integer> ids) {
 
 		this.listAttaque = ctxtsvc.poolAttaque(ids);
@@ -557,11 +639,13 @@ public class Monster {
 	 * @param idMove : int ; cet id est celui de l'attaque sélectionné dans une méthode précédente (ou par le formulaire en Front)
 	 * @throws PVException : cette exception est renvoyée lorsque l'un des deux monstre ne peux plus se battre !
 	 */
+	@JsonIgnore
 	public Action combat(Monster m, int idMove, ContextService ctxtsvc) throws PVException {
 
 		this.ctxtsvc = ctxtsvc;
-
-
+		
+		System.out.println(listAttaque);
+		listAttaque.parallelStream().forEach(a -> System.out.println(a.getId()+" : "+a));
 		Attaque a = listAttaque.parallelStream().filter(atk -> atk.getId() == idMove).findFirst().get();
 		Random r = new Random();
 		Action action = new Action();
@@ -582,7 +666,7 @@ public class Monster {
 			if (a.getType().equals(this.getType())) {
 				stab = 1.5;
 			}
-
+			
 
 			//	set si l'attaque utilis�e est efficace ou non
 			double type = ctxtsvc.getRatioEfficacite(a,m);
@@ -599,26 +683,26 @@ public class Monster {
 			double statDegat = 0;
 			double statProtection = 0;
 			switch (a.getEtat()) {
-			case "Physique": statDegat=this.Atk*this.modifAtk ; statProtection=m.getDef()*m.getModifDef(); break;
-			case "Special" : statDegat=this.ASp*this.modifASp ; statProtection=m.getDSp()*m.getModifDSp(); break;
+			case "Physique": statDegat=this.atk*this.modifAtk ; statProtection=m.getDef()*m.getModifDef(); break;
+			case "Special" : statDegat=this.aSp*this.modifASp ; statProtection=m.getdSp()*m.getModifDSp(); break;
 			case "Statut" : break;
 			default : System.out.println("erreur de dégât");break;
 			}
 
 			//	calcul des dégats
 			int degat = (int) (((k1 * this.getLevel() + 2) * a.getPuissance() * (double) statDegat / (k2 * statProtection) + 2 ) * stab * type );
-			m.PV-=degat;
+			m.pv-=degat;
 
 			integrationEffetCumule(a, m);
 
-			if (m.getPV()<=0) {
+			if (m.getPv()<=0) {
 				if (this.equipeJoueur.equals(Situation.valueOf("Joueur"))) {
 					this.expGain(m);
 				}
 				throw new PVException(m);
 			}
 			else {
-				System.out.println("Il reste "+m.getPV()+" PV (/"+m.getPVmax()+") a "+m.getNom()+".\n");
+				System.out.println("Il reste "+m.getPv()+" PV (/"+m.getPvMax()+") a "+m.getNom()+".\n");
 				action.setM(m);
 			}
 		}
@@ -631,6 +715,7 @@ public class Monster {
 	 *  Pour le moment un seul effet cumulé par attaque
 	 *  Effet cumulé sur la modification temporaire de statistique ou des pv
 	 */
+	@JsonIgnore
 	public void integrationEffetCumule(Attaque a, Monster m) throws PVException {
 		if (a.getEffetCumule() != null) {
 
@@ -680,6 +765,7 @@ public class Monster {
 	 * @param valeurModifActuelle : valeur de la modifStat à modifiée
 	 * @return nouvelle valeur de la modification de statistique en combat
 	 */
+	@JsonIgnore
 	private double modifStatCombat(String sens, String valeur, double valeurModifActuelle) {
 
 		// Array de 13 valeurs avec valeur de base en position 6 
@@ -711,7 +797,7 @@ public class Monster {
 		return newModif;
 	}
 
-
+	@JsonIgnore
 	private void modifPVCombat(String sens, String valeur, Monster cible) throws PVException {
 
 		double ratio = 1;
@@ -725,39 +811,38 @@ public class Monster {
 			System.out.println("Problème de sens aux modifPV");
 		}
 
-		cible.setPV((int) (cible.getPV() + cible.getPVmax() * ratio));
+		cible.setPv((int) (cible.getPv() + cible.getPvMax() * ratio));
 
-		if (cible.getPV()>cible.getPVmax()) {
-			cible.setPV(cible.getPVmax());
+		if (cible.getPv()>cible.getPvMax()) {
+			cible.setPv(cible.getPvMax());
 		}
-		else if (cible.getPV()<=0) {
+		else if (cible.getPv()<=0) {
 			throw new PVException(cible); 
 		}
 	}
 
 	@Override
+	@JsonIgnore
 	public String toString() {
-		return "Monster [level=" + level + ", PV=" + PV + ", Atk=" + Atk + ", Def=" + Def + ", ASp=" + ASp + ", DSp="
-				+ DSp + ", Vit=" + Vit + ", tabNature=" + Arrays.toString(tabNature) + ", listAttaque=" + listAttaque
+		return "Monster [level=" + level + ", PV=" + pv + ", Atk=" + atk + ", Def=" + def + ", ASp=" + aSp + ", DSp="
+				+ dSp + ", Vit=" + vit + ", tabNature=" + Arrays.toString(tabNature) + ", listAttaque=" + listAttaque
 				+ ", type=" + type + ", equipeJoueur=" + equipeJoueur.values() + "]";
 	}
 
 
-
+	@JsonIgnore
 	public String toStringGeneral() {
 		return "- "+nom+" ["+type+"] : Attaques = "+listAttaque.stream().map( a -> a.getNom()).collect(Collectors.joining(", "));
 	}
-	
-	public String toStringGeneralPV() {
-		return "- "+nom+" ["+type+"] (PV = "+PV+"/"+PVmax+") : Attaques = "+listAttaque.stream().map( a -> a.getNom()).collect(Collectors.joining(", "));
-	}
-
+	@JsonIgnore
 	public String toStringDetailAttaque() {
 		return "\n* "+listAttaque.stream().map( a -> a.getNom()+" ["+a.getType().toString()+", "+a.getEtat()+"] : Puissance = "+a.getPuissance()+", Precision = "+a.getPrecision()+" ("+a.getDescription()+")").collect(Collectors.joining("\n* "));
 	}
-
+	@JsonIgnore
 	public String toStringDetailStat() {
-		return "Niveau = " + level + ", Points de Vie = " + PV + ", Attaque = " + Atk + ", Défense = " + Def + ", Attaque Spéciale = " + ASp + ", Défense Spéciale = " + DSp + ", Vitesse = " + Vit + ", tabNature = " + Arrays.toString(tabNature);
+
+		return "Niveau = " + level + ", Point de Vie = " + pv + ", Attaque = " + atk + ", Défense = " + def + ", Attaque Spéciale = " + aSp + ", Défense Spéciale = " + dSp + ", Vitesse = " + vit + ", tabNature = " + Arrays.toString(tabNature);
+
 	}
 
 

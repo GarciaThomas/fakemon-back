@@ -2,6 +2,7 @@ package model;
 
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import service.PlayerService;
 public class Dresseur {
 	protected LinkedList<Monster> equipeDresseur = new LinkedList<Monster>(); 
 	String nom;
+	UUID uniqueId = UUID.randomUUID();
 
 	@Autowired
 	private PlayerService player;
@@ -38,6 +40,12 @@ public class Dresseur {
 	}
 	public LinkedList<Monster> getEquipeDresseur() {
 		return equipeDresseur;
+	}
+	
+	
+
+	public UUID getUniqueId() {
+		return uniqueId;
 	}
 
 
@@ -115,7 +123,7 @@ public class Dresseur {
 	public boolean checkEquipeDresseur() {
 		boolean reponse = false;
 		for (Monster m : equipeDresseur) {
-			if (m.getPV()>0) {
+			if (m.getPv()>0) {
 				reponse = true;
 			}
 		}
@@ -140,7 +148,7 @@ public class Dresseur {
 		equipeDresseur.removeFirst();
 		for (Monster m : equipeDresseur) {
 			i++;
-			if (m.getPV() > 0 && b) {
+			if (m.getPv() > 0 && b) {
 				firstM = m;
 				index = i;
 				b = false;

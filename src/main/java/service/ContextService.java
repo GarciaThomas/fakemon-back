@@ -1,8 +1,5 @@
 package service;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import dao.IDAOAttaque;
 import dao.IDAOMonster;
 import model.Attaque;
+import model.Dresseur;
 import model.Efficacite;
 import model.Monster;
 
@@ -31,6 +29,8 @@ public class ContextService {
 	@Autowired
 	private IDAOMonster daoMonster; // = myContext.getBean(IDAOMonster.class);
 	private ArrayList<Monster> monstresProposition = null;
+	
+	private LinkedList<Dresseur> arene;
 
 	@Autowired
 	private PlayerService player;
@@ -76,7 +76,15 @@ public class ContextService {
 		this.monstresProposition = null;
 	}
 
-
+	public LinkedList<Dresseur> getArene(){
+		if(arene == null){
+			arene = new LinkedList<Dresseur>();
+			for(int i=0;i<3;i++) {
+				arene.add(new Dresseur(i,player));
+			}
+		}
+		return arene;
+	}
 
 
 	/** Génére à partir du movepool du fakemon (la totalité des attaques qu'il peut apprendre) les trois attaques qu'il aura à sa disposition à la création
