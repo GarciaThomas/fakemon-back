@@ -51,7 +51,7 @@ public class Application {
 	public void combat(Monster m1, Monster m2){
 
 		try {
-			while (m1.getPV()>0 && m2.getPV()>0) {
+			while (m1.getPv()>0 && m2.getPv()>0) {
 				if (m1.initiative(m2).equals(m1)) {
 					System.out.println(m1.getNom()+" attaque "+m2.getNom()+" en premier");
 					m1.selectionAttaqueCombat(m2, ctxtsvc);
@@ -67,7 +67,7 @@ public class Application {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-		if (player.getEquipePlayer().getFirst().getPV()<=0 && player.checkEquipeJoueur()) {
+		if (player.getEquipePlayer().getFirst().getPv()<=0 && player.checkEquipeJoueur()) {
 			player.changeMonsterActif(1);
 			combat (player.getEquipePlayer().getFirst(), m2);
 		}
@@ -111,7 +111,7 @@ public class Application {
 		Monster mDresseur = dresseur.getEquipeDresseur().getFirst();
 		String scString = "chose"; int scInt = 0;
 		try {
-			while (mPlayer.getPV()>0 && mDresseur.getPV()>0) {
+			while (mPlayer.getPv()>0 && mDresseur.getPv()>0) {
 				while (scString.equalsIgnoreCase("y") && scString.equalsIgnoreCase("n")) {
 					scString = saisieString("Voulez-vous changer de monstre actif ?");
 				}
@@ -137,12 +137,12 @@ public class Application {
 			}
 		}
 		catch (PVException e) {System.err.println(e);
-			if (mPlayer.getPV()<=0 && player.checkEquipeJoueur()) {
+			if (mPlayer.getPv()<=0 && player.checkEquipeJoueur()) {
 				System.out.println("Vous devez changer de Fakemon. Qui voulez-vous envoyer ?");
 				player.changeMonsterActif(1);
 				combatDresseur(player, dresseur);
 			}
-			else if (mDresseur.getPV()<=0 && dresseur.checkEquipeDresseur()) {
+			else if (mDresseur.getPv()<=0 && dresseur.checkEquipeDresseur()) {
 				System.out.println("Le dresseur adverse change de fakemon.");
 				dresseur.fakemonSuivant();
 				combatDresseur(player, dresseur);
@@ -231,7 +231,7 @@ public class Application {
 		//	m.levelUp();
 	//		m.levelUp();
 		}
-		player.getEquipePlayer().getFirst().setPV(0);
+		player.getEquipePlayer().getFirst().setPv(0);
 		player.changeMonsterActif(1);
 		for (Monster m : player.getEquipePlayer()) {
 			System.out.println(m.toStringGeneral());
@@ -240,7 +240,7 @@ public class Application {
 
 	public static void main(String[] args) {	
 		AnnotationConfigApplicationContext monContext = new AnnotationConfigApplicationContext(FakemonConfig.class);
-		monContext.getBeanFactory().createBean(Application.class).test1();
+		monContext.getBeanFactory().createBean(Application.class).run();
 
 		/*	Monster m = player.tableRencontre(1).get(0);
 		System.out.println(m.toStringGeneral()+"\n-----------------------");
